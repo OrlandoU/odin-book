@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const mongoDb = 'mongodb+srv://orlando:Adeus2003@cluster0.xzhigzf.mongodb.net/odin-book?retryWrites=true&w=majority';
+const mongoDb = process.env.MongoDb_uri;
 
 mongoose.connect(mongoDb, { useNewUrlParser: true });
 const db = mongoose.connection;
