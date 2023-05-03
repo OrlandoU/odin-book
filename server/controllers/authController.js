@@ -31,15 +31,23 @@ exports.login_facebook = (req, res, next) => {
 
 exports.sign_up = [
     body('first_name')
+        .trim()
+        .escape()
         .isLength({ min: 4 })
         .withMessage('Minimum of 8 chars on first name'),
     body('last_name')
+        .trim()
+        .escape()
         .isLength({ min: 4 })
         .withMessage('Minimum of 8 chars on last name'),
     body('email')
+        .trim()
+        .escape()
         .isEmail()
         .withMessage('Invalid email'),
     body('password')
+        .trim()
+        .escape()
         .isLength({ min: 1 })
         .withMessage('Minimum of 8 chars on password')
         .custom((value, { req }) => {

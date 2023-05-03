@@ -17,6 +17,9 @@ const User = require('./models/user')
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var postRouter = require('./routes/post')
+var chatRouter = require('./routes/chat')
+var relRouter = require('./routes/rel')
 
 var app = express();
 
@@ -68,12 +71,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize())
 
-app.use('/auth', (req, res,next)=>{
-  next()
-})  
-
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/rel', passport.authenticate('jwt', { session: false }), relRouter)
+app.use('/posts', passport.authenticate('jwt', { session: false }), postRouter)
+app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
