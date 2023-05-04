@@ -9,6 +9,7 @@ var passportjwt = require('passport-jwt')
 var JwtStrategy = passportjwt.Strategy
 var FacebookStrategy = require('passport-facebook').Strategy
 var ExtractJwt = passportjwt.ExtractJwt
+var cors = require('cors')
 const bcrypt = require('bcryptjs')
 require('dotenv').config();
 require('./mongoConfig')
@@ -28,7 +29,7 @@ var app = express();
 passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
   try {
     const user = await User.findOne({ email })
-
+    
     if (!user) {
       return done(null, false, { message: 'Incorrect email' })
     }
@@ -37,10 +38,10 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
       if (err || !result) {
         return done(err, false, { message: 'Incorrect password' })
       }
-
+      
       return done(null, user)
     })
-
+    
   } catch (error) {
     done(error)
   }
@@ -65,6 +66,7 @@ passport.use(new JwtStrategy({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearer
 }))
 
 app.use(logger('dev'));
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
