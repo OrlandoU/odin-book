@@ -43,7 +43,14 @@ exports.sign_up = [
         .trim()
         .escape()
         .isEmail()
-        .withMessage('Invalid email'),
+        .withMessage('Invalid email')
+        .custom(async (value)=>{
+            const user = await User.findOne({email: value})
+            if(!user){
+                return true
+            }
+            throw new Error('Email already in use')
+        }),
     body('password')
         .trim()
         .escape()
