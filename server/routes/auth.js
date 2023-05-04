@@ -3,7 +3,7 @@ var router = express.Router();
 var authController = require('../controllers/authController')
 
 /* GET users listing. */
-router.get('/login', authController.login)
+router.post('/login', authController.login)
 
 router.get('/login-facebook', authController.login_facebook)
 
