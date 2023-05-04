@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator')
 
 exports.posts_get = async (req, res, next) => {
     try {
-        const posts = await Post.find()
+        const posts = await Post.find().populate('user_id')
         return res.json(posts)
     } catch (error) {
         next(error)
