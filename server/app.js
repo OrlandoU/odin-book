@@ -21,6 +21,7 @@ var authRouter = require('./routes/auth');
 var postRouter = require('./routes/post')
 var chatRouter = require('./routes/chat')
 var relRouter = require('./routes/rel')
+var userRouter = require('./routes/user')
 
 var app = express();
 
@@ -75,6 +76,7 @@ app.use(passport.initialize())
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/user', passport.authenticate('jwt', { session: false }), userRouter)
 app.use('/rel', passport.authenticate('jwt', { session: false }), relRouter)
 app.use('/posts', passport.authenticate('jwt', { session: false }), postRouter)
 app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
