@@ -15,6 +15,9 @@ exports.friends_get = async (req, res, next) => {
 }
 
 exports.friends_delete = async (req, res, next) => {
+    if (req.user._id.equals(req.params.userId)) {
+        return res.json({ message: 'Same user' })
+    }
     try {
         const friend = await Relationship.findOneAndRemove({
             $or: [{
@@ -88,6 +91,8 @@ exports.requests_post = async (req, res, next) => {
         })
         if (queriedRequest) {
             return res.json(queriedRequest)
+        } else if(req.user._id.equals(req.params.userId)){
+            return res.json({message: 'Same user'})
         }
 
         const request = new Relationship({
