@@ -5,6 +5,9 @@ const postController = require('../controllers/postController')
 //Get Posts
 router.get('/', postController.posts_get)
 
+//Get feed posts
+router.get('/feed', postController.posts_feed)
+
 //Create post
 router.post('/', postController.posts_post)
 

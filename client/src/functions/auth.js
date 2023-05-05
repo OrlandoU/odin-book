@@ -1,11 +1,11 @@
 export const login = async (email, password) => {
     try {
-        const response = await fetch('https://oodinbook.fly.dev/auth/login', {
+        const response = await fetch('http://localhost:3000/auth/login', {
             method: 'POST',
-            body: JSON.stringify({email, password}),
+            body: JSON.stringify({ email, password }),
             headers: { 'Content-Type': "application/json" }
         })
-        if(response.ok){
+        if (response.ok) {
             const data = await response.json()
             return data
         } else {
@@ -14,14 +14,14 @@ export const login = async (email, password) => {
     } catch (error) {
         console.error('Error retrieving jwt', error)
     }
-    
+
 }
 
 export const signUp = async (firstName, lastName, email, password, passwordConfirmation) => {
     try {
-        const response = await fetch('https://oodinbook.fly.dev/auth/sign-up', {
+        const response = await fetch('http://localhost:3000/auth/sign-up', {
             method: 'POST',
-            body: JSON.stringify({ first_name: firstName, last_name:lastName, email, password, passwordConfirmation }),
+            body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, passwordConfirmation }),
             headers: { 'Content-Type': "application/json" }
         })
         const data = await response.json()

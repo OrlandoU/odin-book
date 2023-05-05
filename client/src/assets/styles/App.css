@@ -4,10 +4,12 @@
   display: flex;
   flex-direction: column;
 }
-main{
+
+main {
   flex: 1;
   background-color: #F0F2F5;
 }
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -38,7 +40,67 @@ main{
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+nav {
+  display: flex;
+  height: 56px;
+  align-items: center;
+}
+
+.app-name {
+  margin-top: 6px;
+  margin-bottom: 4px;
+  margin-left: 16px;
+  padding: 4px;
+  padding-bottom: 2px;
+}
+
+.searchbar-wrapper {
+  flex: 1;
+}
+
+.searchbar {
+  position: relative;
+  width: clamp(500px, 100%, 680px);
+  margin: auto;
+}
+
+.searchbar input {
+  width: 100%;
+  padding: 7px 8px 9px 36px;
+  background-color: #F0F2F5;
+  border: 0px;
+  outline: 0px;
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 50px;
+  height: 40px;
+}
+
+.searchbar-icon svg {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  fill: rgb(101, 103, 107);
+}
+.nav-options{
+  display: flex;
+}
+.nav-svg{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: #F0F2F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

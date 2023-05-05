@@ -5,6 +5,11 @@ const PostSchema = new Schema({
     content: {type: String},
     user_id: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     media: {type: String},
+    scope: {
+        type: String, 
+        enum: ['global', 'friends', 'me'],
+        default: 'global'
+    },
     create_date: {type: Schema.Types.Date, default: Date.now}
 })
 

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { getPosts } from "../../functions/posts";
+import { getFeedPosts } from "../../functions/posts";
 import Post from "../Post/Post";
 import { TokenContext } from "../../contexts/TokenContext";
 import PostForm from "../Post/PostForm";
@@ -9,8 +9,7 @@ export default function Feed() {
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
-        getPosts(token.token).then((value) => {
-            console.log(value)
+        getFeedPosts(token.token).then((value) => {
             setPosts(value)
         })
     }, [])
@@ -20,7 +19,7 @@ export default function Feed() {
             <PostForm />
             <div className="posts-container">
                 {posts.map(post =>
-                    <Post {...post} />
+                    <Post {...post} key={post._id}/>
                 )}
             </div>
         </section>
