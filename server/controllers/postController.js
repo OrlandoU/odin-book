@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator')
 
 exports.posts_get = async (req, res, next) => {
     try {
-        const posts = await Post.find().populate('user_id', '-password').sort({create_date: -1})
+        const posts = await Post.find().populate('user_id', '-password').sort({ create_date: -1 })
         return res.json(posts)
     } catch (error) {
         next(error)
@@ -195,3 +195,14 @@ exports.reaction_post = [
         }
     }
 ]
+
+exports.reaction_delete = async (req, res, next) => {
+    try {
+        const removedComment = await Reaction.findOneAndRemove({
+            user_id: req.user._id, parent_id: req.params.id
+        },)
+        return res.json(removedComment)
+    } catch (error) {
+        next(error)
+    }
+}

@@ -36,4 +36,7 @@ router.get('/:id/reaction/count', postController.reaction_count)
 //Create or update post or comment reaction
 router.post('/:id/reaction', postController.reaction_post)
 
+//Remove reaction
+router.delete('/:id/reaction', postController.reaction_delete)
+
 module.exports = router
