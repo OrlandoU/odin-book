@@ -1,94 +1,109 @@
-.main-home{
+.main-home {
     display: flex;
 }
-aside{
+
+.main-home .right-aside {
     padding-top: 8px;
     width: clamp(248px, 100%, 368px);
     text-align: left;
 }
-.sub-title{
+
+.main-home .left-aside {
+    padding-top: 8px;
+    width: clamp(248px, 100%, 300px);
+    text-align: left;
+}
+
+.sub-title {
     padding: 20px 16px 0px 16px;
     font-size: 1.2rem;
     margin: 0px;
 }
-.post{
+
+.post {
     width: clamp(500px, 100%, 680px);
-    box-shadow: 0px 0px 2px  rgba(0, 0, 0, 0.301);
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.301);
     border-radius: 8px;
     display: flex;
     background-color: white;
     flex-direction: column;
 }
-.feed{
+
+.feed {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
-.posts-container{
+
+.posts-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
     align-items: center;
 }
 
-.post-header{
+.post-header {
     display: flex;
     gap: 8px;
     align-items: center;
     padding: 12px 16px 4px 16px;
 }
 
-.post-user{
+.post-user {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     background-color: gainsboro;
 }
 
-.post-subheader{
+.post-subheader {
     text-align: left;
 }
-.post-name{
+
+.post-name {
     font-weight: 600;
     text-transform: capitalize;
     color: black;
     text-decoration: none;
 }
-.post-name:hover{
+
+.post-name:hover {
     text-decoration: underline;
 }
 
-.post-data{
+.post-data {
     color: rgb(102, 102, 102);
 }
 
-.post-content{
+.post-content {
     padding: 16px;
     padding-bottom: 0px;
     padding-top: 6px;
     text-align: left;
 }
 
-.post-reactions{
+.post-reactions {
     display: flex;
     padding: 0px 16px;
     flex-direction: column;
     color: rgb(106, 108, 114);
 }
-.post-counts{
+
+.post-counts {
     display: flex;
     justify-content: space-between;
     padding: 10px 0px;
 }
 
-.post-options{
+.post-options {
     padding: 3px 0px;
     display: flex;
     border-top: 1px solid gainsboro;
     width: 100%;
     gap: 8px;
 }
-.post-button{
+
+.post-button {
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -101,30 +116,36 @@ aside{
     font-weight: 600;
     text-transform: capitalize;
 }
-.post-button:hover{
+
+.post-button:hover {
     background-color: rgb(241, 241, 241);
 }
-.post-button-icon{
+
+.post-button-icon {
     height: 100%;
 }
-.post-button-icon svg{
+
+.post-button-icon svg {
     height: 100%;
     fill: rgb(106, 108, 114);
     display: block;
 }
 
-.post-button.like{
+.post-button.like {
     color: rgb(19, 121, 255);
 }
-.post-button.like svg{
+
+.post-button.like svg {
     fill: rgb(19, 121, 255);
 }
-.contacts-list{
+
+.contacts-list {
     display: flex;
     flex-direction: column;
     padding-top: 6px;
 }
-.contact{
+
+.contact {
     width: 100%;
     display: flex;
     align-items: center;
@@ -133,21 +154,81 @@ aside{
     border-radius: 5px;
     cursor: pointer;
 }
-.contact:hover{
+
+.contact:hover {
     background-color: rgba(0, 0, 0, 0.028);
 }
-.contact-name{
+
+.contact-name {
     text-transform: capitalize;
     font-weight: 600;
     flex: 1;
 }
-.contact-img{
+
+.contact-img {
     border-radius: 50%;
     width: 24px;
     height: 24px;
     background-color: gainsboro;
     margin: 8px 12px 8px 0px;
 }
-.right-aside{
+
+.right-aside {
     margin-right: 16px;
+}
+.left-aside{
+    padding: 18px;
+    padding-top: 8px;
+}
+.left-aside section{
+    padding: 8px 0px;
+    border-bottom: 1px solid gainsboro;   
+}
+.section-item{
+    padding: 8px 2px;
+    font-weight: 600;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    color: black;
+    text-decoration: none;
+}
+.section-item > *{
+    z-index: 2;
+}
+.section-item:hover::after{
+    content: '';
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+    position: absolute;
+    width: calc(100% + 14px);
+    height: calc(100% + 4px);
+    background-color: rgba(0, 0, 0, 0.054);
+}
+.capitalize{
+    text-transform: capitalize;
+}
+.section-icon{
+    width: 24px;
+    background-color: gainsboro;
+    height: 24px;
+    border-radius: 50%;
+}
+.section-svg, .group-profile{
+    width: 24px;
+    height: 24px;
+}
+.group-profile{
+    border-radius: 6px;
+    background-color: gainsboro;
+}
+.section-svg svg{
+    width: 100%;
+    aspect-ratio: 1/1;
+    height: 100%;
 }

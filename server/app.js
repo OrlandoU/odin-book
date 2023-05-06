@@ -18,10 +18,11 @@ const User = require('./models/user')
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
-var postRouter = require('./routes/post')
-var chatRouter = require('./routes/chat')
-var relRouter = require('./routes/rel')
-var userRouter = require('./routes/user')
+var postRouter = require('./routes/post');
+var chatRouter = require('./routes/chat');
+var relRouter = require('./routes/rel');
+var userRouter = require('./routes/user');
+var groupRouter = require('./routes/group')
 
 var app = express();
 
@@ -80,6 +81,7 @@ app.use('/user', passport.authenticate('jwt', { session: false }), userRouter)
 app.use('/rel', passport.authenticate('jwt', { session: false }), relRouter)
 app.use('/posts', passport.authenticate('jwt', { session: false }), postRouter)
 app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
+app.use('/groups', passport.authenticate('jwt', {session: false}), groupRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

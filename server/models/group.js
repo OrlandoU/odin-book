@@ -6,7 +6,8 @@ const GroupSchema = new Schema({
     name: {type: String, required:true},
     create_date: {type: Schema.Types.Date, default: Date.now},
     profile: {type: String},
-    cover: {type: String}
+    cover: {type: String},
+    banned: [{type: Schema.Types.ObjectId, ref: 'User'}]
 })
 
 module.exports = mongoose.model('Group', GroupSchema)

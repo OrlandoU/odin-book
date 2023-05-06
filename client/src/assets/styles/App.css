@@ -58,6 +58,10 @@ nav {
   margin-left: 16px;
   padding: 4px;
   padding-bottom: 2px;
+  font-size: 1.4rem;
+  text-decoration: none;
+  color: rgb(48, 117, 255);
+  font-weight: 600;
 }
 
 .searchbar-wrapper {

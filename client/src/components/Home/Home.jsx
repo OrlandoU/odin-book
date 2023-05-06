@@ -4,6 +4,7 @@ import { TokenContext } from "../../contexts/TokenContext"
 import '../../assets/styles/Home.css'
 import Feed from "./Feed"
 import RightBar from "./RightBar"
+import LeftBar from "./LeftBar"
 
 export default function Home(){
     const tokenContext = useContext(TokenContext)
@@ -15,9 +16,7 @@ export default function Home(){
 
     return (
         <main className="main-home">
-            
-            {user.email}
-            <button onClick={handleLogout}>Logout</button>
+            <LeftBar />
             <Feed />
             <RightBar />
         </main>
