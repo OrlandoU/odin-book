@@ -1,11 +1,12 @@
 const Post = require('../models/post')
 const Comment = require('../models/comment')
 const Reaction = require('../models/reaction')
+const Relationship = require('../models/relationship')
 const { body, validationResult } = require('express-validator')
 
 exports.posts_get = async (req, res, next) => {
     try {
-        const {sort, ...filter} = req.query
+        const { sort, ...filter } = req.query
         const posts = await Post.find(filter).populate('user_id', '-password').sort({ create_date: -1 })
         return res.json(posts)
     } catch (error) {
@@ -13,9 +14,44 @@ exports.posts_get = async (req, res, next) => {
     }
 }
 
-exports.posts_feed = async (req, res, next) =>{
+exports.posts_feed = async (req, res, next) => {
     try {
         const posts = await Post.find().populate('user_id', '-password').sort({ create_date: -1 })
+        let friends = await Relationship({
+            $or: [
+                {
+                    user1_id: req.user._id
+                },
+                {
+                    user2_id: req.user._id
+                }
+            ]
+        })
+        friends = friends.map((rel) => {
+            if (req.user._id.equals(rel.user1_id)) {
+                return rel.user2_id
+            } else {
+                return rel.user1_id
+            }
+        })
+        Post.aggregate([
+            {
+                $match: {
+                    $or: [
+                        {
+                            user_id: {$in: friends},
+                        },
+                        {
+                            scope: 'global'
+                        },{
+                            group: {$in: req.user.groups}
+                        }
+                    ]
+                }
+            },
+            { $addFields: { is_friend: { $in: ["$user_id", friends] } } },
+            { $sort: { is_friend: -1, create_date: -1 } }
+        ])
         return res.json(posts)
     } catch (error) {
         next(error)

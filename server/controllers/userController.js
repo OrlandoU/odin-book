@@ -7,3 +7,12 @@ exports.current_get =async (req, res, next) => {
         next(error)
     }
 }
+
+exports.user_get = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.userId)
+        return res.json(user)
+    } catch (error) {
+        next(error)
+    }
+}
