@@ -5,11 +5,18 @@ const PostSchema = new Schema({
     content: {type: String},
     user_id: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     media: {type: String},
+    multiple_media: [{type: String}],
     group: {type: Schema.Types.ObjectId, ref: 'Group'},
+    mentions: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    type: {
+        type:String,
+        enum: ['normal', 'profile', 'cover', 'group-create', 'group-cover'],
+        default: 'normal'
+    },
     scope: {
         type: String, 
-        enum: ['global', 'friends', 'me'],
-        default: 'global'
+        enum: ['public', 'friends', 'me', 'group'],
+        default: 'public'
     },
     create_date: {type: Schema.Types.Date, default: Date.now}
 })

@@ -1,0 +1,474 @@
+.user-aside {
+    width: clamp(350px, 100%, 490px);
+}
+
+.user-routes-wrapper a {
+    padding: 0px 16px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(102, 102, 102);
+    font-weight: 600;
+    position: relative;
+    text-decoration: none;
+}
+
+.user-routes-wrapper a:hover::after {
+    position: absolute;
+    content: '';
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.084);
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+}
+
+.user-routes-wrapper a.active::before {
+    position: absolute;
+    content: '';
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background-color: rgb(28, 81, 255);
+    bottom: 0px;
+    width: 100%;
+    height: 4px;
+}
+
+.user-routes {
+    width: 100%;
+}
+
+.user-routes-wrapper {
+    border-top: 1px solid gainsboro;
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.user-data {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 56px;
+    gap: 16px;
+}
+
+.user-data .posts-container {
+    width: clamp(500px, 100%, 680px);
+}
+
+.user-section {
+    background-color: white;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.201);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.user-section .sub-title {
+    text-align: left;
+    padding: 0px;
+    font-size: 1.3rem;
+}
+
+.header-wrapper {
+    width: clamp(800px, 100%, 1186px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.116);
+}
+
+.cover {
+    height: 462px;
+    width: 1250px;
+    background-color: gainsboro;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.user-profile-pic {
+    position: relative;
+    width: 168px;
+    margin-right: 16px;
+}
+
+.user-profile-pic-wrapper {
+    position: absolute;
+    width: 168px;
+    height: 168px;
+    background-color: gainsboro;
+    box-shadow: 0px 0px 0px 6px white;
+    border-radius: 50%;
+    bottom: 0px;
+    overflow: hidden;
+}
+
+.user-details {
+    flex: 1;
+    text-align: left;
+    gap: 2px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+}
+
+.user-info .user-name {
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.user-info {
+    display: flex;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    width: 100%;
+
+}
+
+.user-friends-count {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgb(99, 99, 99);
+}
+
+.user-friends-pics {
+    display: flex;
+    padding-top: 4px;
+}
+
+.friend-pic {
+    width: 32px;
+    height: 32px;
+    box-shadow: 0px 0px 0px 2px white;
+    background-color: gainsboro;
+    border-radius: 50%;
+}
+
+.friend-pic:not(:first-child) {
+    margin-left: -4px;
+}
+
+.user-section {
+    width: 100%;
+}
+
+.user-about {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: clamp(800px, 100%, 1186px);
+    margin: auto;
+    gap: 16px;
+}
+
+.user-section.details {
+    display: flex;
+    padding: 0px;
+    background-color: gainsboro;
+    overflow: hidden;
+    gap: 1px;
+}
+
+.user-section.details>* {
+    padding: 16px;
+    background-color: white;
+}
+
+.user-section.details>*:last-child {
+    flex: 1;
+}
+
+.user-section-left {
+    display: flex;
+    flex-direction: column;
+    width: 287px;
+}
+
+.sub-route h3 {
+    margin-top: 0px;
+    text-align: left;
+}
+
+.sub-route-link:hover::after {
+    content: '';
+    width: calc(100% + 22px);
+    height: calc(100% - 8px);
+    border-radius: 6px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.054);
+}
+
+.sub-route-link.active::after {
+    content: '';
+    width: calc(100% + 22px);
+    height: calc(100% - 8px);
+    border-radius: 6px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    z-index: -1;
+    background-color: rgba(35, 138, 255, 0.13);
+}
+
+
+.sub-route-link {
+    padding: 12px 0px;
+    color: black;
+    text-align: left;
+    z-index: 1;
+    position: relative;
+    font-weight: 600;
+    text-decoration: none;
+    color: rgb(102, 102, 102);
+}
+
+.sub-route-link.active {
+    color: rgb(68, 112, 255);
+}
+
+.sub-route-link>* {
+    z-index: 1;
+}
+
+.user-section-left .sub-title {
+    margin-bottom: 12px;
+}
+
+.about-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.about-form label {
+    position: relative;
+    z-index: 1;
+}
+
+.about-form input,
+.about-form select {
+    width: 100%;
+    padding: 26px 16px 10px 16px;
+    border: 1px solid gainsboro;
+    box-shadow: 0px 0px 0px 2px rgb(255, 255, 255);
+    border-radius: 5px;
+    outline: none;
+    font-size: 1.1rem;
+}
+
+.about-form .input-label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    transition: 200ms;
+    font-size: 1.1rem;
+    color: rgb(85, 85, 85);
+}
+
+.about-form label:not(.not):focus-within .input-label {
+    top: 30%;
+    font-size: .8rem;
+    color: rgb(68, 112, 255);
+}
+
+.about-form label:not(.not) input:not(:placeholder-shown)+.input-label {
+    top: 30%;
+    font-size: .8rem;
+    color: rgb(68, 112, 255);
+}
+
+.about-form label:not(.not):focus-within::after {
+    z-index: -1;
+    position: absolute;
+    content: '';
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(68, 112, 255);
+    border-radius: 8px;
+}
+
+label.not {
+    display: flex;
+    gap: 8px;
+}
+
+label.not .checkbox {
+    width: fit-content;
+}
+
+.about-form-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid gainsboro;
+    padding-top: 16px;
+}
+
+.about-form-buttons>* {
+    padding: .5rem 1.15rem;
+    border: 0px;
+    outline: none;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    background-color: rgb(235, 235, 235);
+    border-radius: 5px;
+}
+
+.about-form-buttons button {
+    color: white;
+    background-color: rgb(24, 118, 242);
+}
+
+.checkbox {
+    font-weight: 600;
+}
+
+.about-expand {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    color: rgb(24, 118, 242);
+    font-weight: 500;
+    font-size: 1rem;
+    padding-bottom: 16px;
+    cursor: pointer;
+}
+
+.about-expand:hover {
+    text-decoration: underline;
+}
+
+.about-expand svg {
+    height: 28px;
+    width: 28px;
+    fill: rgb(24, 118, 242);
+}
+
+.about-preview {
+    display: flex;
+    padding-bottom: 16px;
+    gap: 12px;
+    align-items: center;
+}
+
+.preview-icon {
+    width: 40px;
+    height: 40px;
+    background-color: gainsboro;
+    border-radius: 50%;
+}
+
+.preview-data {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.preview-data-bottom {
+    color: rgb(102, 102, 102);
+    font-size: .9rem;
+}
+
+.preview-data span {
+    font-weight: 600;
+}
+
+.options {
+    width: 34px;
+    height: 34px;
+    padding: 4px;
+    background-color: gainsboro;
+    border-radius: 50%;
+    position: relative;
+}
+
+.options-available {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    background-color: white;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.116);
+    padding: 6px;
+    white-space: nowrap;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.options-available>* {
+    padding: .4rem 5rem .4rem .4rem;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.options-available>*:hover {
+    background-color: gainsboro;
+}
+
+.user-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.user-option {
+    background-color: gainsboro;
+    padding: 8px 12px;
+    display: flex;
+    border-radius: 6px;
+    gap: 4px;
+    font-weight: 600;
+}
+
+.user-options svg {
+    width: 21px;
+    height: 21px;
+}
+
+.profile-edit {
+    width: clamp(560px, 100%, 700px);
+}
+.modal-content{
+    padding: 20px;
+}
+.user-options .sub-title{
+    display: flex;
+    justify-content: space-between;
+}
+.profile-add{
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgb(24, 118, 242);
+    padding: 6px 10px;
+    display: block;
+    transition: 200ms;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.profile-add:hover{
+    background-color: rgb(235, 235, 235);
+}

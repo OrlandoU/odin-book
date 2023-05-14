@@ -4,8 +4,19 @@ const { body, validationResult } = require('express-validator')
 
 exports.chats_get = async (req, res, next) => {
     try {
-        const chats = await Chat.find({ participants: req.user._id })
+        const chats = await Chat.find({ participants: req.user._id }).populate('participants', '-password')
         return res.json(chats)
+    } catch (error) {
+        next(error)
+    }
+}
+exports.chats_user_get = async (req, res, next) => {
+    try {
+        const chat = await Chat.findOne({
+            participants: { $all: [req.user._id, req.params.userId] },
+            isGroup: false
+        })
+        return res.json(chat)
     } catch (error) {
         next(error)
     }
@@ -15,6 +26,15 @@ exports.chats_last_message_get = async (req, res, next) => {
     try {
         const message = await Message.findOne({ chat_id: req.params.chatId }).sort({ create_date: -1 })
         return res.json(message)
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.chats_details_get = async (req, res, next) => {
+    try {
+        const chats = await Chat.findById(req.params.chatId).populate('participants', '-password')
+        return res.json(chats)
     } catch (error) {
         next(error)
     }
@@ -49,11 +69,11 @@ exports.chats_post = async (req, res, next) => {
 exports.messages_get = async (req, res, next) => {
     try {
         const chat = await Chat.findById(req.params.chatId)
-        if(!chat){
+        if (!chat) {
             return res.status(404).send('Chat not found')
         }
 
-        const messages = await Message.find({chat_id: req.params.chatId}).sort({create_date: -1})
+        const messages = await Message.find({ chat_id: req.params.chatId }).sort({ create_date: -1 })
         return res.json(messages)
     } catch (error) {
         next(error)
@@ -71,9 +91,9 @@ exports.messages_post = [
         .escape()
         .isURL()
         .withMessage('Invalid media url')
-    ,async (req, res, next) => {
+    , async (req, res, next) => {
         const errors = validationResult(req)
-        if(!errors.isEmpty()){
+        if (!errors.isEmpty()) {
             res.status(400).send(errors.array())
         }
 
@@ -101,7 +121,7 @@ exports.messages_post = [
 exports.messages_delete = async (req, res, next) => {
     try {
         const message = await Message.findById(req.params.messageId)
-        if(!message.user_id.equals(req.user._id)){
+        if (!message.user_id.equals(req.user._id)) {
             return res.sendStatus(403)
         }
         const deletedMessage = await Message.findByIdAndRemove(req.params.messageId)

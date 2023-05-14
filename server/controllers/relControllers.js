@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const Chat = require('../models/chat')
 const Relationship = require('../models/relationship')
 
 exports.friends_get = async (req, res, next) => {
@@ -12,6 +13,35 @@ exports.friends_get = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
+}
+
+exports.friends_suggestions_get = async (req, res, next) => {
+    let friends = await Relationship.find({
+        $or: [{ user1_id: req.user._id }, { user2_id: req.user._id }],
+        request_state: 'Accepted'
+    })
+    console.log(friends)
+    friends = friends.map(rel => {
+        if (req.user._id.equals(rel.user2_id)) {
+            return rel.user1_id
+        }
+        return res.user2_id
+    })
+    const users = await User.find({ _id: { $nin: [...friends, req.user._id] } })
+    return res.json(users)
+}
+
+exports.friends_in_common_get = async (req, res, next) => {
+
+    const result = await Relationship.aggregate([
+        { $match: { user1_id: { $in: [req.user._id, req.params.userId] }, user2_id: { $in: [req.user._id, req.params.userId] } } },
+        { $lookup: { from: "users", localField: "user1_id", foreignField: "_id", as: "user1" } },
+        { $lookup: { from: "users", localField: "user2_id", foreignField: "_id", as: "user2" } },
+        { $unwind: "$user1" },
+        { $unwind: "$user2" },
+        { $project: { common_friends: { $setIntersection: ["$user1.friends", "$user2.friends"] } } }
+    ])
+    return res.json(result)
 }
 
 exports.friends_delete = async (req, res, next) => {
@@ -68,6 +98,20 @@ exports.requests_accept = async (req, res, next) => {
 
         relationship.request_state = 'Accepted'
         await relationship.save()
+
+        const queriedchat = await Chat.findOne({
+            participants: { $all: [req.user._id, req.params.userId] },
+            isGroup: false
+        })
+        if (!queriedchat) {
+            const chat = new Chat({
+                participants: [req.user._id, req.params.userId],
+                isGroup: false
+            })
+
+            await chat.save()
+        }
+
         return res.json(relationship)
     } catch (error) {
         console.log(error)
@@ -91,8 +135,8 @@ exports.requests_post = async (req, res, next) => {
         })
         if (queriedRequest) {
             return res.json(queriedRequest)
-        } else if(req.user._id.equals(req.params.userId)){
-            return res.json({message: 'Same user'})
+        } else if (req.user._id.equals(req.params.userId)) {
+            return res.json({ message: 'Same user' })
         }
 
         const request = new Relationship({

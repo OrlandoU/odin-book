@@ -1,8 +1,8 @@
-export const createGroup = async (token, name, profile, cover) => {
+export const createGroup = async (token, name, privacy) => {
     try {
         const response = await fetch('http://localhost:3000/groups', {
             method: 'POST',
-            body: JSON.stringify({ name, profile, cover }),
+            body: JSON.stringify({ name, privacy }),
             headers: {
                 'authorization': 'bearer ' + token,
                 'Content-Type': 'application/json'
@@ -19,14 +19,66 @@ export const createGroup = async (token, name, profile, cover) => {
     }
 }
 
-export const updateGroup = async (token, groupId, name, profile, cover) => {
+export const getGroupInfo = async (token, groupId) => {
     try {
+        const response = await fetch('http://localhost:3000/groups/' + groupId, {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
+
+export const getGroupMembers = async (token, groupId) => {
+    try {
+        const response = await fetch('http://localhost:3000/groups/' + groupId + '/members', {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
+
+export const getGroupMembersCount = async (token, groupId) => {
+    try {
+        const response = await fetch('http://localhost:3000/groups/' + groupId + '/members-count', {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
+
+export const updateGroup = async (token, groupId, name, cover) => {
+    try {
+        const formData = new FormData()
+        formData.append('profile', name)
+        formData.append('cover', cover)
+        console.log(cover)
+
         const response = await fetch('http://localhost:3000/groups/'+ groupId, {
             method: 'PUT',
-            body: JSON.stringify({ name, profile, cover }),
+            body: formData,
             headers: {
                 'authorization': 'bearer ' + token,
-                'Content-Type': 'application/json'
             }
         })
         const data = await response.json()

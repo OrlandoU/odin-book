@@ -1,0 +1,103 @@
+import { useContext, useState } from "react";
+import { createUserJob, updateUserJob } from "../../../functions/user";
+import { TokenContext } from '../../../contexts/TokenContext'
+import HiddenMenu from "../../HiddenMenu";
+
+export default function JobForm(props) {
+    const token = useContext(TokenContext).token
+    const [expanded, setExpanded] = useState(false)
+    const [company, setCompany] = useState(props.company || '')
+    const [position, setPosition] = useState(props.position || '')
+    const [location, setLocation] = useState(props.location || '')
+    const [isCurrent, setIsCurrent] = useState(props.is_current)
+
+    const handleClose = () => {
+        setCompany('')
+        setPosition('')
+        setLocation('')
+        setIsCurrent()
+        setExpanded(false)
+    }
+
+    const handleOpen = () => {
+        setExpanded(true)
+    }
+
+    const handleCompany = (e) => {
+        setCompany(e.target.value)
+    }
+
+    const handlePosition = (e) => {
+        setPosition(e.target.value)
+    }
+
+    const handleLocation = (e) => {
+        setLocation(e.target.value)
+    }
+
+    const handleIsCurrent = (e) => {
+        setIsCurrent(e.target.checked)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        if(props.isPreview){
+            updateUserJob(token, props._id, company, position, location, isCurrent)
+        } else {
+            createUserJob(token, company, position, location, isCurrent)
+        }
+    }
+    if (props.isPreview && !expanded) {
+        return (
+            <div className="about-preview">
+                <div className="preview-icon"></div>
+                <div className="preview-data">
+                    <div className="preview-data-top">
+                        {props.position.length > 0 ? <span>{props.position}</span> : props.is_current ? 'Works' : 'Worked'} at <span>{props.company}</span>
+                    </div>
+                    <div className="preview-data-bottom">
+                        {props.location}
+                    </div>
+                </div>
+                <HiddenMenu>
+                    <span onClick={handleOpen}>Edit WorkPlace</span>
+                    <span>Remove WorkPlace</span>
+                </HiddenMenu>
+            </div>
+        )
+    }
+
+    if (!expanded) {
+        return (
+            <div className="about-expand" onClick={handleOpen}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus-circle-outline</title><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" /></svg>
+                Add workplace
+            </div>
+        )
+    }
+
+    return (
+        <form className="about-form" onSubmit={handleSubmit}>
+            <label>
+                <input type="text" value={company} onChange={handleCompany} placeholder=" " required />
+                <div className="input-label">Company</div>
+            </label>
+            <label>
+                <input type="text" value={position} onChange={handlePosition} placeholder=" " required />
+                <div className="input-label">Position</div>
+            </label>
+            <label >
+                <input type="text" value={location} onChange={handleLocation} placeholder=" " required />
+                <div className="input-label">Location</div>
+            </label>
+            <label className="not">
+                <input className="checkbox" type="checkbox" checked={isCurrent} onChange={handleIsCurrent} placeholder=" " />
+                <div className="checkbox">I am currently working here</div>
+            </label>
+            <div className="about-form-buttons">
+                <div onClick={handleClose}>Cancel</div>
+                <button>Save</button>
+            </div>
+        </form>
+    )
+}

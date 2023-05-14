@@ -8,6 +8,11 @@ router.get('/', relController.friends_get)
 //Get friend requests
 router.get('/requests', relController.requests_get)
 
+router.get('/suggestions', relController.friends_suggestions_get)
+
+//Get friends in common
+router.get('/in-common/:userId', relController.friends_in_common_get)
+
 //Remove friend
 router.delete('/:userId', relController.friends_delete)
 

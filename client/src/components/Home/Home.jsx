@@ -1,12 +1,12 @@
-import { useContext } from "react"
+import { Suspense, useContext } from "react"
 import { UserContext } from "../../contexts/UserContext"
 import { TokenContext } from "../../contexts/TokenContext"
 import '../../assets/styles/Home.css'
 import Feed from "./Feed"
 import RightBar from "./RightBar"
-import LeftBar from "./LeftBar"
+import PostLoading from '../Post/PostLoading'
 
-export default function Home(){
+export default function Home() {
     const tokenContext = useContext(TokenContext)
     const user = useContext(UserContext)
 
@@ -16,8 +16,9 @@ export default function Home(){
 
     return (
         <main className="main-home">
-            <LeftBar />
-            <Feed />
+            <Suspense fallback={<PostLoading />} >
+                <Feed />
+            </Suspense>
             <RightBar />
         </main>
     )

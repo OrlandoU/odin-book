@@ -7,7 +7,7 @@ const { body, validationResult } = require('express-validator')
 exports.posts_get = async (req, res, next) => {
     try {
         const { sort, ...filter } = req.query
-        const posts = await Post.find(filter).populate('user_id', '-password').sort({ create_date: -1 })
+        const posts = await Post.find(filter).populate('user_id', '-password').populate('group').sort({ create_date: -1 })
         return res.json(posts)
     } catch (error) {
         next(error)
@@ -16,7 +16,7 @@ exports.posts_get = async (req, res, next) => {
 
 exports.posts_feed = async (req, res, next) => {
     try {
-        const posts = await Post.find().populate('user_id', '-password').sort({ create_date: -1 })
+        const posts = await Post.find().populate('user_id', '-password').populate('group').sort({ create_date: -1 })
         let friends = await Relationship({
             $or: [
                 {
@@ -39,12 +39,12 @@ exports.posts_feed = async (req, res, next) => {
                 $match: {
                     $or: [
                         {
-                            user_id: {$in: friends},
+                            user_id: { $in: friends },
                         },
                         {
                             scope: 'global'
-                        },{
-                            group: {$in: req.user.groups}
+                        }, {
+                            group: { $in: req.user.groups }
                         }
                     ]
                 }
@@ -61,7 +61,6 @@ exports.posts_feed = async (req, res, next) => {
 exports.posts_post = [
     body('content')
         .optional({ checkFalsy: true })
-        .trim()
         .escape()
         .isLength({ max: 300 })
         .withMessage('Content must be less than or equal to 300 chars'),
@@ -72,16 +71,22 @@ exports.posts_post = [
         .isURL()
         .withMessage('Invalid media url')
     , async (req, res, next) => {
+        console.log(req.body)
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             res.sendStatus(400)
         }
 
         try {
+            const multiple_media = req.files.map(file=>{
+                return `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/post-images/${file.originalname}`
+            })
+            
             const post = new Post({
                 content: req.body.content,
-                media: req.body.media,
-                user_id: req.user._id
+                user_id: req.user._id,
+                mentions: req.body.mentions,
+                multiple_media: multiple_media,
             })
 
             const result = await post.save()
@@ -126,7 +131,7 @@ exports.comments_get = async (req, res, next) => {
         let comments = await Comment.find({
             post_id: req.params.postId,
             parent_comment: req.params.parentCommentId
-        })
+        }).populate('user_id')
 
         return res.json(comments)
     } catch (error) {
@@ -166,9 +171,11 @@ exports.comments_post = [
             }
 
             const comment = new Comment({
+                user_id: req.user._id,
                 post_id: req.params.postId,
                 parent_comment: req.params.parentCommentId,
                 content: req.body.content,
+                mentions: req.body.mentions,
                 media: req.body.media
             })
 
@@ -199,7 +206,7 @@ exports.comments_delete = async (req, res, next) => {
 
 exports.reaction_get = async (req, res, next) => {
     try {
-        const reactions = await Reaction.find({ parent_id: req.params.id })
+        const reactions = await Reaction.find({ parent_id: req.params.id }).populate('user_id')
         return res.json(reactions)
     } catch (error) {
         next(error)
@@ -233,7 +240,7 @@ exports.reaction_post = [
                 {
                     new: true,
                     upsert: true
-                })
+                }).populate('user_id')
             console.log(result)
             return res.json(result)
         } catch (error) {

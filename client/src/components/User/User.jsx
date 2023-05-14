@@ -1,27 +1,37 @@
+import { Route, Routes, useParams } from "react-router-dom"
+import '../../assets/styles/User.css'
+import Header from "./Header"
 import { useContext, useEffect, useState } from "react"
-import { getPosts } from "../../functions/posts"
+import { getUserInfo } from "../../functions/user"
 import { TokenContext } from "../../contexts/TokenContext"
-import { useParams } from "react-router-dom"
-import Post from "../Post/Post"
+import Main from "./Routes/Main"
+import About from "./Routes/About"
 
-export default function User(){
-    const tokenContext =useContext(TokenContext)
+export default function User() {
     const url = useParams()
-    const [posts, setPosts] = useState([])
+    const tokenContext = useContext(TokenContext)
+    const [user, setUser] = useState({})
 
-    useEffect(()=>{
-        getPosts(tokenContext.token, {user_id: url.userId}).then(value=>{
-            setPosts(value)
+    useEffect(() => {
+        getUserInfo(tokenContext.token, url.userId).then(value => {
+            if (value) {
+                setUser(value)
+            }
         })
-    }, [])
+
+    }, [url.userId])
+
+    if (!user) {
+        return null
+    }
 
     return (
         <main>
-            <div className="posts-container">
-                {posts.map(post =>
-                    <Post {...post} key={post._id} />
-                )}
-            </div>
+            <Header {...user} />
+            <Routes>
+                <Route path="/" element={<Main {...user} />} />
+                <Route path="/about/*" element={<About {...user} />} />
+            </Routes>
         </main>
     )
 }

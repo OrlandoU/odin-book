@@ -2,6 +2,20 @@ const express = require('express')
 const router = express.Router()
 const postController = require('../controllers/postController')
 
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'post-images/');
+    },
+    filename: function (req, file, cb) {
+        console.log(file)
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage, limits: { files: 5 } })
+
 //Get Posts
 router.get('/', postController.posts_get)
 
@@ -9,7 +23,7 @@ router.get('/', postController.posts_get)
 router.get('/feed', postController.posts_feed)
 
 //Create post
-router.post('/', postController.posts_post)
+router.post('/', upload.array('multiple_media') ,postController.posts_post)
 
 //Delete Post
 router.delete('/:postId', postController.posts_delete)

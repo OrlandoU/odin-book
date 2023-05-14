@@ -6,6 +6,11 @@ const chatController = require('../controllers/chatController')
 //Get all chats
 router.get('/', chatController.chats_get)
 
+//Get chat with user
+router.get('/user/:userId', chatController.chats_user_get)
+
+//Get chat
+router.get('/:chatId', chatController.chats_details_get)
 
 //Create Chat with participants
 router.post('/', chatController.chats_post)

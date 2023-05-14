@@ -1,0 +1,210 @@
+.group-create-link {
+    padding: 0px 8px;
+    background-color: rgb(230, 238, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: rgb(31, 121, 255);
+    font-weight: 600;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 8px;
+    transition: 200ms;
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.border-line {
+    margin: 18px auto;
+    background-color: gainsboro;
+    height: 1px;
+    width: calc(100% - 16px);
+}
+
+.group-create-link svg {
+    fill: rgb(31, 127, 253);
+    height: 20px;
+    width: 20px;
+}
+
+.group-create-link:hover {
+    background-color: rgb(214, 226, 253);
+}
+
+.main-aside .about-form {
+    padding: 0px 16px;
+}
+
+.main-aside .about-form label {
+    position: relative;
+}
+
+.group-options {
+    position: absolute;
+    width: 100%;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.158);
+    background-color: white;
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.group-option {
+    display: flex;
+    padding: 8px;
+    gap: 8px;
+    border-radius: 8px;
+}
+
+.group-option:hover {
+    background-color: rgba(0, 0, 0, 0.078);
+}
+
+.group-option-icon svg {
+    height: 100%;
+}
+
+.group-option-icon {
+    padding: 6px;
+    width: clamp(36px, 100%, 36px);
+    min-width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: gainsboro;
+}
+
+.group-option-data {
+    color: rgb(112, 112, 112);
+    font-size: .8rem;
+}
+
+.group-option-header {
+    font-weight: 600;
+}
+
+.select-input {
+    caret-color: transparent;
+    cursor: pointer;
+}
+
+.group-admin {
+    display: flex;
+    padding: 0px 16px;
+    margin: 18px 0px;
+    align-items: center;
+}
+
+.group-admin-pic {
+    margin: 8px 12px 8px 0px;
+    width: 36px;
+    height: 36px;
+    background-color: gainsboro;
+    border-radius: 50%;
+}
+
+.group-admin-name {
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+.group-admin-role {
+    color: rgb(112, 112, 112);
+    font-size: .8rem;
+}
+
+.main-group-create {
+    margin: auto 8px 16px 8px;
+    text-align: center;
+    padding: 8px 0px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: white;
+    background-color: rgb(31, 127, 253);
+    border: 0px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+
+.groups-main .main-aside {
+    display: flex;
+    flex-direction: column;
+}
+
+.group-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+}
+
+.group-preview-data {
+    display: flex;
+    flex-direction: column;
+}
+.group-preview-name{
+    font-weight: 600;
+}
+
+.group-preview-pic {
+    height: 48px;
+    width: 48px;
+    background-color: gainsboro;
+    border-radius: 8px;
+
+}
+.group-preview-detail{
+    font-size: .8rem;
+    color: rgb(112, 112, 112);
+}
+
+.group-details-wrapper .group-preview{
+    padding: 16px 8px;
+}
+.group-section-wrapper{
+    width: clamp(800px, 100%, 1186px);
+    margin: 16px auto;
+}
+.sub-title span{
+    font-weight: 400;
+    color: rgb(112, 112, 112);
+}
+.group{
+    text-align: left;
+}
+.cover{
+    position: relative;
+    overflow: hidden;
+}
+.cover .user-option{
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.158);
+    cursor: pointer;
+}
+.cover .user-option svg{
+    width: 21px;
+    height: 21px;
+}
+
+.cover .save-buttons{
+    width: 100%;
+    height: fit-content;
+    background-color: rgba(0, 0, 0, 0.075);
+    position: absolute;
+    justify-content: flex-end;
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+}
+.cover .save-buttons > *{
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    background-color: gainsboro;
+}
+.save-buttons .save{
+    background-color: rgb(31, 121, 255);
+    color: white;
+}

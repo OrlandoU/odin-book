@@ -62,16 +62,37 @@ export const getPostFormatted = (time) => {
 
 }
 
-export const createPost = async (token, content, media) => {
+export const createPost = async (token, content, mentions, multiple_media) => {
     try {
-        const response = await fetch('http://localhost:3000/posts', {
-            method: 'POST',
-            body: JSON.stringify({ content, media }),
-            headers: {
-                'Content-Type': "application/json",
-                'authorization': 'bearer ' + token
-            }
-        })
+        const formData = new FormData()
+        formData.append('content', content)
+        if (mentions && Array.isArray(mentions) && mentions.length > 0) {
+            formData.append('mentions', mentions)
+        }
+        for (let i = 0; i < multiple_media.length; i++) {
+            formData.append('multiple_media', multiple_media[i])
+        }
+
+        let response
+        if (multiple_media || multiple_media.length) {
+            response = await fetch('http://localhost:3000/posts', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'authorization': 'bearer ' + token,
+                }
+            })
+        } else {
+            response = await fetch('http://localhost:3000/posts', {
+                method: 'POST',
+                body: JSON.stringify({ content, mentions, multiple_media }),
+                headers: {
+                    'authorization': 'bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+        }
+
         const data = await response.json()
         if (response.ok) {
             return data
@@ -83,6 +104,7 @@ export const createPost = async (token, content, media) => {
             }
         }
     } catch (error) {
+        console.log(error)
         console.error('Error creating post', error)
     }
 }
@@ -110,7 +132,7 @@ export const deletePost = async (token, postId) => {
     }
 }
 
-export const getCommentsUnderPost = async (token, postId, parentCommentId) => {
+export const getCommentsUnderPost = async (token, postId, parentCommentId = '') => {
     try {
         const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${parentCommentId}`, {
             headers: {
@@ -154,11 +176,11 @@ export const getCommentsCount = async (token, postId, parentCommentId) => {
     }
 }
 
-export const createComment = async (token, content, media, postId, parentCommentId) => {
+export const createComment = async (token, postId, parentCommentId, content, media, mentions ) => {
     try {
         const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${parentCommentId}`, {
             method: 'POST',
-            body: JSON.stringify({ content, media }),
+            body: JSON.stringify({ content, media, mentions }),
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': 'bearer ' + token

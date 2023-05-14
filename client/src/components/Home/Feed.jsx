@@ -19,7 +19,7 @@ export default function Feed() {
             <PostForm />
             <div className="posts-container">
                 {posts.map(post =>
-                    <Post {...post} key={post._id}/>
+                    <Post {...post} key={post._id} />
                 )}
             </div>
         </section>
