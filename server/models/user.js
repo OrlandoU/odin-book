@@ -14,7 +14,9 @@ const UserSchema = new Schema({
     birth_place: {type: String},
     current_place: {type: String},
     profile: {type: String},
-    cover: {type: String}
+    cover: {type: String},
+    isOnline: {type: Boolean, default: false},
+    lastActive : {type: Date}
 })
 
 module.exports = mongoose.model('User', UserSchema)

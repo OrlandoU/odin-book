@@ -8,7 +8,7 @@ const RelationshipSchema = new Schema({
     blocker: { type: Schema.Types.ObjectId, ref: 'User'},
     create_date: {type: Date, default:Date.now},
     value: {type: Number, default: 0},
-    request_state: {type: String, default:'Pending'}
+    request_state: {type: String, default:'Pending', enum: ['Pending', 'Accepted', 'Rejected']}
 })
 
 module.exports = mongoose.model('Relationship', RelationshipSchema)

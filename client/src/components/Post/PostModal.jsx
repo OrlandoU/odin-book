@@ -15,20 +15,24 @@ import like from '../../assets/images/like.svg'
 import love from '../../assets/images/love.svg'
 import sad from '../../assets/images/sad.svg'
 import wow from '../../assets/images/wow.svg'
+import { SocketContext } from "../../contexts/SocketContext";
 
 export default function PostModal(props) {
     const docRef = useRef()
 
-    const [end, setEnd] = useState(false)
     const user = useContext(UserContext)
     const { token } = useContext(TokenContext)
+    const socket = useContext(SocketContext)
+
     const [postReaction, setPostReaction] = useState()
     const reactionsImgs = { angry, care, haha, like, love, sad, wow }
 
+    const [end, setEnd] = useState(false)
     const [comments, setComments] = useState([])
     const [commentsCounts, setCommentsCount] = useState()
     const [reactions, setReactions] = useState([])
     const [reactionsFiltered, setReactionsFiltered] = useState([])
+    const [isOnline, setIsOnline] = useState(props.user_id.isOnline)
 
     const handleReaction = async () => {
         if (postReaction) {
@@ -37,13 +41,13 @@ export default function PostModal(props) {
             await deleteReaction(token, props._id)
         } else {
             setPostReaction('like')
-            const res = await createReaction(token, props._id)
+            const res = await createReaction(token, props._id, 'like', 'post', props.user_id._id)
             setReactions(prev => [res, ...prev])
         }
     }
     const handleOddReaction = async (type) => {
         setPostReaction(type)
-        const res = await createReaction(token, props._id, type)
+        const res = await createReaction(token, props._id, type, 'post', props.user_id._id)
         setReactions(prev => {
             let arr = prev.filter(reaction => reaction.user_id._id !== user._id)
             return [res, ...arr]
@@ -81,23 +85,39 @@ export default function PostModal(props) {
     }, [user])
 
     useEffect(() => {
-        props.fetchReactions()
+        if (props.fetchReactions) {
+            props.fetchReactions()
+        }
         let arr = reactions.map(reaction => reaction.type)
         setReactionsFiltered([...new Set(arr)])
     }, [reactions])
 
+    useEffect(() => {
+        const handleUserChangeStatus = (user) => {
+            if (user._id === props.user_id._id) {
+                setIsOnline(user.isOnline)
+            }
+        }
+        socket.on('user_status', handleUserChangeStatus)
+        return () => {
+            socket.off('user_status', handleUserChangeStatus)
+        }
+    }, [socket, props.user_id])
 
     return (
         <>
             <div className="post" ref={docRef} onScroll={handleScroll}>
                 <div className="post-header">
                     <div className="post-user">
-                        <img src={props.user_id.profile} alt="" />
+                        <img src={props.user_id.profile} alt={props.user_id.first_name + ' ' + props.user_id.first_name} className="img-profile" />
+                        {isOnline &&
+                            <div className="user-online"></div>
+                        }
                     </div>
                     <div className="post-subheader">
                         <div className="post-type-name">
                             <NavLink className="post-name" to={'/' + props.user_id._id}>{props.user_id.first_name} {props.user_id.last_name}</NavLink>
-                            <div className="post-data">{props.type == 'group-create' ? 'created the group' : props.type === 'group-cover' ? 'updated the group cover photo.' : props.type == 'profile' ? 'updated his profile picture.' : props.type === 'cover' ? 'updated his profile cover' : ''}</div>
+                            <div className="post-data extra">{props.type == 'group-create' ? 'created the group' : props.type === 'group-cover' ? 'updated the group cover photo.' : props.type == 'profile' ? 'updated his profile picture.' : props.type === 'cover' ? 'updated his profile cover' : ''}</div>
                             {props.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + props.group._id}>{props.group.name}</NavLink>}
                         </div>
                         <div className="post-data">{getPostFormatted(props.create_date)}</div>
@@ -106,22 +126,23 @@ export default function PostModal(props) {
                 {props.content && <div className="post-content">
                     {parse(parse(props.content))}
                 </div>}
-                {props.media && props.type !== 'profile' && <div className="post-media" style={{ marginTop: props.content ? '' : '8px' }}>
-                    <img src={props.media} alt="Post media" />
-                </div>}
-                {props.multiple_media.length > 0 &&
-                    <div className={"post-create-images main-post length" + props.multiple_media.length} style={{ marginTop: props.content ? '' : '8px' }}>
+                {!props.isPhoto && props.media && props.type !== 'profile' &&
+                    <NavLink to={'/photo/' + props._id} className="post-media" style={{ marginTop: props.content ? '' : '8px' }}>
+                        <img src={props.media} alt="Post media" />
+                    </NavLink>}
+                {!props.isPhoto && props.multiple_media.length > 0 &&
+                    <NavLink to={'/photo/' + props._id} className={"post-create-images main-post length" + props.multiple_media.length} style={{ marginTop: props.content ? '' : '8px' }}>
                         {props.multiple_media.map(media =>
                             <img src={media} alt="" />
                         )}
-                    </div>}
+                    </NavLink>}
                 {props.type === 'profile' &&
-                    <div className="post-media-profile" style={{ marginTop: props.content ? '' : '8px' }}>
+                    <NavLink to={'/photo/' + props._id} className="post-media-profile" style={{ marginTop: props.content ? '' : '8px' }}>
                         <div className="post-banner">
 
                         </div>
                         <img src={props.media} alt="" />
-                    </div>
+                    </NavLink>
                 }
                 <div className="post-reactions">
                     {(reactions.length > 0 || commentsCounts > 0) && <div className="post-counts">
@@ -165,11 +186,12 @@ export default function PostModal(props) {
                         </div>
                     </div>
                 </div>
+                {props.isExpanded && <CommentForm post={props._id} end={true} />}
                 {comments.map(comment =>
                     <Comment {...comment} />
                 )}
             </div>
-            <CommentForm post={props._id} end={end} />
+            {!props.isExpanded && <CommentForm post={props._id} end={end} />}
         </>
     )
 }

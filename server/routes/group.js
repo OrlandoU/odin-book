@@ -19,7 +19,12 @@ const upload = multer({storage: storage})
 //Get Groups
 router.get('/', groupController.group_get)
 
+//Query post
+router.get('/query', groupController.query_group)
+
 router.get('/:groupId', groupController.group_details_get)
+
+router.get('/:groupId/last-active', groupController.group_last_active_get)
 
 router.get('/:groupId/members-count', groupController.group_member_count_get)
 

@@ -1,6 +1,6 @@
 .group-create-link {
     padding: 0px 8px;
-    background-color: rgb(230, 238, 255);
+    background-color: var(--group-create-link-background);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,16 +8,15 @@
     color: rgb(31, 121, 255);
     font-weight: 600;
     padding: 8px;
-    border-radius: 8px;
-    margin-top: 8px;
+    border-radius: 6px;
+    margin: 8px;
     transition: 200ms;
-    margin-right: 8px;
-    margin-left: 8px;
+
 }
 
 .border-line {
     margin: 18px auto;
-    background-color: gainsboro;
+    background-color: var(--border-color);
     height: 1px;
     width: calc(100% - 16px);
 }
@@ -29,7 +28,7 @@
 }
 
 .group-create-link:hover {
-    background-color: rgb(214, 226, 253);
+    background-color: var(--group-create-link-hover);
 }
 
 .main-aside .about-form {
@@ -142,8 +141,13 @@
     display: flex;
     flex-direction: column;
 }
-.group-preview-name{
+
+.group-preview-name {
     font-weight: 600;
+}
+
+.group-details-wrapper .group-preview-name {
+    font-size: 1.13rem;
 }
 
 .group-preview-pic {
@@ -151,44 +155,56 @@
     width: 48px;
     background-color: gainsboro;
     border-radius: 8px;
-
+    overflow: hidden;
 }
-.group-preview-detail{
+
+.group-preview-detail {
     font-size: .8rem;
-    color: rgb(112, 112, 112);
+    color: var(--color-light);
 }
 
-.group-details-wrapper .group-preview{
+.group-details-wrapper .group-preview {
     padding: 16px 8px;
 }
-.group-section-wrapper{
+
+.group-section-wrapper {
     width: clamp(800px, 100%, 1186px);
     margin: 16px auto;
+    padding: 0px 16px;
 }
-.sub-title span{
+
+.sub-title span {
     font-weight: 400;
-    color: rgb(112, 112, 112);
+    color: var(--color-light);
 }
-.group{
+
+.group {
     text-align: left;
 }
-.cover{
+
+.cover {
     position: relative;
     overflow: hidden;
 }
-.cover .user-option{
+
+.cover .user-option {
     position: absolute;
     right: 16px;
     bottom: 16px;
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.158);
     cursor: pointer;
 }
-.cover .user-option svg{
+
+.cover .user-option:hover {
+    background-color: var(--search-background-color);
+}
+.cover .user-option svg {
     width: 21px;
     height: 21px;
+    fill: var(--svg-color);
 }
 
-.cover .save-buttons{
+.cover .save-buttons {
     width: 100%;
     height: fit-content;
     background-color: rgba(0, 0, 0, 0.075);
@@ -198,13 +214,247 @@
     gap: 16px;
     padding: 12px;
 }
-.cover .save-buttons > *{
+
+.cover .save-buttons>* {
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: 600;
-    background-color: gainsboro;
+    background-color: var(--svg-container-color);
+    cursor: pointer;
 }
-.save-buttons .save{
+
+.save-buttons .save {
     background-color: rgb(31, 121, 255);
     color: white;
+}
+
+.user-option.group {
+    background-color: rgb(31, 121, 255);
+    color: white;
+    gap: 6px;
+    cursor: pointer;
+    transition: 100ms;
+}
+.user-option.group:hover {
+    background-color: var(--hover-color-user-blue) !important;
+}
+
+.user-option.group svg {
+    fill: white;
+}
+
+.leave-group {
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.leave-group svg {
+    height: 24px;
+    width: 24px;
+    fill: var(--svg-color);
+}
+
+.main-group-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+}
+
+.main-group-preview {
+    background-color: var(--alt-background-color);
+    box-shadow: 0px 0px 0px 1px var(--border-color);
+    border-radius: 8px;
+    width: clamp(0px, 100%, 350px);
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-group-preview.mine {
+    width: clamp(0px, 100%, 400px);
+    height: initial;
+    padding: 16px;
+    gap: 16px;
+}
+
+.groups-container {
+    padding: 16px 64px;
+    width: 100%;
+
+}
+
+.discover-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.main-group-cover {
+    overflow: hidden;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    height: 184px;
+}
+
+.main-group-content {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-group-content.mine {
+    flex-direction: row;
+    gap: 16px;
+    padding: 0px;
+}
+
+.main-group-data.mine .group-name {
+    font-size: 1rem;
+}
+
+.main-group-data.mine .group-metadata {
+    font-size: .85rem;
+}
+
+.main-group-data.mine {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 12px;
+}
+
+.main-group-cover.mine {
+    height: 80px;
+    width: 80px;
+    border-radius: 8px;
+}
+
+.main-group-buttons>*:first-child {
+    flex: 1;
+    margin: 0px;
+    text-align: center;
+    width: 100%;
+    justify-content: center;
+}
+
+.main-group-data .group-name {
+    text-align: left;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.main-group-data {
+    text-align: left;
+    flex: 1;
+}
+
+.main-group-data .group-metadata {
+    font-size: 1.05rem;
+    color: var(--color-light);
+}
+
+.main-group-buttons svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--svg-color);
+}
+
+.groups-preview-header {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.groups-preview-header h2 {
+    margin-bottom: 0px;
+    font-family: inherit;
+}
+
+.groups-preview-header p {
+    margin-top: 0px;
+    font-size: 1.18rem;
+    color: rgb(112, 112, 112);
+}
+
+.groups-container h3 {
+    font-weight: 600;
+    text-align: left;
+}
+
+.user-data .post-form {
+    margin-top: 0px;
+}
+
+.main-group-about-data {
+    display: flex;
+    margin-top: 12px;
+}
+
+.main-group-about-data * {
+    margin: 0px;
+}
+
+.main-group-about-icon svg {
+    height: 20px;
+    width: 20px;
+    margin: 10px 12px 8px 0px;
+    fill: var(--svg-color);
+}
+
+.main-group-about-info {
+    padding: 8px 0px 0px 0px;
+}
+
+.main-group-about-info h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: left;
+}
+
+.main-group-about .sub-title {
+    font-weight: 600;
+}
+
+.group-media {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.group-media>* {
+    display: block;
+    width: clamp(100px, 100%, 185px);
+    aspect-ratio: 1/1;
+}
+
+.group-feed {
+    padding: 36px;
+}
+
+.group-feed h3 {
+    text-align: left;
+}
+
+.group-feed .posts-container {
+    align-items: flex-start;
+}
+
+.my-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px
+}
+.main-group-about{
+    position: sticky;
+    top: 16px;
 }

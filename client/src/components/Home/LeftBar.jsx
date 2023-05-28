@@ -46,7 +46,7 @@ export default function LeftBar() {
             </section>
             <section className="groups-list">
                 {user.groups && user.groups.map(group =>
-                    <NavLink to={'/groups/' + group._id + '/'} className="group section-item">
+                    <NavLink to={'/groups/' + group._id + '/'} key={group._id} className="group section-item">
                         <div className="group-profile">
                             <img src={group.cover} alt="" />
                         </div>

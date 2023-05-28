@@ -24,12 +24,14 @@ var chatRouter = require('./routes/chat');
 var relRouter = require('./routes/rel');
 var userRouter = require('./routes/user');
 var groupRouter = require('./routes/group');
-var imageRouter = require('./routes/images')
+var imageRouter = require('./routes/images');
+var notificationRouter = require('./routes/notification');
 
 var app = express();
 
 
 
+app.use(cors())
 passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
   try {
     const user = await User.findOne({ email })
@@ -71,7 +73,6 @@ passport.use(new JwtStrategy({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearer
 
 
 app.use(logger('dev'));
-app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -85,6 +86,7 @@ app.use('/rel', passport.authenticate('jwt', { session: false }), relRouter)
 app.use('/posts', passport.authenticate('jwt', { session: false }), postRouter)
 app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
 app.use('/groups', passport.authenticate('jwt', { session: false }), groupRouter)
+app.use('/notifications', passport.authenticate('jwt', { session: false }), notificationRouter)
 app.use('/images', imageRouter)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

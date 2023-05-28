@@ -6,6 +6,12 @@ const chatController = require('../controllers/chatController')
 //Get all chats
 router.get('/', chatController.chats_get)
 
+//Get unviewed chats
+router.get('/unviewed', chatController.chats_unviewed_get)
+
+//Get unread chats
+router.get('/unread', chatController.chats_unread_get)
+
 //Get chat with user
 router.get('/user/:userId', chatController.chats_user_get)
 
@@ -26,7 +32,16 @@ router.get('/:chatId/messages', chatController.messages_get)
 router.post('/:chatId/messages', chatController.messages_post)
 
 //Delete message
-router.delete('/:chatId/messages/:messageId', chatController.messages_delete)
+router.put('/:chatId/messages/:messageId', chatController.messages_put)
+
+//Update messages state under chat 
+router.put('/:chatId/viewed', chatController.chats_message_toViewed_put)
+
+//Update messages state under chat 
+router.put('/:chatId/read', chatController.chats_message_toRead_put)
+
+//Remove messages from this user under chat 
+router.put('/:chatId/remove', chatController.chats_message_removed_put)
 
 
 module.exports = router

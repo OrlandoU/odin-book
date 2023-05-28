@@ -18,7 +18,7 @@ export default function Friends() {
                 <Route path='/' element={<Home />}/>
                 <Route path='/list/*' element={<AllFriends />} />
                 <Route path='/suggestions/*' element={<Suggestions />} />
-                <Route path='/requests' element={<FriendRequest />} />                
+                <Route path='/requests/*' element={<FriendRequest />} />                
                 <Route path='/birthdays' element={<Birthdays />}/>
             </Routes>
         </main>

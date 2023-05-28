@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import Aside from "../Aside";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import Preview from "./Preview";
+import Preview from "../Groups/Preview";
 
 export default function MainAside() {
     const user = useContext(UserContext)
@@ -41,10 +41,10 @@ export default function MainAside() {
                 </div>
             </NavLink>
             <div className="border-line"></div>
-            {user.groups && user.groups.map(group=>{
-                if(group.creator === user._id){
-                    return <Preview {...group}/>
-                } 
+            {user.groups && user.groups.map(group => {
+                if (group.creator === user._id) {
+                    return <Preview {...group} key={group._id} />
+                }
                 return null
             })}
         </Aside>

@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const Post = require('../models/post')
 
 exports.login = (req, res, next) => {
     passport.authenticate('local', { session: false }, (err, user) => {
@@ -78,7 +79,14 @@ exports.sign_up = [
                 password: hashedPassword
             })
 
-            await user.save()
+            const result = await user.save()
+
+            const post = new Post({
+                user_id: result._id,
+                type: 'birth'
+            })
+
+            await post.save()
 
             req.login(user, { session: false }, (err) => {
                 if (err) {

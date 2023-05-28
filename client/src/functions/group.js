@@ -1,3 +1,51 @@
+export const getGroups = async (token, queryObj) => {
+    const queryString = '?' + new URLSearchParams(queryObj).toString()
+    try {
+        const response = await fetch('http://localhost:3000/groups' + queryString, {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
+
+export const getGroupLastActive = async (token, groupId) => {
+    try {
+        const response = await fetch('http://localhost:3000/groups/' + groupId + '/last-active', {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
+export const queryGroups = async (token, string, limit = 0, skip = 0) => {
+    try {
+        const queryString = '?' + new URLSearchParams({ skip, limit, query: string }).toString()
+        const response = await fetch('http://localhost:3000/groups/query' + queryString, {
+            headers: { 'authorization': 'bearer ' + token }
+        })
+        if (!response.ok) {
+            throw new Error('Invalid')
+        } else {
+            const data = await response.json()
+            return data
+        }
+    } catch (error) {
+        console.error('Error retrieving user data', error)
+    }
+}
 export const createGroup = async (token, name, privacy) => {
     try {
         const response = await fetch('http://localhost:3000/groups', {
@@ -145,6 +193,6 @@ export const leaveGroup = async (token, groupId) => {
             return data
         }
     } catch (error) {
-        console.error('Error fetching friends', error)
+        console.error('Error leaving group', error)
     }
 }

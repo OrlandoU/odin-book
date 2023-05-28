@@ -5,8 +5,45 @@ const Post = require('../models/post')
 
 exports.group_get = async (req, res, next) => {
     try {
-        const { sort, ...filter } = req.query
-        const groups = await Group.find(filter).sort(sort)
+        const { sort, limit, ...filter } = req.query
+        const groups = await Group.find(filter).sort({ last_active: -1 }).limit(limit || 0)
+        return res.json(groups)
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.group_last_active_get = async (req, res, next) => {
+    try {
+        const posts = await Post.find({ isInTrash: false, group: req.params.groupId }).sort({ _id: -1 }).limit(1)
+        return res.json(posts[0].create_date)
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.query_group = async (req, res, next) => {
+    try {
+        const { query } = req.query
+        const groups = await Group.aggregate([
+            {
+                $search: {
+                    index: "groups",
+                    autocomplete: {
+                        query: query,
+                        path: "name",
+                        fuzzy: {
+                            maxEdits: 1
+                        }
+                    }
+                }
+            }, {
+                $sort: {
+                    last_active: -1
+                }
+            }
+        ])
+
         return res.json(groups)
     } catch (error) {
         next(error)
@@ -16,7 +53,7 @@ exports.group_get = async (req, res, next) => {
 exports.group_member_count_get = async (req, res, next) => {
     try {
         const count = await User.countDocuments({ groups: req.params.groupId })
-        return res.json({count})
+        return res.json({ count })
     } catch (error) {
         next(error)
     }
@@ -82,13 +119,13 @@ exports.group_post = [
 
 exports.group_put = [
     body('name')
-        .optional({checkFalsy: true})
+        .optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ min: 1 })
         .withMessage('Missing group name'),
     body('cover')
-        .optional({checkFalsy: true})
+        .optional({ checkFalsy: true })
         .trim()
         .escape(),
     async (req, res, next) => {
@@ -102,9 +139,9 @@ exports.group_put = [
 
         try {
             const path = `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/group-covers/${req.file.originalname}`
-            
+
             const updatedGroup = await Group.findByIdAndUpdate(req.params.groupId, {
-                cover: req.file ? path: null,
+                cover: req.file ? path : null,
                 name: req.body.name,
             }, { new: true })
 
@@ -159,7 +196,7 @@ exports.group_leave = async (req, res, next) => {
             return res.status(404).send('Group not found')
         }
 
-        await User.findByIdAndUpdate(req.user._id, { $pop: { groups: req.params.groupId } })
+        await User.findByIdAndUpdate(req.user._id, { $pull: { groups: req.params.groupId } })
         return res.json(group)
     } catch (error) {
         next(error)

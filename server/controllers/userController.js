@@ -17,11 +17,10 @@ exports.current_get = async (req, res, next) => {
 exports.query_user = async (req, res, next) => {
     try {
         const { query } = req.query
-        console.log(query)
         const users = await User.aggregate([
             {
                 $search: {
-                    index: "users",
+                    index: "user",
                     autocomplete: {
                         query: query,
                         path: "first_name",
@@ -37,7 +36,7 @@ exports.query_user = async (req, res, next) => {
                     pipeline: [
                         {
                             $search: {
-                                index: "users",
+                                index: "user",
                                 autocomplete: {
                                     query: query,
                                     path: "last_name",
@@ -139,17 +138,29 @@ exports.current_profile_put = [
 ]
 
 exports.current_cover_put = [
-    body('cover')
-        .isObject()
-        .withMessage('Invalid cover file')
+    body('content')
+        .optional({ checkFalsy: true })
+        .trim()
+        .escape()
+        .isLength({ max: 300 })
+        .withMessage('Content must be less than or equal to 300 chars')
     , async (req, res, next) => {
+        const path = `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/user-images/${req.file.originalname}`
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.sendStatus(400)
         }
 
         try {
-            console.log(req.file)
+            await User.findByIdAndUpdate(req.user._id, { cover: path })
+            const post = new Post({
+                content: req.body.content,
+                media: path,
+                user_id: req.user._id,
+                type: 'cover',
+            })
+            await post.save()
+            return res.json(post)
         } catch (error) {
             next(error)
         }

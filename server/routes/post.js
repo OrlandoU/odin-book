@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
         cb(null, 'post-images/');
     },
     filename: function (req, file, cb) {
-        console.log(file)
         cb(null, file.originalname);
     }
 });
@@ -19,11 +18,23 @@ const upload = multer({ storage: storage, limits: { files: 5 } })
 //Get Posts
 router.get('/', postController.posts_get)
 
+//Query post
+router.get('/query', postController.query_posts)
+
+//Get posts with photos
+router.get('/photos/:userId?', postController.posts_photos_get)
+
 //Get feed posts
 router.get('/feed', postController.posts_feed)
 
+//Get group feed posts
+router.get('/group_feed', postController.posts_group_feed)
+
 //Create post
 router.post('/', upload.array('multiple_media') ,postController.posts_post)
+
+//Delete Post
+router.put('/:postId', postController.post_trash_put)
 
 //Delete Post
 router.delete('/:postId', postController.posts_delete)

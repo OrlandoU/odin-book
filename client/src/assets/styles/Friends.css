@@ -7,15 +7,15 @@
 }
 
 .main-aside h2 .svg-wrapper{
-    background-color: white !important;
+    background-color: var(--alt-background-color) !important;
     transition: 200ms;
 }
 .main-aside h2 .svg-wrapper:hover {
-    background-color: gainsboro !important;
+    background-color: var(--hover-color) !important;
 }
 .main-aside h2 svg{
     width: 24px;
-    fill: gray !important;
+    fill: var(--svg-color) !important;
     height: 24px;
 }
 
@@ -23,6 +23,8 @@
     display: flex;
     padding: 0px 8px;
     align-items: center;
+    transition: 150ms;
+    border-radius: 6px;
 }
 .friend-preview-name{
     text-transform: capitalize;
@@ -35,4 +37,48 @@
     border-radius: 50%;
     margin: 8px 12px 8px 0px;
     overflow: hidden;
+}
+.friend-data{
+    flex: 1;
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.friend-preview-buttons{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.friend-preview-buttons > *{
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+}
+
+.sub-title-smaller{
+    font-weight: 600;
+}
+.smaller{
+    font-weight: 400;
+    color: gray;
+    font-size: .85rem;
+    margin: 0px;
+}
+.user-option:hover{
+    background-color: var(--hover-color-user) !important;
+}
+
+.friend-data.sent{
+    flex-direction: row;
+}
+.friend-data.sent > * {
+    flex: 1;
+}
+.friend-preview-name div{
+    font-size: .95rem;
+    font-weight: 400;
+    color: gray;
+}
+.friend-preview:hover{
+    background-color: rgba(0, 0, 0, 0.068);
 }

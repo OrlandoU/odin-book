@@ -32,19 +32,22 @@ export default function SignForm() {
     }
 
     const handleSubmit = async (e) => {
+        e.stopPropagation()
         e.preventDefault()
-        const response = await signUp(firstName, lastName,email, password, passwordConfirmation)
+        const response = await signUp(firstName, lastName, email, password, passwordConfirmation)
         tokenContext.setToken(response.token)
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" placeholder="Nombre" onChange={handleFirstName} value={firstName}/>
-            <input type="text" placeholder="Apellido" onChange={handleLastName} value={lastName}/>
-            <input type="text" placeholder="Correo electronico" onChange={handleEmail} value={email} />
-            <input type="text" placeholder="Contraseña" onChange={handlePassword} value={password} />
-            <input type="text" placeholder="Confirmacion de Contraseña" onChange={handlePasswordConfirmation} value={passwordConfirmation}/>
-            <button>Submit</button>
+        <form onSubmit={handleSubmit} className="sign-form">
+            <input type="text" placeholder="First name" onChange={handleFirstName} value={firstName} />
+            <input type="text" placeholder="Last name" onChange={handleLastName} value={lastName} />
+            <input type="text" className="span2" placeholder="Email" onChange={handleEmail} value={email} />
+            <input type="text" className="span2" placeholder="Password" onChange={handlePassword} value={password} />
+            <input type="text" className="span2" placeholder="Password Confirmation" onChange={handlePasswordConfirmation} value={passwordConfirmation} />
+            <div className="button-wrapper span2">
+                <button>Register</button>
+            </div>
         </form>
     )
 }

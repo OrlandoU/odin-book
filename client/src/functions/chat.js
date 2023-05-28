@@ -1,6 +1,6 @@
 export const getChat = async (token, chatId) => {
     try {
-        const response = await fetch('http://localhost:3000/chats/'+ chatId, {
+        const response = await fetch('http://localhost:3000/chats/' + chatId, {
             headers: {
                 'authorization': 'bearer ' + token,
             }
@@ -52,6 +52,24 @@ export const getChats = async (token) => {
     }
 }
 
+export const getUnviewedChats = async (token) => {
+    try {
+        const response = await fetch('http://localhost:3000/chats/unviewed', {
+            headers: {
+                'authorization': 'bearer ' + token,
+            }
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data)
+        } else {
+            return data
+        }
+    } catch (error) {
+        console.error('Error fetching chats', error)
+    }
+}
+
 export const createChat = async (token, participants) => {
     try {
         const response = await fetch('http://localhost:3000/chats', {
@@ -72,6 +90,9 @@ export const createChat = async (token, participants) => {
         console.error('Error creating chat', error)
     }
 }
+
+
+
 export const getChatLastMessage = async (token, chatId) => {
     try {
         const response = await fetch(`http://localhost:3000/chats/${chatId}/last-message`, {
@@ -129,13 +150,91 @@ export const createMessage = async (token, chatId, content, media) => {
     }
 }
 
-export const deleteMessage = async (token,chatId, messageId) => {
+export const updateMessage = async (token, messageId, chatId, isUnsent, removeForMe) => {
+    try {
+        const response = await fetch(`http://localhost:3000/chats/${chatId}/messages/${messageId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ isUnsent, removeForMe }),
+            headers: {
+                'authorization': 'bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data)
+        } else {
+            return data
+        }
+    } catch (error) {
+        console.error('Error creating chat', error)
+    }
+}
+
+export const deleteMessage = async (token, chatId, messageId) => {
     try {
         const response = await fetch(`http://localhost:3000/chats/${chatId}/messages/${messageId}`, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token,
                 'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data)
+        } else {
+            return data
+        }
+    } catch (error) {
+        console.error('Error creating chat', error)
+    }
+}
+export const updateMessagesToRead = async (token, chatId) => {
+    try {
+        const response = await fetch(`http://localhost:3000/chats/${chatId}/read`, {
+            method: 'PUT',
+            headers: {
+                'authorization': 'bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data)
+        } else {
+            return data
+        }
+    } catch (error) {
+        console.error('Error creating chat', error)
+    }
+}
+
+export const updateMessagesToViewed = async (token, chatId) => {
+    try {
+        const response = await fetch(`http://localhost:3000/chats/${chatId}/viewed`, {
+            method: 'PUT',
+            headers: {
+                'authorization': 'bearer ' + token,
+            }
+        })
+        const data = await response.json()
+        if (!response.ok) {
+            throw new Error(data)
+        } else {
+            return data
+        }
+    } catch (error) {
+        console.error('Error creating chat', error)
+    }
+}
+
+export const removeMessagesForCurrentUser = async (token, chatId) => {
+    try {
+        const response = await fetch(`http://localhost:3000/chats/${chatId}/remove`, {
+            method: 'PUT',
+            headers: {
+                'authorization': 'bearer ' + token,
             }
         })
         const data = await response.json()

@@ -27,7 +27,7 @@ export default function People(props) {
                 <div className="border-line"></div>
                 <div className="group-preview-name">Members · {members.length}</div>
                 {members.map(member =>
-                    <Preview {...member} unwrapped residence/>
+                    <Preview {...member} unwrapped residence key={member._id} />
                 )}
             </Section>
         </div>

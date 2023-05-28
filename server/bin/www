@@ -3,10 +3,12 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+var socketIo = require("socket.io");
+var { handleSocketConnections } = require('../functions/socket')
+const socketioJwt = require('socketio-jwt');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +22,15 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: 'http://localhost:3001',
+    methods: ["GET", "POST"]
+  }
+})
+
+
+handleSocketConnections(io)
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -88,3 +99,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = io

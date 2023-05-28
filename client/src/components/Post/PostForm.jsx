@@ -6,7 +6,7 @@ import { queryUser } from "../../functions/user"
 import Modal from '../Modal'
 import { UserContext } from "../../contexts/UserContext"
 
-export default function PostForm() {
+export default function PostForm(props) {
     const [files, setFiles] = useState([])
     const [show, setShow] = useState(false)
     const [privacy, setPrivacy] = useState('Public')
@@ -21,7 +21,7 @@ export default function PostForm() {
     }
 
     const handleRemoveFiles = () => {
-        setFiles(null)
+        setFiles([])
     }
 
     const handleContent = (e, i, j, y) => {
@@ -62,8 +62,18 @@ export default function PostForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const response = await createPost(token, content, mentions, files)
-        console.log(response)
+        if(!content && !files.length) return
+        if (props.group) {
+            const privacyString = props.group.privacy === 'private' ? 'group' : 'public'
+            const response = await createPost(token, content, mentions, files, props.group._id, privacyString)
+            document.querySelector('.modal-container').click()
+
+        } else {
+            const response = await createPost(token, content, mentions, files, "", privacy.toLowerCase())
+            console.log(response)
+            props.setPosts(prev => [response, ...prev])
+            document.querySelector('.modal-container').click()
+        }
     }
 
     const handlePublic = () => {
@@ -88,11 +98,10 @@ export default function PostForm() {
     }
 
     return (
-
         <form onSubmit={handleSubmit} className="post post-form" >
             <div className="post-form-header flex">
                 <div className="post-user">
-                    <img src={user.profile} alt="" />
+                    <img src={user.profile} alt="" className="img-profile"/>
                 </div>
 
                 <Modal
@@ -106,14 +115,14 @@ export default function PostForm() {
                     }>
                     <div class="post-header" x>
                         <div class="post-user">
-                            <img src="http://localhost:3000/images/user-images/hector-rojo-render-redessociales-01.jpg" alt="" />
+                            <img src={user.profile} alt="User profile" className="img-profile"/>
                         </div>
                         <div class="post-subheader">
                             <div class="post-type-name" style={{ textDecoration: 'none' }}>
                                 <div className="post-name" >{user.first_name} {user.last_name}</div>
                             </div>
                             <div class="post-data">
-                                <span onClick={togglePrivacy}>{privacy}</span>
+                                <span onClick={!props.group ? togglePrivacy : null}>{(!props.group) ? privacy : props.group.privacy === 'public' ? 'Public Group' : props.group.name}</span>
                                 {show && <div className="group-options" onClick={(e) => e.stopPropagation()}>
                                     <div className="group-option" onClick={handlePublic}>
                                         <div className="group-option-icon">
@@ -177,12 +186,12 @@ export default function PostForm() {
                         </div>
                         <div className="post-form-extras-options">
                             <label >
-                                <input type="file" multiple onChange={handleFiles} hidden />
+                                <input type="file" multiple onChange={handleFiles} hidden accept="image/png, image/jpeg, image/jpg" />
                                 <svg fill="#4DB863" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>image-multiple</title><path d="M22,16V4A2,2 0 0,0 20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16M11,12L13.03,14.71L16,11L20,16H8M2,6V20A2,2 0 0,0 4,22H18V20H4V6"></path></svg>
                             </label>
                         </div>
                     </div>
-                    <button onClick={handleSubmit}>Post</button>
+                    <button onClick={handleSubmit} className={(!content.length > 0 && !files.length > 0) ? "post-form-submit unavailable" : "post-form-submit"}>Post</button>
                 </Modal>
 
             </div>

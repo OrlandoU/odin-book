@@ -63,6 +63,26 @@ export const updateProfile = async (token, profile, content) => {
     }
 }
 
+export const updateCover = async (token, cover, content) => {
+    try {
+        const formData = new FormData()
+        formData.append('cover', cover)
+        formData.append('content', content)
+
+        const response = await fetch('http://localhost:3000/user/cover', {
+            method: 'PUT',
+            body: formData,
+            headers: {
+                'authorization': 'bearer ' + token,
+            }
+        })
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error('Error updating profile', error)
+    }
+}
+
 export const updateUser = async (token, birth_place, current_place, bio) => {
     try {
         

@@ -1,12 +1,12 @@
 import '../../assets/styles/Friends.css'
 import { Route, Routes } from "react-router-dom";
 import Home from './Routes/Home';
-import MainAside from './MainAside';
 import Discover from './Routes/Discover';
 import MyGroups from './Routes/MyGroups';
 import Create from './Routes/Create';
 import '../../assets/styles/Groups.css'
 import Detail from './Detail/Detail';
+import MainAside from './MainAside';
 
 export default function Groups() {
     return (

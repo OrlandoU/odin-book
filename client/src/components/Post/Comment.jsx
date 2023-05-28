@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { createReaction, deleteReaction, getCommentsUnderPost, getPostFormatted, getReactions } from "../../functions/posts";
 import CommentForm from "./CommentForm";
 import { TokenContext } from "../../contexts/TokenContext";
+import parse from 'html-react-parser'
 import { UserContext } from "../../contexts/UserContext";
 
 import angry from '../../assets/images/angry.svg'
@@ -34,14 +35,14 @@ export default function Comment(props) {
             await deleteReaction(token, props._id)
         } else {
             setCommentReaction('like')
-            const res = await createReaction(token, props._id)
+            const res = await createReaction(token, props._id, 'like', 'comment', props.user_id._id)
             setReactions(prev => [res, ...prev])
         }
     }
 
     const handleOddReaction = async (type) => {
         setCommentReaction(type)
-        const res = await createReaction(token, props._id, type)
+        const res = await createReaction(token, props._id, type, 'comment', props.user_id._id)
         setReactions(prev => {
             let arr = prev.filter(reaction => reaction.user_id._id !== user._id)
             return [res, ...arr]
@@ -84,13 +85,13 @@ export default function Comment(props) {
                 <div className="comment-content">
                     <NavLink to={'/' + props.user_id._id + '/'} className="comment-user-name">{props.user_id.first_name} {props.user_id.last_name}</NavLink>
                     <div className="comment-text">
-                        {props.content}
+                        {parse(parse(props.content))}
                     </div>
                     {reactions.length > 0 &&
                         <div className="comment-reactions">
                             <div className="comment-reactions-imgs">
                                 {reactionsFiltered.map(reaction =>
-                                    <img src={reactionImgs[reaction]} alt="Reaction" />
+                                    <img src={reactionImgs[reaction]} alt="Reaction" key={reaction}/>
                                 )}
                             </div>
                             {reactions.length > 1 ? reactions.length : null}
@@ -98,9 +99,9 @@ export default function Comment(props) {
                 </div>
                 <div className="comment-extra">
                     <strong className={commentReaction ? commentReaction : ''} onClick={handleReaction}>{commentReaction ? commentReaction : 'Like'}</strong>
-                    <div className="post-reactions-options">
+                    <div className="post-reactions-options comment">
                         {Object.entries(reactionImgs).map(reaction =>
-                            <img src={reaction[1]} alt="" onClick={() => handleOddReaction(reaction[0])} />
+                            <img src={reaction[1]} alt="" onClick={() => handleOddReaction(reaction[0])} key={reaction[1]}/>
                         )}
                     </div>
                     <strong onClick={handleVisibility}>Reply</strong>
@@ -109,7 +110,7 @@ export default function Comment(props) {
                 {repliesVisibility &&
                     <div className="comment-replies">
                         {replies.map(reply =>
-                            <Comment {...reply} />
+                            <Comment {...reply} key={reply._id}/>
                         )}
                         <CommentForm post={props.post_id} comment={props._id} />
                     </div>

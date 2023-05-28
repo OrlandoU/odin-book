@@ -1,16 +1,15 @@
 import LoginForm from "./LoginForm";
-import SignForm from "./SignForm";
+import '../../assets/styles/Auth.css'
 
 export default function Auth(){
     return (
-        <main>
+        <main className="main-auth">
             <div className="auth-main-wrapper">
                 <div className="auth-moto">
                     <h1>odinbook</h1>
-                    <p>FacebookFacebook te ayuda a comunicarte y compartir con las personas que forman parte de tu vida.</p>
+                    <p>Facebook helps you connect and share with the people in your life.</p>
                 </div>
                 <LoginForm />
-                <SignForm />
             </div>
         </main>
     )
