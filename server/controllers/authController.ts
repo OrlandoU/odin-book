@@ -1,12 +1,14 @@
-const { body, validationResult } = require('express-validator')
-const bcrypt = require('bcryptjs')
-const User = require('../models/user')
-const passport = require('passport')
-const jwt = require('jsonwebtoken')
-const Post = require('../models/post')
+import { Middleware, NextFunction, Request, Response } from "express"
 
-exports.login = (req, res, next) => {
-    passport.authenticate('local', { session: false }, (err, user) => {
+import { Result, ValidationError, body, validationResult } from 'express-validator'
+import bcrypt from 'bcryptjs'
+import User, { UserInterface } from '../models/user'
+import passport from 'passport'
+import jwt from 'jsonwebtoken'
+import Post from '../models/post'
+
+export const login: Middleware = (req: Request, res: Response, next: NextFunction): void => {
+    passport.authenticate('local', { session: false }, (err: Error, user: UserInterface): Response | void => {
         if (err || !user) {
             return next(err)
         }
@@ -22,14 +24,13 @@ exports.login = (req, res, next) => {
     })(req, res, next)
 }
 
-exports.login_facebook = (req, res, next) => {
-    passport.authenticate('facebook', {session: false}, (err, user)=>{
-        console.log(err, user)
+export const login_facebook: Middleware = (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate('facebook', { session: false }, (err: Error, user: UserInterface) => {
         console.log('ok')
     })(req, res, next)
 }
 
-exports.sign_up = [
+export const sign_up: Middleware[] = [
     body('first_name')
         .trim()
         .escape()
@@ -45,33 +46,34 @@ exports.sign_up = [
         .escape()
         .isEmail()
         .withMessage('Invalid email')
-        .custom(async (value)=>{
-            const user = await User.findOne({email: value})
-            if(!user){
+        .custom(async (value: string): Promise<boolean> => {
+            const user: UserInterface | null = await User.findOne({ email: value })
+            if (!user) {
                 return true
             }
             throw new Error('Email already in use')
+            return false
         }),
     body('password')
         .trim()
         .escape()
         .isLength({ min: 1 })
         .withMessage('Minimum of 8 chars on password')
-        .custom((value, { req }) => {
+        .custom((value: string, { req }) => {
             if (value === req.body.passwordConfirmation) {
                 return true
             }
             throw new Error("Passwords don't match")
+            return false
         })
-    , async (req, res, next) => {
-        const errors = validationResult(req)
+    , async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+        const errors: Result<ValidationError> = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send(errors.array())
         }
 
         try {
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
-            console.log(req.body)
             const user = new User({
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,

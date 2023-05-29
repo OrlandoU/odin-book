@@ -1,20 +1,20 @@
-const express = require('express')
-const router = express.Router()
-const userController = require('../controllers/userController')
-const multer = require('multer')
+import express, { Request, Router } from 'express';
+import * as userController from '../controllers/userController';
+import multer, { Multer, StorageEngine } from 'multer';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+const router: Router = express.Router()
+const storage: StorageEngine = multer.diskStorage({
+    destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
         cb(null, 'user-images/');
     },
-    filename: function (req, file, cb) {
+    filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
         const currentDate = new Date().toISOString().replace(/:/g, '-');
         const uniqueFileName = currentDate + '-' + file.originalname;
         cb(null, uniqueFileName);
     }
 });
 
-const uploadProfile = multer({ storage: storage })
+const uploadProfile: Multer = multer({ storage: storage })
 
 //Get current user data
 router.get('/', userController.current_get)
@@ -32,7 +32,7 @@ router.put('/profile', uploadProfile.single('profile'), userController.current_p
 router.put('/cover', uploadProfile.single('cover'), userController.current_cover_put)
 
 //Create job on current user
-router.post('/job' , userController.current_job_post)
+router.post('/job', userController.current_job_post)
 
 //Update job on current user
 router.put('/job/:jobId', userController.current_job_put)
@@ -51,4 +51,4 @@ router.delete('/academic/:academicId', userController.current_academic_delete)
 
 router.get('/:userId', userController.user_get)
 
-module.exports = router
+export default router

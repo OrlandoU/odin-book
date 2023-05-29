@@ -1,8 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const relController = require('../controllers/relControllers')
+import express, { Router } from 'express'
+import * as relController from '../controllers/relControllers'
 
-
+const router: Router = express.Router()
 
 //Get friend requests
 router.get('/requests', relController.requests_get)
@@ -29,4 +28,4 @@ router.post('/:userId', relController.requests_post)
 router.put('/:userId/accept', relController.requests_accept)
 
 
-module.exports = router
+export default router

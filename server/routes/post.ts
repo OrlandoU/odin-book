@@ -1,19 +1,20 @@
-const express = require('express')
+import express, { Request } from 'express';
 const router = express.Router()
-const postController = require('../controllers/postController')
+import * as postController from '../controllers/postController';
 
-const multer = require('multer')
+import multer, { DiskStorageOptions, Multer, StorageEngine } from 'multer';
+import post from '../models/post';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+const storage: StorageEngine = multer.diskStorage({
+    destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
         cb(null, 'post-images/');
     },
-    filename: function (req, file, cb) {
+    filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
         cb(null, file.originalname);
     }
 });
 
-const upload = multer({ storage: storage, limits: { files: 5 } })
+const upload: Multer = multer({ storage: storage, limits: { files: 5 } })
 
 //Get Posts
 router.get('/', postController.posts_get)
@@ -31,7 +32,7 @@ router.get('/feed', postController.posts_feed)
 router.get('/group_feed', postController.posts_group_feed)
 
 //Create post
-router.post('/', upload.array('multiple_media') ,postController.posts_post)
+router.post('/', upload.array('multiple_media'), postController.posts_post)
 
 //Delete Post
 router.put('/:postId', postController.post_trash_put)
@@ -67,4 +68,4 @@ router.post('/:id/reaction', postController.reaction_post)
 //Remove reaction
 router.delete('/:id/reaction', postController.reaction_delete)
 
-module.exports = router
+export default router

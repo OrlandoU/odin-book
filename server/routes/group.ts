@@ -1,11 +1,11 @@
 //@ts-check
-import express, { Router, Request } from 'express'
-import multer from 'multer'
+import express, { Router, Request } from 'express';
+import multer, { Multer, StorageEngine } from 'multer'
+import * as groupController from '../controllers/groupController';
+
 const router: Router = express.Router()
-import groupController from '../controllers/groupController';
 
-
-const storage = multer.diskStorage({
+const storage: StorageEngine = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
         return cb(null, 'group-covers/');
     },
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage })
+const upload: Multer = multer({ storage: storage })
 
 //Get Groups
 router.get('/', groupController.group_get)

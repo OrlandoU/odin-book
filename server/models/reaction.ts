@@ -1,5 +1,12 @@
-const mongoose = require('mongoose')
+import mongoose, { Document, Types } from 'mongoose'
 const Schema = mongoose.Schema
+
+export interface ReactionInterface extends Document {
+    parent_id: Types.ObjectId,
+    user_id: Types.ObjectId,
+    type: 'like' | 'angry' | 'care' | 'haha' | 'love' | 'sad' | 'wow',
+    parent_collection: 'post' | 'comment'
+}
 
 const ReactionSchema = new Schema({
     parent_id: { type: Schema.Types.ObjectId, required: true },
@@ -12,4 +19,4 @@ const ReactionSchema = new Schema({
     parent_collection: { type: String, enum: ['post', 'comment'], default: 'Post' }
 })
 
-module.exports = mongoose.model('Reaction', ReactionSchema)
+export default mongoose.model<ReactionInterface>('Reaction', ReactionSchema)

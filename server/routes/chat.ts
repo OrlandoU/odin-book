@@ -1,7 +1,7 @@
-const express = require('express')
-const router = express.Router()
+import express, { Router } from 'express'
+import * as chatController from '../controllers/chatController'
 
-const chatController = require('../controllers/chatController')
+const router: Router = express.Router()
 
 //Get all chats
 router.get('/', chatController.chats_get)
@@ -44,4 +44,4 @@ router.put('/:chatId/read', chatController.chats_message_toRead_put)
 router.put('/:chatId/remove', chatController.chats_message_removed_put)
 
 
-module.exports = router
+export default router

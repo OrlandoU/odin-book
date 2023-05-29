@@ -1,5 +1,18 @@
-const mongoose = require('mongoose')
+import mongoose, { Document, Types } from 'mongoose'
 const Schema = mongoose.Schema
+
+export interface MessageInterface extends Document {
+    chat_id: Types.ObjectId,
+    user_id: Types.ObjectId,
+    isFirst: boolean,
+    content: string,
+    isRead: boolean,
+    isViewed: boolean,
+    create_date: Date,
+    media: string,
+    removed: Types.ObjectId[],
+    isUnsent: boolean
+}
 
 const MessageSchema = new Schema({
     chat_id: { type: Schema.Types.ObjectId, ref: 'Chat', required: true },
@@ -14,4 +27,4 @@ const MessageSchema = new Schema({
     isUnsent: { type: Boolean, default: false }
 })
 
-module.exports = mongoose.model('Message', MessageSchema)
+export default mongoose.model<MessageInterface>('Message', MessageSchema)

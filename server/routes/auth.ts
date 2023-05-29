@@ -1,6 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var authController = require('../controllers/authController')
+import express, { Router } from 'express';
+import * as authController from '../controllers/authController';
+
+const router: Router   = express.Router();
 
 /* GET users listing. */
 router.post('/login', authController.login)
@@ -9,4 +10,4 @@ router.get('/login-facebook', authController.login_facebook)
 
 router.post('/sign-up', authController.sign_up);
 
-module.exports = router;
+export default router;

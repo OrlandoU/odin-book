@@ -15,24 +15,26 @@ import bcrypt from 'bcryptjs';
 require('dotenv').config();
 require('./mongoConfig')
 
-import User from './models/user';
+import User, { UserInterface } from './models/user';
 
-var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
-var postRouter = require('./routes/post');
-var chatRouter = require('./routes/chat');
-var relRouter = require('./routes/rel');
-var userRouter = require('./routes/user');
-var groupRouter = require('./routes/group');
-var imageRouter = require('./routes/images');
-var notificationRouter = require('./routes/notification');
+import groupRouter from './routes/group';
+import { NextFunction, Response, Request } from 'express';
 
-var app = express();
+import indexRouter from './routes/index';
+import authRouter from './routes/auth';
+import postRouter from './routes/post';
+import chatRouter from './routes/chat';
+import relRouter from './routes/rel';
+import userRouter from './routes/user';
+import imageRouter from './routes/images';
+import notificationRouter from './routes/notification';
+
+const app = express();
 
 
 
 app.use(cors())
-passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+passport.use(new LocalStrategy({ usernameField: 'email' }, async (email: string, password: string, done: (error: unknown, user?: UserInterface | false, message?: { message: string }) => void) => {
   try {
     const user = await User.findOne({ email })
 
@@ -52,17 +54,9 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, passwor
     done(error)
   }
 }))
-passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_CLIENT_ID,
-  clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-  callbackURL: '/oauth2/redirect/facebook',
-}, function verify(accessToken, refreshToken, profile, cb) {
-  console.log(accessToken)
-  cb(null)
-}))
 
 
-passport.use(new JwtStrategy({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), secretOrKey: 'OdinBook' }, async (jwtPayLoad, done) => {
+passport.use(new JwtStrategy({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), secretOrKey: 'OdinBook' }, async (jwtPayLoad: UserInterface, done: (error: Error | unknown, user?: UserInterface | null) => void) => {
   try {
     const user = await User.findById(jwtPayLoad._id)
     done(null, user)
@@ -88,20 +82,21 @@ app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
 app.use('/groups', passport.authenticate('jwt', { session: false }), groupRouter)
 app.use('/notifications', passport.authenticate('jwt', { session: false }), notificationRouter)
 app.use('/images', imageRouter)
+
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function (req: Request, res: Response, next: NextFunction) {
   next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   console.log(err)
   // render the error page
-  res.sendStatus(err.status || 500);
+  res.sendStatus(res.locals.error.status || 500);
 });
 
 module.exports = app;
