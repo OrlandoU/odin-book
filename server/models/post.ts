@@ -1,5 +1,19 @@
-const mongoose = require('mongoose')
+import mongoose, { Document, ObjectId } from 'mongoose'
 const Schema = mongoose.Schema
+
+export interface PostInterface extends Document{
+    _id: ObjectId,
+    content: string,
+    user_id: ObjectId,
+    media: string,
+    multiple_media: string[],
+    group: ObjectId,
+    mentions: ObjectId[],
+    isInTrash: boolean,
+    type: 'normal' | 'profile' | 'cover' | 'group-create' | 'group-cover' | 'birth',
+    scope: 'public' | 'friends' | 'me' | 'group',
+    create_date: Date
+}
 
 const PostSchema = new Schema({
     content: { type: String },
@@ -22,4 +36,4 @@ const PostSchema = new Schema({
     create_date: { type: Schema.Types.Date, default: Date.now }
 })
 
-module.exports = mongoose.model('Post', PostSchema)
+export default mongoose.model<PostInterface>('Post', PostSchema)

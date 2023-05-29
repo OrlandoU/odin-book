@@ -10,12 +10,12 @@ var LocalStrategy = require('passport-local').Strategy
 var JwtStrategy = passportjwt.Strategy
 var FacebookStrategy = require('passport-facebook').Strategy
 var cors = require('cors')
-const bcrypt = require('bcryptjs')
+import bcrypt from 'bcryptjs';
 
 require('dotenv').config();
 require('./mongoConfig')
 
-const User = require('./models/user')
+import User from './models/user';
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');

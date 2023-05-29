@@ -1,20 +1,21 @@
-const express = require('express')
-const router = express.Router()
-const groupController = require('../controllers/groupController')
+//@ts-check
+import express, { Router, Request } from 'express'
+import multer from 'multer'
+const router: Router = express.Router()
+import groupController from '../controllers/groupController';
 
-const multer = require('multer')
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'group-covers/');
+    destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
+        return cb(null, 'group-covers/');
     },
-    filename: function (req, file, cb) {
+    filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
         console.log(file)
-        cb(null, file.originalname);
+        return cb(null, file.originalname);
     }
 });
 
-const upload = multer({storage: storage})
+const upload = multer({ storage: storage })
 
 //Get Groups
 router.get('/', groupController.group_get)
@@ -48,4 +49,4 @@ router.delete('/:groupId/leave', groupController.group_leave)
 //Ban user from group
 router.delete('/:groupId/:userId', groupController.group_ban)
 
-module.exports = router
+export default router

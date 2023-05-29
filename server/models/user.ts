@@ -1,5 +1,25 @@
-var mongoose = require('mongoose')
+import { ObjectId, Types } from "mongoose"
+import mongoose from "mongoose"
 var Schema = mongoose.Schema
+
+export interface UserInterface extends Document{
+    _id: Types.ObjectId,
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
+    groups: ObjectId[],
+    jobs: ObjectId[],
+    academics: ObjectId[],
+    bio: string,
+    birth_day: Date,
+    birth_place: string,
+    current_place: string,
+    profile: string,
+    cover: string,
+    isOnline: boolean,
+    lastActive: Date
+}
 
 const UserSchema = new Schema({
     first_name: {type: String, required:true, minLength:1},
@@ -19,4 +39,4 @@ const UserSchema = new Schema({
     lastActive : {type: Date}
 })
 
-module.exports = mongoose.model('User', UserSchema)
+export default mongoose.model<UserInterface>('User', UserSchema)
