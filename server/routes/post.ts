@@ -2,15 +2,16 @@ import express, { Request } from 'express';
 const router = express.Router()
 import * as postController from '../controllers/postController';
 
-import multer, { DiskStorageOptions, Multer, StorageEngine } from 'multer';
-import post from '../models/post';
+import multer, { Multer, StorageEngine } from 'multer';
 
 const storage: StorageEngine = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
-        cb(null, 'post-images/');
+        cb(null, 'dist/uploads/post-images/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
-        cb(null, file.originalname);
+        const currentDate = new Date().toISOString().replace(/:/g, '-');
+        const uniqueFileName = currentDate + '-' + file.originalname;
+        cb(null, uniqueFileName);
     }
 });
 
@@ -35,7 +36,7 @@ router.get('/group_feed', postController.posts_group_feed)
 router.post('/', upload.array('multiple_media'), postController.posts_post)
 
 //Delete Post
-router.put('/:postId', postController.post_trash_put)
+router.put('/:postId', postController.post_put)
 
 //Delete Post
 router.delete('/:postId', postController.posts_delete)

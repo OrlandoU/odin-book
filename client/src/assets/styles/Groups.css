@@ -198,6 +198,7 @@
 .cover .user-option:hover {
     background-color: var(--search-background-color);
 }
+
 .cover .user-option svg {
     width: 21px;
     height: 21px;
@@ -235,6 +236,7 @@
     cursor: pointer;
     transition: 100ms;
 }
+
 .user-option.group:hover {
     background-color: var(--hover-color-user-blue) !important;
 }
@@ -283,8 +285,7 @@
 
 .groups-container {
     padding: 16px 64px;
-    width: 100%;
-
+    flex: 1;
 }
 
 .discover-groups {
@@ -453,8 +454,4 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px
-}
-.main-group-about{
-    position: sticky;
-    top: 16px;
 }

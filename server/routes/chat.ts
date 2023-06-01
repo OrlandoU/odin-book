@@ -1,5 +1,17 @@
-import express, { Router } from 'express'
+import express, { Request, Response, Router } from 'express'
 import * as chatController from '../controllers/chatController'
+import multer, { StorageEngine } from 'multer'
+
+const storageOption: StorageEngine = multer.diskStorage({
+    destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+        cb(null, 'dist/uploads/chat-images/')
+    },
+    filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({ storage: storageOption })
 
 const router: Router = express.Router()
 
@@ -29,9 +41,9 @@ router.get('/:chatId/last-message', chatController.chats_last_message_get)
 router.get('/:chatId/messages', chatController.messages_get)
 
 //Create message 
-router.post('/:chatId/messages', chatController.messages_post)
+router.post('/:chatId/messages', upload.array('media'), chatController.messages_post)
 
-//Delete message
+//Update message
 router.put('/:chatId/messages/:messageId', chatController.messages_put)
 
 //Update messages state under chat 
@@ -40,8 +52,7 @@ router.put('/:chatId/viewed', chatController.chats_message_toViewed_put)
 //Update messages state under chat 
 router.put('/:chatId/read', chatController.chats_message_toRead_put)
 
-//Remove messages from this user under chat 
-router.put('/:chatId/remove', chatController.chats_message_removed_put)
+
 
 
 export default router

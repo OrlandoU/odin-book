@@ -6,11 +6,11 @@ import User, { UserInterface } from '../models/user'
 import Post, { PostInterface } from '../models/post'
 
 
-export const group_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+export const group_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const { sort, limit, ...filter } = req.query
-
         const limitNumber: number = limit ? +limit : 0
+
         const groups: GroupInterface[] = await Group.find(filter).sort({ last_active: -1 }).limit(limitNumber)
 
         return res.json(groups)
@@ -19,7 +19,7 @@ export const group_get: Middleware = async (req: Request, res: Response, next: N
     }
 }
 
-export const group_last_active_get: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_last_active_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const posts: PostInterface[] = await Post.find({ isInTrash: false, group: req.params.groupId }).sort({ _id: -1 }).limit(1)
         return res.json(posts[0].create_date)
@@ -56,27 +56,27 @@ export const query_group: Middleware = async (req: Request, res: Response, next:
     }
 }
 
-export const group_member_count_get: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_member_count_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const count = await User.countDocuments({ groups: req.params.groupId })
+        const count: number = await User.countDocuments({ groups: req.params.groupId })
         return res.json({ count })
     } catch (error) {
         next(error)
     }
 }
 
-export const group_members_get: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_members_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const count = await User.find({ groups: req.params.groupId })
-        return res.json(count)
+        const members: UserInterface[] = await User.find({ groups: req.params.groupId })
+        return res.json(members)
     } catch (error) {
         next(error)
     }
 }
 
-export const group_details_get: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_details_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const group = await Group.findById(req.params.groupId).populate('creator', '-password')
+        const group: GroupInterface | null = await Group.findById(req.params.groupId).populate('creator', '-password')
         return res.json(group)
     } catch (error) {
         next(error)
@@ -94,7 +94,7 @@ export const group_post: Middleware[] = [
         .escape()
         .isLength({ min: 1 })
         .withMessage('Missing privacy mode'),
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const errors: Result<ValidationError> = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send(errors.array)
@@ -106,8 +106,8 @@ export const group_post: Middleware[] = [
                 privacy: req.body.privacy
             })
 
-            const result = await group.save()
-            const post = new Post({
+            const result: GroupInterface = await group.save()
+            const post: PostInterface = new Post({
                 group: result._id,
                 user_id: req.user!._id,
                 type: 'group-create',
@@ -134,9 +134,9 @@ export const group_put: Middleware[] = [
         .optional({ checkFalsy: true })
         .trim()
         .escape(),
-    async (req: Request, res: Response, next: NextFunction) => {
-        const group = await Group.findById(req.params.groupId)
+    async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const errors: Result<ValidationError> = validationResult(req)
+        const group: GroupInterface | null = await Group.findById(req.params.groupId)
         if (!group) {
             return res.status(404).send('Group not found');
         }
@@ -147,9 +147,9 @@ export const group_put: Middleware[] = [
         }
 
         try {
-            const path: string = req.file ? `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/group-covers/${req.file.originalname}` : ''
+            const path: string = req.file ? `${req.protocol}://${req.hostname}/images/uploads/group-covers/${req.file.filename}` : ''
 
-            const updatedGroup = await Group.findByIdAndUpdate(req.params.groupId, {
+            const updatedGroup: GroupInterface | null = await Group.findByIdAndUpdate(req.params.groupId, {
                 cover: req.file ? path : null,
                 name: req.body.name,
             }, { new: true })
@@ -172,7 +172,7 @@ export const group_put: Middleware[] = [
     }
 ]
 
-export const group_delete: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_delete: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         //Delete posts under group
         await Group.deleteMany({ group: req.params.groupId })
@@ -183,7 +183,7 @@ export const group_delete: Middleware = async (req: Request, res: Response, next
     }
 }
 
-export const group_join: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_join: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const group = await Group.findOne({ _id: req.params.groupId, banned: { $nin: [req.user!._id] } })
         if (!group) {
@@ -197,9 +197,9 @@ export const group_join: Middleware = async (req: Request, res: Response, next: 
     }
 }
 
-export const group_leave: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_leave: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const group = await Group.findById(req.params.groupId)
+        const group: GroupInterface | null = await Group.findById(req.params.groupId)
         if (!group) {
             return res.status(404).send('Group not found')
         }
@@ -211,9 +211,9 @@ export const group_leave: Middleware = async (req: Request, res: Response, next:
     }
 }
 
-export const group_ban: Middleware = async (req: Request, res: Response, next: NextFunction) => {
+export const group_ban: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const group = await Group.findById(req.params.groupId)
+        const group: GroupInterface | null = await Group.findById(req.params.groupId)
         if (!group) {
             return res.status(404).send('Group not found')
         }

@@ -35,7 +35,7 @@
   --hover-color: #ffffff1f;
   --hover-color-search: #ffffff27;
   --hover-color-user: #333436;
-    --hover-color-user-blue: rgb(34, 97, 179);
+  --hover-color-user-blue: rgb(34, 97, 179);
   --group-create-link-background: rgba(45, 136, 255, 0.2);
   --group-create-link-hover: rgba(45, 136, 255, 0.274);
   --modal-color: rgba(17, 17, 17, 0.705);
@@ -392,6 +392,9 @@ nav {
 
 .input-wrapper {
   position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .input-wrapper input {
@@ -404,6 +407,8 @@ nav {
   outline: none;
   border: 0px;
   border-radius: 50px;
+  color: var(--color);
+  flex: 1;
 }
 
 .input-wrapper input:focus {
@@ -422,7 +427,7 @@ nav {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  fill: rgb(101, 103, 107);
+  fill: var(--color-light);
 }
 
 .bubble-pic {
@@ -538,7 +543,7 @@ nav {
   gap: 12px;
   bottom: 0px;
   align-items: flex-end;
-  z-index: 1;
+  z-index: 12;
 }
 
 .bubbles {
@@ -588,7 +593,9 @@ nav {
   box-shadow: var(--box-shadow-light);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  position: relative;
   overflow: hidden;
+
 }
 
 .main-chat-name {
@@ -614,7 +621,7 @@ nav {
 
 }
 
-.main-chat:not(:focus-within) svg {
+.main-chat:not(:focus-within) .main-chat-send:not(.blue) svg {
   fill: gray;
 }
 
@@ -625,15 +632,11 @@ nav {
 .main-chat-messages {
   display: block;
   height: 347px;
-  overflow-x: hidden;
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
 }
 
-.main-chat-messages>* {
-  padding-bottom: 16px !important;
-}
 
 .main-chat-messages>*:last-child {
   padding-top: 16px;
@@ -653,20 +656,38 @@ nav {
   display: block;
 }
 
-.main-chat-input input {
+.main-chat-input .message-input-container {
   font-size: 1rem;
   font-family: inherit;
-  padding: 8px 12px;
   outline: none;
   border: 0px;
   background-color: var(--search-background-color);
-  border-radius: 50px;
+  border-radius: 20px;
   width: 100%;
   color: var(--color);
+  padding: 8px 12px;
+  display: flex;
+  height: clamp(0px, 0%, 150px);
+  overflow: auto;
+  flex-direction: column;
+}
+
+.message-input-container textarea {
+  width: 100%;
+  background-color: transparent;
+  border: 0px;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color);
+  padding: 0px;
+  height: clamp(0px, 0%, 20px);
+  resize: none;
 }
 
 .message {
   padding: 0px 8px;
+  padding-bottom: 16px
 }
 
 .message-user-pic {
@@ -686,19 +707,20 @@ nav {
 .message-content {
   display: flex;
   gap: 8px;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .message-content-message {
   padding: 8px 12px;
   background-color: var(--hover-color-search);
   border-radius: 18px;
+  max-width: 178px;
 }
 
 .message.mine .message-content-message {
   background-color: rgb(48, 117, 255);
   color: white;
-
+  overflow-wrap: break-word;
 }
 
 .message.mine .message-content {
@@ -864,4 +886,177 @@ nav {
 
 .close-nav-modal:hover {
   text-decoration: underline;
+}
+
+.queried-user-small {
+  display: flex;
+  padding: 6px;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.queried-user-small::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 8px);
+  height: 100%;
+  border-radius: 8px;
+  transition: 100ms;
+}
+
+.queried-user-small:hover::after {
+  background-color: var(--hover-color);
+}
+
+.queried-user-small .queried-user-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.queried-users{
+  padding-top: 16px;
+}
+.queried-users-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-wrapper:focus-within~.chats-wrapper {
+  display: none;
+}
+
+.input-wrapper .return-queried {
+  position: static;
+  height: 32px;
+  width: 32px;
+  padding: 4px;
+  transform: initial;
+  border-radius: 50%;
+  transition: 100ms;
+}
+
+.input-wrapper .return-queried:hover {
+  background-color: var(--hover-color);
+}
+
+.input-wrapper:not(:focus-within) .return-queried {
+  display: none;
+}
+
+.input-wrapper:focus-within .return-queried {
+  display: block;
+}
+
+.message-media-preview {
+  display: flex;
+  margin-bottom: 16px;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+.message-media-preview>* {
+  width: 48px;
+  gap: 12px;
+  height: 48px;
+  background-color: var(--hover-color-search);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.message-media-preview>*:hover {
+  background-color: var(--hover-color-user);
+}
+
+.message-media-preview img {
+  border-radius: 10px;
+}
+
+.message-media-preview .close {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 0px;
+  transform: translate(30%, -30%);
+  top: 0px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  z-index: 1;
+  background-color: var(--alt-background-color);
+  border-radius: 50%;
+  fill: var(--color);
+}
+
+.message-media-preview svg {
+  fill: var(--color) !important;
+  width: 26px;
+  height: 26px;
+}
+
+.message-media {
+  max-width: 200px;
+}
+
+.message-media img {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.message-state {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 50%;
+  height: 14px;
+  width: 14px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 8px;
+}
+
+.message-state svg {
+  padding: 2px;
+  fill: var(--alt-background-color) !important;
+  background-color: gray;
+}
+
+.message-state svg {
+  padding: 2px;
+  fill: var(--alt-background-color) !important;
+  background-color: gray;
+}
+
+.message-state .recent {
+  border-radius: 50%;
+  fill: rgb(143, 143, 143) !important;
+  border: 1px solid var(--border-color);
+  background-color: var(--alt-background-color);
+}
+
+.mine {
+  position: relative;
+}
+
+.mine .message-content>*:nth-last-child(2) {
+  margin-right: 20px;
+}
+
+.unsent-message {
+  text-align: left;
+  padding: 0px 8px;
+  padding-bottom: 16px;
+}
+
+.unsent-message.mine {
+  text-align: left;
 }

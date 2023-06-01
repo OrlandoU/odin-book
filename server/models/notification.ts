@@ -11,12 +11,13 @@ export interface NotificationInterface extends Document {
     create_date: Date,
     request: Types.ObjectId,
     isViewed: boolean,
-    isVisited: boolean
+    isVisited: boolean,
+    group: Types.ObjectId
 }
 
 const NotificationSchema = new Schema({
     user_id: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-    type: { type: String, enum: ['comment', 'reply', 'tag', 'comment_mention', 'post_mention', 'request', 'post', 'post_reaction', 'comment_reaction', 'invitation'] },
+    type: { type: String, enum: ['comment', 'reply', 'tag', 'comment_mention', 'post_mention', 'request', 'post', 'post_reaction', 'comment_reaction', 'invite'] },
     sender_id: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
@@ -24,7 +25,8 @@ const NotificationSchema = new Schema({
     create_date: { type: Date, default: Date.now },
     request: { type: Schema.Types.ObjectId, ref: 'Relationship' },
     isViewed: { type: Boolean, default: false },
-    isVisited: { type: Boolean, default: false }
+    isVisited: { type: Boolean, default: false },
+    group: { type: Schema.Types.ObjectId, ref: 'Group' }
 })
 
 export default mongoose.model<NotificationInterface>('Notification', NotificationSchema)

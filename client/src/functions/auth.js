@@ -1,6 +1,6 @@
 export const login = async (email, password) => {
     try {
-        const response = await fetch('http://localhost:3000/auth/login', {
+        const response = await fetch('https://oodinbook.fly.dev/auth/login', {
             method: 'POST',
             body: JSON.stringify({ email, password }),
             headers: { 'Content-Type': "application/json" }
@@ -19,7 +19,7 @@ export const login = async (email, password) => {
 
 export const signUp = async (firstName, lastName, email, password, passwordConfirmation) => {
     try {
-        const response = await fetch('http://localhost:3000/auth/sign-up', {
+        const response = await fetch('https://oodinbook.fly.dev/auth/sign-up', {
             method: 'POST',
             body: JSON.stringify({ first_name: firstName, last_name: lastName, email, password, passwordConfirmation }),
             headers: { 'Content-Type': "application/json" }

@@ -7,11 +7,12 @@ const router: Router = express.Router()
 
 const storage: StorageEngine = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
-        return cb(null, 'group-covers/');
+        return cb(null, 'dist/uploads/group-covers/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
-        console.log(file)
-        return cb(null, file.originalname);
+        const currentDate = new Date().toISOString().replace(/:/g, '-');
+        const uniqueFileName = currentDate + '-' + file.originalname;
+        cb(null, uniqueFileName);
     }
 });
 

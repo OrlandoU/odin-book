@@ -55,7 +55,7 @@
 }
 
 .user-data .posts-container {
-    width: clamp(500px, 100%, 680px);
+    width: clamp(0px, 100%, 680px);
 }
 
 .user-section {
@@ -140,7 +140,7 @@
 }
 
 .user-friends-count {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 600;
     color: rgb(99, 99, 99);
 }
@@ -415,11 +415,12 @@ label.not .checkbox {
 .preview-data span {
     font-weight: 600;
 }
-
+.options .hiddenmenu{
+    padding: 4px;
+}
 .options {
     width: 34px;
     height: 34px;
-    padding: 4px;
     background-color: var(--svg-container-color);
     border-radius: 50%;
     position: relative;
@@ -459,7 +460,7 @@ label.not .checkbox {
     z-index: 10;
 }
 
-.mine.reverse .options-available {
+.message .options-available {
     position: absolute;
     right: 45%;
     left: initial;
@@ -552,6 +553,10 @@ label.not .checkbox {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: sticky;
+    top: 16px;
+    height: fit-content;
+
 }
 
 .photos-container {
@@ -778,6 +783,6 @@ label.not .checkbox {
     fill: rgb(89, 99, 109);
 }
 
-.img-profile{
+.img-profile {
     border-radius: 50%;
 }

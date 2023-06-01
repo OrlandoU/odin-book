@@ -1,7 +1,7 @@
-export const getFriends = async (token, userId ,queryObj) => {
+export const getFriends = async (token, userId, queryObj) => {
     const queryString = '?' + new URLSearchParams(queryObj).toString()
     try {
-        const response = await fetch('http://localhost:3000/rel/'+ userId + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/rel/' + userId + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -17,7 +17,7 @@ export const getFriends = async (token, userId ,queryObj) => {
 
 export const getRelationship = async (token, userId) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/' + userId + '/relationship', {
+        const response = await fetch('https://oodinbook.fly.dev/rel/' + userId + '/relationship', {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -33,7 +33,7 @@ export const getRelationship = async (token, userId) => {
 
 export const getFriendSuggestions = async (token) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/suggestions', {
+        const response = await fetch('https://oodinbook.fly.dev/rel/suggestions', {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -49,7 +49,7 @@ export const getFriendSuggestions = async (token) => {
 
 export const getFriendInCommon = async (token, userId) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/in-common/' + userId, {
+        const response = await fetch('https://oodinbook.fly.dev/rel/in-common/' + userId, {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -65,7 +65,7 @@ export const getFriendInCommon = async (token, userId) => {
 
 export const getFriendRequests = async (token) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/requests', {
+        const response = await fetch('https://oodinbook.fly.dev/rel/requests', {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -81,7 +81,7 @@ export const getFriendRequests = async (token) => {
 
 export const removeFriend = async (token, userId) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/' + userId, {
+        const response = await fetch('https://oodinbook.fly.dev/rel/' + userId, {
             method: 'DELETE',
             headers: { 'authorization': 'bearer ' + token }
         })
@@ -98,7 +98,7 @@ export const removeFriend = async (token, userId) => {
 
 export const sendFriendRequest = async (token, userId) => {
     try {
-        const response = await fetch('http://localhost:3000/rel/' + userId, {
+        const response = await fetch('https://oodinbook.fly.dev/rel/' + userId, {
             method: 'POST',
             headers: { 'authorization': 'bearer ' + token }
         })
@@ -115,7 +115,7 @@ export const sendFriendRequest = async (token, userId) => {
 
 export const acceptFriendRequest = async (token, userId) => {
     try {
-        const response = await fetch(`http://localhost:3000/rel/${userId}/accept`, {
+        const response = await fetch(`https://oodinbook.fly.dev/rel/${userId}/accept`, {
             method: 'PUT',
             headers: { 'authorization': 'bearer ' + token }
         })

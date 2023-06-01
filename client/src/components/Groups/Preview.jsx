@@ -1,7 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
-import { getGroupMembers } from "../../functions/group";
-import { TokenContext } from "../../contexts/TokenContext";
+import { NavLink } from "react-router-dom";
 
 export default function Preview(props) {
 

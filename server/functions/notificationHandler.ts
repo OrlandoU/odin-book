@@ -1,6 +1,6 @@
 import { emitNotification, emitRemoveNotification } from "./socket"
 import Notification, { NotificationInterface } from '../models/notification'
-import { FilterQuery, ModifyResult, Types } from "mongoose"
+import { FilterQuery, Types } from "mongoose"
 
 export const handleNewNotification = async (receiverId: Types.ObjectId | string, sender_id: Types.ObjectId | string, notificationTemplate: object): Promise<void | NotificationInterface | null> => {
     try {
@@ -15,7 +15,7 @@ export const handleNewNotification = async (receiverId: Types.ObjectId | string,
                 populate: {
                     path: 'group'
                 }
-            }).populate('reaction').populate('request')
+            }).populate('reaction').populate('request').populate('group')
         emitNotification(receiverId, newNoti!)
         return newNoti
     } catch (error) {
@@ -23,8 +23,9 @@ export const handleNewNotification = async (receiverId: Types.ObjectId | string,
     }
 }
 
-export const handleUpsertNotification = async (oldNotificationDocument: FilterQuery<NotificationInterface>, notificationDocument?: FilterQuery<NotificationInterface> | null): Promise<void> => {
+export const handleUpsertNotification = async (oldNotificationDocument: FilterQuery<NotificationInterface>, notificationDocument?: FilterQuery<NotificationInterface> | null): Promise<null | void | NotificationInterface> => {
     try {
+        console.log(oldNotificationDocument)
         const upsertedNotification: NotificationInterface | null = await Notification.findOneAndUpdate(oldNotificationDocument, notificationDocument || oldNotificationDocument, { upsert: true, new: true })
         if (upsertedNotification) {
             const newNoti: NotificationInterface | null = await Notification.findById(upsertedNotification._id)
@@ -34,10 +35,12 @@ export const handleUpsertNotification = async (oldNotificationDocument: FilterQu
                     populate: {
                         path: 'group'
                     }
-                }).populate('reaction').populate('request')
+                }).populate('reaction').populate('request').populate('group')
 
             emitNotification(upsertedNotification.user_id!, newNoti!)
+            return newNoti
         }
+        return 
     } catch (error) {
         console.error(error)
     }

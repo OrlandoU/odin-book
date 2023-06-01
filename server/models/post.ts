@@ -12,7 +12,8 @@ export interface PostInterface extends Document {
     isInTrash: boolean,
     type: 'normal' | 'profile' | 'cover' | 'group-create' | 'group-cover' | 'birth',
     scope: 'public' | 'friends' | 'me' | 'group',
-    create_date: Date
+    create_date: Date,
+    saved: Types.ObjectId[]
 }
 
 const PostSchema = new Schema({
@@ -33,7 +34,8 @@ const PostSchema = new Schema({
         enum: ['public', 'friends', 'me', 'group'],
         default: 'public'
     },
-    create_date: { type: Schema.Types.Date, default: Date.now }
+    create_date: { type: Schema.Types.Date, default: Date.now },
+    saved: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 })
 
 export default mongoose.model<PostInterface>('Post', PostSchema)

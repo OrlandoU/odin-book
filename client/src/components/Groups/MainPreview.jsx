@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { getGroupMembers, getGroupMembersCount, joinGroup } from "../../functions/group"
+import {  getGroupMembersCount, joinGroup } from "../../functions/group"
 import { TokenContext } from "../../contexts/TokenContext"
 import { NavLink } from "react-router-dom"
 

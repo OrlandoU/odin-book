@@ -1,7 +1,7 @@
 export const getGroups = async (token, queryObj) => {
     const queryString = '?' + new URLSearchParams(queryObj).toString()
     try {
-        const response = await fetch('http://localhost:3000/groups' + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/groups' + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -17,7 +17,7 @@ export const getGroups = async (token, queryObj) => {
 
 export const getGroupLastActive = async (token, groupId) => {
     try {
-        const response = await fetch('http://localhost:3000/groups/' + groupId + '/last-active', {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId + '/last-active', {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -33,7 +33,7 @@ export const getGroupLastActive = async (token, groupId) => {
 export const queryGroups = async (token, string, limit = 0, skip = 0) => {
     try {
         const queryString = '?' + new URLSearchParams({ skip, limit, query: string }).toString()
-        const response = await fetch('http://localhost:3000/groups/query' + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/groups/query' + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -48,7 +48,7 @@ export const queryGroups = async (token, string, limit = 0, skip = 0) => {
 }
 export const createGroup = async (token, name, privacy) => {
     try {
-        const response = await fetch('http://localhost:3000/groups', {
+        const response = await fetch('https://oodinbook.fly.dev/groups', {
             method: 'POST',
             body: JSON.stringify({ name, privacy }),
             headers: {
@@ -69,7 +69,7 @@ export const createGroup = async (token, name, privacy) => {
 
 export const getGroupInfo = async (token, groupId) => {
     try {
-        const response = await fetch('http://localhost:3000/groups/' + groupId, {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -85,7 +85,7 @@ export const getGroupInfo = async (token, groupId) => {
 
 export const getGroupMembers = async (token, groupId) => {
     try {
-        const response = await fetch('http://localhost:3000/groups/' + groupId + '/members', {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId + '/members', {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -101,7 +101,7 @@ export const getGroupMembers = async (token, groupId) => {
 
 export const getGroupMembersCount = async (token, groupId) => {
     try {
-        const response = await fetch('http://localhost:3000/groups/' + groupId + '/members-count', {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId + '/members-count', {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -122,7 +122,7 @@ export const updateGroup = async (token, groupId, name, cover) => {
         formData.append('cover', cover)
         console.log(cover)
 
-        const response = await fetch('http://localhost:3000/groups/'+ groupId, {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId, {
             method: 'PUT',
             body: formData,
             headers: {
@@ -142,7 +142,7 @@ export const updateGroup = async (token, groupId, name, cover) => {
 
 export const deleteGroup = async (token, groupId) => {
     try {
-        const response = await fetch('http://localhost:3000/groups/'+ groupId, {
+        const response = await fetch('https://oodinbook.fly.dev/groups/' + groupId, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token,
@@ -161,7 +161,7 @@ export const deleteGroup = async (token, groupId) => {
 
 export const joinGroup = async (token, groupId) => {
     try {
-        const response = await fetch(`http://localhost:3000/groups/${groupId}/join`, {
+        const response = await fetch(`https://oodinbook.fly.dev/groups/${groupId}/join`, {
             method: 'POST',
             headers: {
                 'authorization': 'bearer ' + token,
@@ -180,7 +180,7 @@ export const joinGroup = async (token, groupId) => {
 
 export const leaveGroup = async (token, groupId) => {
     try {
-        const response = await fetch(`http://localhost:3000/groups/${groupId}/leave`, {
+        const response = await fetch(`https://oodinbook.fly.dev/groups/${groupId}/leave`, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token,

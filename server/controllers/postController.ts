@@ -10,6 +10,7 @@ import { Types } from 'mongoose'
 
 export const posts_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
+        console.log(req.query)
         const { sort, limit, skip, ...filter } = req.query
         const parsedLimit: number = limit ? +limit : 0
         const parsedSkip: number = skip ? +skip : 0
@@ -152,18 +153,18 @@ export const posts_post: Middleware[] = [
         .isURL()
         .withMessage('Invalid media url')
     , async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        console.log(req.body)
-        const errors = validationResult(req)
+        const errors: Result<ValidationError> = validationResult(req)
         if (!errors.isEmpty()) {
             res.sendStatus(400)
         }
 
         try {
             let multiple_media: string[] | null = null
-            if (req.file && (Array.isArray(req.file))) {
-                multiple_media = req.file.map((file: Express.Multer.File) => {
-                    return `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/post-images/${file.originalname}`
+            if (req.files && (Array.isArray(req.files))) {
+                multiple_media = req.files.map((file: Express.Multer.File) => {
+                    return `${req.protocol}://${req.hostname}/images/uploads/post-images/${file.filename}`
                 })
+
             }
             let post: PostInterface
             if (req.body.group_id) {
@@ -198,10 +199,18 @@ export const posts_post: Middleware[] = [
         }
     }
 ]
-export const post_trash_put: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+export const post_put: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        const result: PostInterface | null = await Post.findByIdAndUpdate(req.params.postId, { isInTrash: req.body.isTrash }, { new: true })
-        return res.json(result)
+        if (req.body.save) {
+            const result: PostInterface | null = await Post.findByIdAndUpdate(req.params.postId, { isInTrash: req.body.isTrash, $addToSet: { saved: req.user!._id } }, { new: true }).populate('user_id', '-password').populate('group')
+            return res.json(result)
+        } else if (req.body.unsave) {
+            const result: PostInterface | null = await Post.findByIdAndUpdate(req.params.postId, { isInTrash: req.body.isTrash, $pull: { saved: req.user!._id } }, { new: true }).populate('user_id', '-password').populate('group')
+            return res.json(result)
+        } else {
+            const result: PostInterface | null = await Post.findByIdAndUpdate(req.params.postId, { isInTrash: req.body.isTrash }, { new: true }).populate('user_id', '-password').populate('group')
+            return res.json(result)
+        }
     } catch (error) {
         next(error)
     }

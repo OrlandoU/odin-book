@@ -1,7 +1,7 @@
 export const getFeedPosts = async (token, limit = 0, skip = 0) => {
     const queryString = '?' + new URLSearchParams({ limit, skip }).toString()
     try {
-        const response = await fetch('http://localhost:3000/posts/feed' + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/posts/feed' + queryString, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -24,8 +24,8 @@ export const getFeedPosts = async (token, limit = 0, skip = 0) => {
 
 export const queryPosts = async (token, string, isMedia, isFriends, limit = 0, skip = 0) => {
     try {
-        const queryString = '?' + new URLSearchParams({ skip, limit ,query: string, isMedia: isMedia ? isMedia : '', isFriends: isFriends ? isFriends : '' }).toString()
-        const response = await fetch('http://localhost:3000/posts/query' + queryString, {
+        const queryString = '?' + new URLSearchParams({ skip, limit, query: string, isMedia: isMedia ? isMedia : '', isFriends: isFriends ? isFriends : '' }).toString()
+        const response = await fetch('https://oodinbook.fly.dev/posts/query' + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -42,7 +42,7 @@ export const queryPosts = async (token, string, isMedia, isFriends, limit = 0, s
 export const getGroupsFeedPosts = async (token, limit = 0, skip = 0) => {
     try {
         const queryString = '?' + new URLSearchParams({ limit, skip }).toString()
-        const response = await fetch('http://localhost:3000/posts/group_feed' + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/posts/group_feed' + queryString, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -66,7 +66,7 @@ export const getGroupsFeedPosts = async (token, limit = 0, skip = 0) => {
 export const getPosts = async (token, queryObj) => {
     try {
         const queryString = '?' + new URLSearchParams(queryObj).toString()
-        const response = await fetch('http://localhost:3000/posts' + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/posts' + queryString, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -90,7 +90,7 @@ export const getPosts = async (token, queryObj) => {
 export const getPostsWithPhotos = async (token, userId, queryObj) => {
     const queryString = '?' + new URLSearchParams(queryObj).toString()
     try {
-        const response = await fetch('http://localhost:3000/posts/photos/' + userId + queryString, {
+        const response = await fetch('https://oodinbook.fly.dev/posts/photos/' + userId + queryString, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -164,7 +164,7 @@ export const createPost = async (token, content, mentions, multiple_media, group
 
         let response
         if (multiple_media || multiple_media.length) {
-            response = await fetch('http://localhost:3000/posts', {
+            response = await fetch('https://oodinbook.fly.dev/posts', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -172,7 +172,7 @@ export const createPost = async (token, content, mentions, multiple_media, group
                 }
             })
         } else {
-            response = await fetch('http://localhost:3000/posts', {
+            response = await fetch('https://oodinbook.fly.dev/posts', {
                 method: 'POST',
                 body: JSON.stringify({ content, mentions, multiple_media, group_id: groupId, scope: privacy }),
                 headers: {
@@ -197,11 +197,11 @@ export const createPost = async (token, content, mentions, multiple_media, group
         console.error('Error creating post', error)
     }
 }
-export const trashPost = async (token, postId, isTrash) => {
+export const updatePost = async (token, postId, updateObject) => {
     try {
-        const response = await fetch('http://localhost:3000/posts/' + postId, {
+        const response = await fetch('https://oodinbook.fly.dev/posts/' + postId, {
             method: 'PUT',
-            body: JSON.stringify({ isTrash }),
+            body: JSON.stringify(updateObject),
             headers: {
                 'authorization': 'bearer ' + token,
                 'Content-Type': 'application/json'
@@ -224,7 +224,7 @@ export const trashPost = async (token, postId, isTrash) => {
 
 export const deletePost = async (token, postId) => {
     try {
-        const response = await fetch('http://localhost:3000/posts/' + postId, {
+        const response = await fetch('https://oodinbook.fly.dev/posts/' + postId, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token
@@ -247,7 +247,7 @@ export const deletePost = async (token, postId) => {
 
 export const getCommentsUnderPost = async (token, postId, parentCommentId = '') => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${parentCommentId}`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId}`, {
             headers: {
                 'authorization': 'bearer ' + token
             }
@@ -269,7 +269,7 @@ export const getCommentsUnderPost = async (token, postId, parentCommentId = '') 
 
 export const getCommentsCount = async (token, postId, parentCommentId) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${parentCommentId ? parentCommentId + '/' : ''}count`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId ? parentCommentId + '/' : ''}count`, {
             headers: {
                 'authorization': 'bearer ' + token
             }
@@ -291,7 +291,7 @@ export const getCommentsCount = async (token, postId, parentCommentId) => {
 
 export const createComment = async (token, postId, parentCommentId, content, media, mentions) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${parentCommentId}`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId}`, {
             method: 'POST',
             body: JSON.stringify({ content, media, mentions }),
             headers: {
@@ -316,7 +316,7 @@ export const createComment = async (token, postId, parentCommentId, content, med
 
 export const deleteComment = async (token, postId, commentId) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments/${commentId}`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${commentId}`, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token
@@ -339,7 +339,7 @@ export const deleteComment = async (token, postId, commentId) => {
 
 export const createReaction = async (token, parentId, type, parentCollection, parentAuthor) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${parentId}/reaction`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'POST',
             body: JSON.stringify({ type, parentCollection, parentAuthor }),
             headers: {
@@ -364,7 +364,7 @@ export const createReaction = async (token, parentId, type, parentCollection, pa
 
 export const getReactions = async (token, parentId) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${parentId}/reaction`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -387,7 +387,7 @@ export const getReactions = async (token, parentId) => {
 
 export const getReactionsCount = async (token, parentId) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${parentId}/reaction/count`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction/count`, {
             method: 'GET',
             headers: {
                 'authorization': 'bearer ' + token
@@ -410,7 +410,7 @@ export const getReactionsCount = async (token, parentId) => {
 
 export const deleteReaction = async (token, parentId) => {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${parentId}/reaction`, {
+        const response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token

@@ -1,6 +1,6 @@
 export const getCurrentUser = async (token) => {
     try {
-        const response = await fetch('http://localhost:3000/user', {
+        const response = await fetch('https://oodinbook.fly.dev/user', {
             headers: { 'authorization': 'bearer ' + token }
         })
         const data = await response.json()
@@ -12,10 +12,10 @@ export const getCurrentUser = async (token) => {
 
 export const getUserInfo = async (token, userId) => {
     try {
-        const response = await fetch('http://localhost:3000/user/' + userId, {
+        const response = await fetch('https://oodinbook.fly.dev/user/' + userId, {
             headers: { 'authorization': 'bearer ' + token }
         })
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error('Invalid')
         } else {
             const data = await response.json()
@@ -28,8 +28,8 @@ export const getUserInfo = async (token, userId) => {
 
 export const queryUser = async (token, string) => {
     try {
-        const queryString = '?' + new URLSearchParams({query: string}).toString()
-        const response = await fetch('http://localhost:3000/user/search' + queryString, {
+        const queryString = '?' + new URLSearchParams({ query: string }).toString()
+        const response = await fetch('https://oodinbook.fly.dev/user/search' + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
@@ -49,7 +49,7 @@ export const updateProfile = async (token, profile, content) => {
         formData.append('profile', profile)
         formData.append('content', content)
 
-        const response = await fetch('http://localhost:3000/user/profile', {
+        const response = await fetch('https://oodinbook.fly.dev/user/profile', {
             method: 'PUT',
             body: formData,
             headers: {
@@ -69,7 +69,7 @@ export const updateCover = async (token, cover, content) => {
         formData.append('cover', cover)
         formData.append('content', content)
 
-        const response = await fetch('http://localhost:3000/user/cover', {
+        const response = await fetch('https://oodinbook.fly.dev/user/cover', {
             method: 'PUT',
             body: formData,
             headers: {
@@ -85,8 +85,8 @@ export const updateCover = async (token, cover, content) => {
 
 export const updateUser = async (token, birth_place, current_place, bio) => {
     try {
-        
-        const response = await fetch('http://localhost:3000/user/', {
+
+        const response = await fetch('https://oodinbook.fly.dev/user/', {
             method: 'PUT',
             body: JSON.stringify({
                 birth_place, current_place, bio
@@ -105,7 +105,7 @@ export const updateUser = async (token, birth_place, current_place, bio) => {
 
 export const createUserJob = async (token, company, position, location, isCurrent) => {
     try {
-        const response = await fetch('http://localhost:3000/user/job', {
+        const response = await fetch('https://oodinbook.fly.dev/user/job', {
             method: 'POST',
             body: JSON.stringify({ company, position, location, isCurrent }),
             headers: {
@@ -122,7 +122,7 @@ export const createUserJob = async (token, company, position, location, isCurren
 
 export const updateUserJob = async (token, jobId, company, position, location, isCurrent) => {
     try {
-        const response = await fetch('http://localhost:3000/user/job/' + jobId, {
+        const response = await fetch('https://oodinbook.fly.dev/user/job/' + jobId, {
             method: 'PUT',
             body: JSON.stringify({ company, position, location, isCurrent }),
             headers: {
@@ -140,7 +140,7 @@ export const updateUserJob = async (token, jobId, company, position, location, i
 
 export const deleteUserJob = async (token, jobId) => {
     try {
-        const response = await fetch('http://localhost:3000/user/job/' + jobId, {
+        const response = await fetch('https://oodinbook.fly.dev/user/job/' + jobId, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token
@@ -155,7 +155,7 @@ export const deleteUserJob = async (token, jobId) => {
 
 export const createUserAcademic = async (token, school, isCurrent) => {
     try {
-        const response = await fetch('http://localhost:3000/user/academic', {
+        const response = await fetch('https://oodinbook.fly.dev/user/academic', {
             method: 'POST',
             body: JSON.stringify({ school, isCurrent }),
             headers: {
@@ -172,7 +172,7 @@ export const createUserAcademic = async (token, school, isCurrent) => {
 
 export const updateUserAcademic = async (token, academicId, school, isCurrent) => {
     try {
-        const response = await fetch('http://localhost:3000/user/academic/' + academicId, {
+        const response = await fetch('https://oodinbook.fly.dev/user/academic/' + academicId, {
             method: 'PUT',
             body: JSON.stringify({ school, isCurrent }),
             headers: {
@@ -189,7 +189,7 @@ export const updateUserAcademic = async (token, academicId, school, isCurrent) =
 
 export const deleteUserAcademic = async (token, academicId) => {
     try {
-        const response = await fetch('http://localhost:3000/user/academic/' + academicId, {
+        const response = await fetch('https://oodinbook.fly.dev/user/academic/' + academicId, {
             method: 'DELETE',
             headers: {
                 'authorization': 'bearer ' + token

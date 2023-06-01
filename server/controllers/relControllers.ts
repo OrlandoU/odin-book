@@ -109,7 +109,7 @@ export const friends_delete: Middleware = async (req: Request, res: Response, ne
                 user1_id: req.params.userId,
                 user2_id: req.user!._id
             }]
-        })
+        }).populate('user1_id').populate('user2_id')
         if (friend) {
             await handleRemoveMultipleNotifications({ type: 'request', request: friend._id, user_id: req.user!._id })
             await handleRemoveMultipleNotifications({ type: 'request', request: friend._id, user_id: req.params.userId })
@@ -218,8 +218,9 @@ export const requests_post: Middleware = async (req: Request, res: Response, nex
             type: 'request',
             request: result._id
         })
+        const populatedResult: RelationshipInterface | null = await Relationship.findById(result._id).populate('user1_id').populate('user2_id')
 
-        return res.json(result)
+        return res.json(populatedResult)
     } catch (error) {
         next(error)
     }

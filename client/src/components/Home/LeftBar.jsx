@@ -37,7 +37,7 @@ export default function LeftBar() {
                     </div>
                     <div className="section-text">Groups</div>
                 </NavLink>
-                <NavLink to={'/saved'} className='section-item'>
+                <NavLink to={'/posts/saved'} className='section-item'>
                     <div className="section-svg saved">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>bookmark</title><path d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" /></svg>
                     </div>

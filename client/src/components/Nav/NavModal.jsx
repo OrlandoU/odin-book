@@ -5,39 +5,56 @@ export default function NavModal(props) {
     const [visible, setVisible] = useState(false)
 
     const close = (event) => {
-        if(event.target.className.animVal === 'hiddenmenu'){
-            return 
+        if (event && event.target.className.animVal === 'hiddenmenu') {
+            return
         }
         setVisible(false)
     }
 
     const open = (e) => {
-        e.stopPropagation()
         if (props.onVisible) props.onVisible()
         setVisible(true)
     }
 
-    const toggle = (e) => {
-        e.stopPropagation()
-        setVisible(prev=>!prev)
-    }
-
     useEffect(() => {
-        window.addEventListener('click', close, {capture: true})
+        const handleClick = (event) => {
+            if (ref.current && !ref.current.contains(event.target)) {
+                close();
+            }
+        };
+
+        document.addEventListener('click', handleClick);
 
         return () => {
-            window.removeEventListener('click', close, { capture: true })
-        }
-    }, [])
+            document.removeEventListener('click', handleClick);
+        };
+    }, []);
+
+    if (props.isDisplayNone) {
+        return (
+            <div className={!props.isNested ? "nav-svg" : 'nav-nested'} onClick={open} ref={ref}>
+                <div className="svg-container" onClick={open}>
+                    {(props.count > 0) && <span className="count">{props.count}</span>}
+                    {props.svg}
+                </div>
+                <div className="nav-modal" style={!visible ? { display: 'none' } : {}}>
+                {props.close && <div className="close-modal" onClick={(e) => { e.stopPropagation(); close() }}>
+                    {props.close}
+                </div>}
+                {props.children}
+            </div>
+            </div >
+        )
+    }
 
     return (
         <div className={!props.isNested ? "nav-svg" : 'nav-nested'} onClick={open} ref={ref}>
-            <div className="svg-container" onClick={toggle}>
+            <div className="svg-container" onClick={open}>
                 {(props.count > 0) && <span className="count">{props.count}</span>}
                 {props.svg}
             </div>
             <div className="nav-modal" style={{ visibility: visible ? 'visible' : 'hidden' }}>
-                {props.close && <div className="close-modal" onClick={(event) => { event.stopPropagation(); close() }}>
+                {props.close && <div className="close-modal" onClick={(e) => { e.stopPropagation(); close() }}>
                     {props.close}
                 </div>}
                 {props.children}

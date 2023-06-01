@@ -38,7 +38,6 @@ export default function Header(props) {
     const handleSendRequest = () => {
         sendFriendRequest(token, url.userId)
             .then(req => setRelationship(req))
-
     }
 
     const handleRemoveRequest = () => {

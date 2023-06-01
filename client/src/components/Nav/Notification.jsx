@@ -17,7 +17,6 @@ import { acceptFriendRequest, removeFriend } from "../../functions/relationship"
 import { UserContext } from "../../contexts/UserContext"
 
 export default function Notification(props) {
-    console.log(props)
     const [requestState, setRequestState] = useState(props.request)
     const user = useContext(UserContext)
     const { token } = useContext(TokenContext)
@@ -51,10 +50,8 @@ export default function Notification(props) {
     if (requestState && requestState.request_state === 'Accepted' && requestState.sender_id !== user._id) {
         return null
     }
-
-
     return (
-        <NavLink to={props.type !== 'request' ? '/post/' + props.post._id : "/" + props.sender_id._id} className={props.isVisited ? 'notification visited' : 'notification'} onClick={handleClick}>
+        <NavLink to={props.type === 'request' ? "/" + props.sender_id._id : props.type === 'invite' ? '/groups/' + props.group._id + '/' : '/post/' + props.post._id} className={props.isVisited ? 'notification visited' : 'notification'} onClick={handleClick}>
             <div className="notification-user">
                 <img src={props.sender_id.profile} alt="Notification user" />
                 <div className="notification-icon">
@@ -84,6 +81,7 @@ export default function Notification(props) {
                         {props.type === 'comment_reaction' && props.post.group && <span> reacted to your comment in <span className="notification-strong">{props.post.group.name}</span>.</span>}
                         {requestState && requestState.request_state === 'Accepted' && <span> accepted your friend request.</span>}
                         {requestState && requestState.request_state === 'Pending' && <span> sent you a friend request.</span>}
+                        {props.type === 'invite' && <span> invited you to join <span className="notification-strong">{props.group.name}</span>.</span>}
                     </div>
                     {requestState && requestState.request_state === 'Pending' &&
                         <div className="friend-preview-buttons" style={{ marginTop: '4px' }}>

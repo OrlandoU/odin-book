@@ -24,10 +24,10 @@ app.set('port', port);
 var server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:3001',
+    origin: '*',
     methods: ["GET", "POST"]
   }
-})
+});
 
 
 handleSocketConnections(io)

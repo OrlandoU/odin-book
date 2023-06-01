@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { getPosts, getReactions } from "../../functions/posts"
 import { TokenContext } from "../../contexts/TokenContext"
-import Post from "./Post"
 import PostModal from "./PostModal"
 
 export default function PostDisplay() {

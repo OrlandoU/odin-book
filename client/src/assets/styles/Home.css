@@ -65,7 +65,7 @@
 }
 
 .post {
-    width: clamp(200px, 100%, 680px);
+    width: clamp(0px, 100%, 680px);
     box-shadow: var(--box-shadow-light);
     border-radius: 8px;
     display: flex;
@@ -84,7 +84,7 @@
 }
 
 .post-content-input__suggestions .post-header:hover {
-    background-color: gainsboro;
+    background-color: var(--hover-color);
 }
 
 .post-form-create .group-options {
@@ -114,7 +114,6 @@
 }
 
 .post-content-input {
-    overflow: auto;
     max-height: 150px;
 }
 
@@ -135,10 +134,15 @@
 .post-content-input__suggestions {
     padding: 4px;
     left: 0px !important;
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.151);
+    box-shadow: var(--box-shadow);
     top: 100% !important;
     width: 300px;
     border-radius: 8px;
+    background-color: var(--alt-background-color) !important;
+}
+
+.post-user img {
+    border-radius: 50%;
 }
 
 .post-content-input__suggestions__list {
@@ -155,6 +159,7 @@
     border: 0px;
     outline: 0px;
     overflow: auto !important;
+    color: var(--color);
 }
 
 .wrapper.post-form-create {
@@ -167,10 +172,10 @@
     flex: 1;
     align-items: center;
     gap: 16px;
+    padding: 16px;
 }
 
 .post-form {
-    margin-top: 16px;
     padding: 0px 16px;
     padding-top: 16px;
     gap: 12px;
@@ -230,8 +235,9 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 388px;
-    height: 388px;
+    width: clamp(0px, 60%, 388px);
+    aspect-ratio: 1/1;
+    height: auto;
     border-radius: 50%;
     background-color: var(--alt-background-color);
     box-shadow: 0px 0px 0px 6px var(--alt-background-color);
@@ -254,6 +260,7 @@
     height: 40px;
     border-radius: 50%;
     position: relative;
+    align-self: flex-start;
 }
 
 .post-subheader {
@@ -261,9 +268,8 @@
     line-height: 18px;
 }
 
-.post-type-name {
-    display: flex;
-    gap: 4px;
+.post-type-name>* {
+    display: inline;
 }
 
 .post-name {
@@ -345,22 +351,22 @@
 .post-create-images-close {
     position: absolute;
     top: 12px;
-    background-color: gainsboro;
+    background-color: var(--svg-container-color);
     height: 28px !important;
     width: 28px !important;
     border-radius: 50%;
     padding: 4px;
     right: 12px;
-    fill: rgb(68, 68, 68);
+    fill: var(--svg-color);
 }
 
 .post-create-images-add {
     position: absolute;
     top: 12px;
-    background-color: gainsboro;
+    background-color: var(--svg-container-color);
     border-radius: 8px;
     left: 12px;
-    fill: rgb(68, 68, 68);
+    fill: var(--svg-color);
     display: flex;
     gap: 6px;
     padding: 6px 10px;
@@ -372,7 +378,7 @@
 }
 
 .post-create-images-add:hover {
-    background-color: var(--background-color);
+    background-color: var(--alt-background-color);
 }
 
 .post-create-images-add svg {
@@ -630,6 +636,10 @@
     fill: var(--svg-color);
 }
 
+.section-item.active svg {
+    fill: rgb(24, 118, 242);
+}
+
 .section-item::before {
     content: '';
     position: absolute;
@@ -637,7 +647,7 @@
     left: -20px;
     border-radius: 15px;
     height: 100%;
-    background-color: rgb(47, 102, 255);
+    background-color: rgb(24, 118, 242);
     transform: scaleY(0);
 }
 
@@ -1005,7 +1015,8 @@ strong:hover+.post-reactions-options {
     right: 0px;
     bottom: 0px;
 }
-.group-post-user img{
+
+.group-post-user img {
     box-shadow: 0px 0px 0px 1.5px var(--alt-background-color);
 }
 
@@ -1286,7 +1297,8 @@ strong:hover+.post-reactions-options {
 }
 
 .options-available {
-    z-index: 1;
+    z-index: 12 !important;
+    background-color: var(--alt-background-color);
 }
 
 .options span {
@@ -1414,6 +1426,7 @@ strong:hover+.post-reactions-options {
 
 .message-content .options {
     background-color: transparent;
+    position: static;
 }
 
 .message-content .options .hiddenmenu {
@@ -1428,7 +1441,7 @@ strong:hover+.post-reactions-options {
     visibility: visible;
 }
 
-.message-content .options .hiddenmenu:hover{
+.message-content .options .hiddenmenu:hover {
     background-color: var(--svg-container-color);
 }
 
@@ -1451,6 +1464,7 @@ strong:hover+.post-reactions-options {
     top: initial;
     border-bottom-right-radius: 8px;
 }
+
 .message-content .options-available>span:last-of-type {
     z-index: 10;
     position: relative;
@@ -1469,7 +1483,7 @@ strong:hover+.post-reactions-options {
     border-bottom-right-radius: 8px;
 }
 
-.message-content .mine .hidden-delt {
+.message-content .hidden-delt {
     top: initial;
     bottom: -10px;
     right: 0px;
@@ -1477,7 +1491,7 @@ strong:hover+.post-reactions-options {
     transform: translateY(30%) rotateY(180deg);
 }
 
-.message-content .mine .options-available::after {
+.message-content .options-available::after {
     position: absolute;
     width: 26px;
     right: 0px;
@@ -1488,4 +1502,174 @@ strong:hover+.post-reactions-options {
     bottom: 0px;
     top: initial;
     border-bottom-right-radius: 8px;
+}
+
+.unsent-message .message-content-message {
+    border: 1px solid var(--border-color);
+    background-color: var(--alt-background-color) !important;
+    color: var(--color-light) !important;
+    padding: 10px;
+}
+
+.message-content .options.message .options-available {
+    position: fixed;
+    inset: initial;
+    transform: translate(-95%, -115%);
+}
+
+.message {
+    position: relative;
+}
+
+.message-state #read,
+.message-state #viewed,
+.message-state #sended {
+    display: none;
+}
+
+.message.read .message-state #read {
+    display: block;
+}
+
+.message.read~.message .message-state {
+    display: none;
+}
+
+.message.viewed .message-state #viewed {
+    display: block;
+}
+
+.message.viewed~.message.sended .message-state #sended {
+    display: none;
+}
+
+.post-subheader {
+    flex: 1;
+}
+
+.message.viewed~.message.sended .message-state #viewed {
+    display: block;
+}
+
+.message.sended .message-state #sended {
+    display: block;
+}
+
+.saved-posts-main {
+    flex: 1;
+}
+
+.saved-posts-wrapper {
+    padding: 16px;
+    padding-top: 36px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.group-post img{
+    border-radius: 8px;
+}
+
+.saved-posts {
+    width: clamp(0px, 100%, 988px);
+}
+.post-saved{
+    background-color: var(--alt-background-color);
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    box-shadow: var(--box-shadow-light);
+    gap: 16px;
+}   
+
+.saved-posts-container {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.post-saved-media{
+    width: clamp(0px, 80%, 144px);
+    aspect-ratio: 1/1;
+    background-color: var(--svg-container-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.post-saved-content{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.post-saved-info{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 12px;
+    flex: 1;
+}
+.post-saved-origin{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: .9rem;
+    color: var(--color-light);
+}
+.user-option.options{
+    width: fit-content;
+}
+.user-option svg{
+    width: 20px;
+    height: 20px;
+}
+.group-invite-menu{
+    padding: 16px;
+}
+@media (max-width: 1150px) {
+    .right-aside {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .user-data {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-data .user-aside {
+        width: clamp(0px, 100%, 680px);
+    }
+
+    .user-info {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .user-profile-pic {
+        margin-right: 0px;
+        height: 50px;
+    }
+
+    .header-wrapper .cover {
+        height: 300px;
+    }
+
+    .post-media-profile {
+        height: 400px;
+        position: relative;
+    }
+}
+
+@media (max-width: 790px) {
+    .left-aside {
+        width: fit-content;
+        background-color: var(--alt-background-color);
+        border-right: 1px solid var(--border-color);
+    }
+
+    .section-item>div:last-of-type {
+        display: none;
+    }
 }

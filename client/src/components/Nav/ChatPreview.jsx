@@ -1,13 +1,14 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { UserContext } from "../../contexts/UserContext"
-import { getChatLastMessage } from "../../functions/chat"
+import { getChatLastMessage, updateMessage } from "../../functions/chat"
 import { TokenContext } from "../../contexts/TokenContext"
 import { getPostFormatted } from "../../functions/posts"
 import { ChatContext } from "../../contexts/ChatContext"
 import { SocketContext } from "../../contexts/SocketContext"
-import HiddenMenu from '../HiddenMenu'
+import { useInView } from 'react-intersection-observer'
 
 export default function ChatPreview(props) {
+    const [ref, inView] = useInView()
     const socket = useContext(SocketContext)
     const { token } = useContext(TokenContext)
     const user = useContext(UserContext)
@@ -23,6 +24,12 @@ export default function ChatPreview(props) {
         addChat(props)
     }
 
+    const handleInView = useCallback(() => {
+        if (lastMessage._id) {
+            updateMessage(token, lastMessage._id, props._id, undefined, undefined, undefined, true).then(value=>console.log(value))
+        }
+    }, [token, lastMessage._id, props._id])
+
     const timeFormatted = useMemo(() => {
         if (lastMessage) {
             return getPostFormatted(lastMessage.create_date)
@@ -33,9 +40,7 @@ export default function ChatPreview(props) {
         const handleNewMessage = (message) => {
             if (message.chat_id === props._id) {
                 setLastMessage(message)
-            } else {
-
-            }
+            } 
         }
         const handleUserChangeStatus = (user) => {
             if (chatUser._id === user._id) {
@@ -53,6 +58,12 @@ export default function ChatPreview(props) {
         setChatUser(props.participants.find(participant => participant._id !== user._id))
     }, [user, props._id, props.participants, token])
 
+
+    useEffect(() => {
+        if (inView) {
+            handleInView()
+        }
+    }, [inView, handleInView])
 
     useEffect(() => {
         const { handleUserChangeStatus, handleNewMessage } = handleSocket()
@@ -82,7 +93,7 @@ export default function ChatPreview(props) {
             <div className="notification-content-wrapper">
                 <div className="chat-data">
                     <div className="chat-name">{chatUser.first_name} {chatUser.last_name}</div>
-                    {lastMessage && <div className="chat-last-message">
+                    {lastMessage && <div className="chat-last-message" ref={ref}>
                         {lastMessage.user_id === user._id ? 'You:' : ''} {lastMessage.content} · {timeFormatted}
                     </div>}
                 </div>

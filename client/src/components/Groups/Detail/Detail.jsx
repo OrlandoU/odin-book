@@ -9,8 +9,10 @@ import Preview from "../Preview"
 import People from "./Routes/People"
 import Media from "./Routes/Media"
 import { leaveGroup } from "../../../functions/group"
+import { UpdateUserContext } from "../../../contexts/UpdateUserContext"
 
 export default function Detail() {
+    const updateUser = useContext(UpdateUserContext)
     const { token } = useContext(TokenContext)
     const url = useParams()
     const [group, setGroup] = useState({})
@@ -18,7 +20,7 @@ export default function Detail() {
 
     const handleLeaveGroup = async () => {
         const response = await leaveGroup(token, url.groupId)
-        console.log(response)
+        updateUser(token)
     }
 
     useEffect(() => {
@@ -42,7 +44,7 @@ export default function Detail() {
             <main>
                 <Header {...group} members={members} />
                 <Routes>
-                    <Route path="/" element={<Main {...group} />} />
+                    <Route path="/*" element={<Main {...group} />} />
                     <Route path="/people" element={<People {...group} />} />
                     <Route path="/media" element={<Media />} />
                 </Routes>

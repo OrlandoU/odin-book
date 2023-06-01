@@ -5,7 +5,7 @@ import multer, { Multer, StorageEngine } from 'multer';
 const router: Router = express.Router()
 const storage: StorageEngine = multer.diskStorage({
     destination: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
-        cb(null, 'user-images/');
+        cb(null, 'dist/uploads/user-images/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
         const currentDate = new Date().toISOString().replace(/:/g, '-');

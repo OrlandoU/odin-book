@@ -52,6 +52,11 @@ export const query_user: Middleware = async (req: Request, res: Response, next: 
                 }
             },
             {
+                $match: {
+                    _id: { $ne: req.user!._id }
+                }
+            },
+            {
                 $group: {
                     _id: "$_id",
                     documents: {
@@ -115,7 +120,7 @@ export const current_profile_put = [
         .isLength({ max: 300 })
         .withMessage('Content must be less than or equal to 300 chars')
     , async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/user-images/${req.file.originalname}`
+        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}/images/uploads/user-images/${req.file.filename}`
         const errors: Result<ValidationError> = validationResult(req)
         if (!errors.isEmpty()) {
             return res.sendStatus(400)
@@ -147,7 +152,7 @@ export const current_cover_put = [
         .isLength({ max: 300 })
         .withMessage('Content must be less than or equal to 300 chars')
     , async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}:${req.socket.localPort}/images/user-images/${req.file.originalname}`
+        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}/images/uploads/user-images/${req.file.filename}`
         const errors: Result<ValidationError> = validationResult(req)
 
         if (!errors.isEmpty()) {

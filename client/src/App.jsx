@@ -20,6 +20,8 @@ import io from 'socket.io-client'
 import { SocketContext } from './contexts/SocketContext';
 import Search from './components/Search/Search';
 import SearchBar from './components/Search/SearchBar';
+import PostSaved from './components/Post/PostSaved';
+import { UpdateUserContext } from './contexts/UpdateUserContext';
 
 function App() {
   const [socket, setSocket] = useState({})
@@ -66,6 +68,15 @@ function App() {
       })
     })
   }
+  const fetchUser = (token) => {
+    if (token === '') {
+      setUser({})
+    } else {
+      getCurrentUser(token).then((data) => {
+        setUser(data)
+      })
+    }
+  }
 
   useEffect(() => {
     const storageToken = localStorage.getItem('jwt-odin')
@@ -103,19 +114,13 @@ function App() {
   useEffect(() => {
     if (token !== null) {
       localStorage.setItem('jwt-odin', token)
-      if (token === '') {
-        setUser({})
-      } else {
-        getCurrentUser(token).then((data) => {
-          setUser(data)
-        })
-      }
+      fetchUser(token)
     }
   }, [token])
 
   useEffect(() => {
     if (!token) return
-    const newSocket = io('http://localhost:3000', {
+    const newSocket = io('https://oodinbook.fly.dev', {
       auth: { token: `${token}` }
     }); // Replace with your server URL
     setSocket(newSocket);
@@ -136,37 +141,40 @@ function App() {
   }
 
   return (
-    <SocketContext.Provider value={socket}>
-      <ChatContext.Provider value={{ openChats, addChat, removeChat, hideChat, showChat }}>
-        <UserContext.Provider value={user}>
-          <TokenContext.Provider value={{ token, setToken }}>
-            <BrowserRouter>
-              <div className={isDarkMode ? "App DarkMode" : "App"}>
-                <nav>
-                  <NavLink to={'/'} className="app-name">odinbook</NavLink>
-                  <SearchBar />
-                  <NavOptions isCompact={isCompact} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setIsCompact={setIsCompact}/>
-                </nav>
-                <div className="main-wrapper">
-                  <LeftBar className={'home'} />
-                  <Routes>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/auth' element={<Auth />} />
-                    <Route path='/friends/*' element={<Friends />} />
-                    <Route path='/groups/*' element={<Groups />} />
-                    <Route path='/post/:postId' element={<PostDisplay />} />
-                    <Route path='/photo/:postId/:index?' element={<PhotoDisplay />} />
-                    <Route path='/search/:search/*' element={<Search />} />
-                    <Route path='/:userId/*' element={<User />} />
-                  </Routes>
+    <UpdateUserContext.Provider value={fetchUser}>
+      <SocketContext.Provider value={socket}>
+        <ChatContext.Provider value={{ openChats, addChat, removeChat, hideChat, showChat }}>
+          <UserContext.Provider value={user}>
+            <TokenContext.Provider value={{ token, setToken }}>
+              <BrowserRouter>
+                <div className={isDarkMode ? "App DarkMode" : "App"}>
+                  <nav>
+                    <NavLink to={'/'} className="app-name">odinbook</NavLink>
+                    <SearchBar />
+                    <NavOptions isCompact={isCompact} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setIsCompact={setIsCompact} />
+                  </nav>
+                  <div className="main-wrapper">
+                    <LeftBar className={'home'} />
+                    <Routes>
+                      <Route path='/' element={<Home />} />
+                      <Route path='/auth' element={<Auth />} />
+                      <Route path='/friends/*' element={<Friends />} />
+                      <Route path='/groups/*' element={<Groups />} />
+                      <Route path='/posts/saved' element={<PostSaved />} />
+                      <Route path='/post/:postId' element={<PostDisplay />} />
+                      <Route path='/photo/:postId/:index?' element={<PhotoDisplay />} />
+                      <Route path='/search/:search/*' element={<Search />} />
+                      <Route path='/:userId/*' element={<User />} />
+                    </Routes>
+                  </div>
+                  <Bubbles />
                 </div>
-                <Bubbles />
-              </div>
-            </BrowserRouter>
-          </TokenContext.Provider>
-        </UserContext.Provider>
-      </ChatContext.Provider>
-    </SocketContext.Provider>
+              </BrowserRouter>
+            </TokenContext.Provider>
+          </UserContext.Provider>
+        </ChatContext.Provider>
+      </SocketContext.Provider>
+    </UpdateUserContext.Provider>
   );
 }
 

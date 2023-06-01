@@ -2,8 +2,13 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { ChatContext } from "../../contexts/ChatContext"
 import { UserContext } from "../../contexts/UserContext"
 import { SocketContext } from "../../contexts/SocketContext"
+import { TokenContext } from "../../contexts/TokenContext"
+import { updateMessage } from "../../functions/chat"
+import { useInView } from "react-intersection-observer"
 
 export default function BubbleMessage(props) {
+    const [ref, inView] = useInView()
+    const { token } = useContext(TokenContext)
     const [visible, setVisible] = useState(false)
     const [messagesCount, setMessagesCount] = useState(0)
     const [lastMessage, setLastMessage] = useState({})
@@ -27,6 +32,12 @@ export default function BubbleMessage(props) {
         showChat(props._id)
     }
 
+    const handleInView = useCallback(() => {
+        if (lastMessage._id) {
+            updateMessage(token, lastMessage._id, props._id, undefined, undefined, undefined, true).then(value => console.log(value))
+        }
+    }, [token, lastMessage._id, props._id])
+
     const handleSocket = useCallback(() => {
         const handleNewMessage = (message) => {
             if (message.chat_id === props._id && !props.open) {
@@ -39,6 +50,12 @@ export default function BubbleMessage(props) {
         }
         return { handleNewMessage }
     }, [props._id, props.open])
+
+    useEffect(() => {
+        if (inView) {
+            handleInView()
+        }
+    }, [inView, handleInView])
 
 
     useEffect(() => {
@@ -65,7 +82,7 @@ export default function BubbleMessage(props) {
     return (
         <div className="bubble-pic" onClick={handleClick}>
             {messagesCount > 0 && <div className="bubble-messages-count">{messagesCount}</div>}
-            {(lastMessage._id) && <div className={visible ? "message-preview chat-preview visible" : "message-preview chat-preview"}>
+            {(lastMessage._id) && <div className={visible ? "message-preview chat-preview visible" : "message-preview chat-preview"} ref={ref}>
                 <div className="chat-name">{lastMessage.user_id.first_name} {lastMessage.user_id.last_name}</div>
                 <div className="chat-message"><span className="dot"></span> {lastMessage.content}</div>
                 <div className="right-delt"></div>

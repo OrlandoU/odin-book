@@ -1,8 +1,10 @@
 import { useContext, useState } from "react"
 import { updateCover } from "../../../functions/user"
 import { TokenContext } from "../../../contexts/TokenContext"
+import { UpdateUserContext } from "../../../contexts/UpdateUserContext"
 
 export default function CoverPicForm() {
+    const updateUser = useContext(UpdateUserContext)
     const { token } = useContext(TokenContext)
 
     const [content, setContent] = useState('')
@@ -24,9 +26,10 @@ export default function CoverPicForm() {
         e.stopPropagation()
         e.preventDefault()
         if (cover) {
-            updateCover(token, cover, content).then(value => console.log(value))
+            updateCover(token, cover, content).then(value =>{
+                updateUser(token)
+            })
         }
-
     }
 
 

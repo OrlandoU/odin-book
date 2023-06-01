@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { createReaction, deletePost, deleteReaction, getCommentsCount, getPostFormatted, getReactions, trashPost } from "../../functions/posts";
+import { createReaction, deleteReaction, getCommentsCount, getPostFormatted, getReactions, updatePost } from "../../functions/posts";
 import { TokenContext } from "../../contexts/TokenContext";
 import { UserContext } from "../../contexts/UserContext";
 import { NavLink, useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ import love from '../../assets/images/love.svg'
 import sad from '../../assets/images/sad.svg'
 import wow from '../../assets/images/wow.svg'
 import HiddenMenu from "../HiddenMenu";
-import { getRelationship } from "../../functions/relationship";
+import { acceptFriendRequest, getRelationship, removeFriend, sendFriendRequest } from "../../functions/relationship";
 import { SocketContext } from "../../contexts/SocketContext";
 
 
@@ -26,6 +26,7 @@ export default function Post(props) {
     const user = useContext(UserContext)
     const { token } = useContext(TokenContext)
 
+    const [post, setPost] = useState(props)
     const [relation, setRelation] = useState({})
     const [postReaction, setPostReaction] = useState()
     const reactionsImgs = { angry, care, haha, like, love, sad, wow }
@@ -33,23 +34,23 @@ export default function Post(props) {
     const [commentsCounts, setCommentsCount] = useState()
     const [reactions, setReactions] = useState([])
     const [reactionsFiltered, setReactionsFiltered] = useState([])
-    const [isOnline, setIsOnline] = useState(props.user_id.isOnline)
+    const [isOnline, setIsOnline] = useState(post.user_id.isOnline)
 
     const handleReaction = async () => {
         if (postReaction) {
             setPostReaction(null)
             setReactions(prev => prev.filter(reaction => reaction.user_id._id !== user._id))
-            await deleteReaction(token, props._id)
+            await deleteReaction(token, post._id)
         } else {
             setPostReaction('like')
-            const res = await createReaction(token, props._id, 'like', 'post', props.user_id._id)
+            const res = await createReaction(token, post._id, 'like', 'post', post.user_id._id)
             setReactions(prev => [res, ...prev])
         }
     }
 
     const handleOddReaction = async (type) => {
         setPostReaction(type)
-        const res = await createReaction(token, props._id, type, 'post', props.user_id._id)
+        const res = await createReaction(token, post._id, type, 'post', post.user_id._id)
         setReactions(prev => {
             let arr = prev.filter(reaction => reaction.user_id._id !== user._id)
             return [res, ...arr]
@@ -57,11 +58,11 @@ export default function Post(props) {
     }
 
     const handleClick = () => {
-        document.getElementById('post' + props._id).click()
+        document.getElementById('post' + post._id).click()
     }
 
     const fetchReactions = () => {
-        getReactions(token, props._id).then(value => {
+        getReactions(token, post._id).then(value => {
             setReactions(value)
             const myReaction = value.find((el) => el.user_id._id === user._id)
             if (myReaction) {
@@ -71,23 +72,48 @@ export default function Post(props) {
     }
 
     const fetchRelation = () => {
-        if (props.user_id._id !== user._id) {
-            getRelationship(token, props.user_id._id).then(value => {
-                setRelation(value.user1_id === user._id ? { ...value.user2_id, request_state: value.request_state } : { ...value.user1_id, request_state: value.request_state })
+        if (post.user_id._id !== user._id) {
+            getRelationship(token, post.user_id._id).then(value => {
+                if (!value) {
+                    return setRelation({})
+                }
+                setRelation(value.user1_id === user._id ? { ...value.user2_id, sender_id: value.sender_id, request_state: value.request_state } : { ...value.user1_id, sender_id: value.sender_id, request_state: value.request_state })
             })
         }
     }
+
+    const handleSendFriendRequest = () => {
+        sendFriendRequest(token, post.user_id._id)
+            .then(req => setRelation(req.user1_id._id === user._id ? { ...req.user2_id, sender_id: req.sender_id, request_state: req.request_state } : { ...req.user1_id, sender_id: req.sender_id, request_state: req.request_state }))
+    }
+
+    const handleRemoveRequest = () => {
+        removeFriend(token, post.user_id._id)
+            .then(req => setRelation({}))
+    }
+
+    const handleSavePost = () => {
+        updatePost(token, post._id, { save: true })
+            .then(res => setPost(res))
+    }
+
+    const handleUnsavePost = () => {
+        updatePost(token, post._id, { unsave: true })
+            .then(res => setPost(res))
+    }
+
     const handleRemovePost = () => {
-        trashPost(token, props._id, true).then(value => {
-            if (props.setPosts) {
-                console.log(value)
-                props.setPosts(prev => prev.filter(post => post._id !== value._id))
-            }
-        })
+        updatePost(token, post._id, { isTrash: true })
+            .then(res => setPost(res))
+    }
+
+    const handleAcceptRequest = () => {
+        acceptFriendRequest(token, post.user_id._id)
+            .then(req => setRelation(req.user1_id._id === user._id ? { ...req.user2_id, sender_id: req.sender_id, request_state: req.request_state } : { ...req.user1_id, sender_id: req.sender_id, request_state: req.request_state }))
     }
 
     useEffect(() => {
-        getCommentsCount(token, props._id).then(value => {
+        getCommentsCount(token, post._id).then(value => {
             setCommentsCount(value)
         })
     }, [])
@@ -95,7 +121,6 @@ export default function Post(props) {
     useEffect(() => {
         fetchReactions()
     }, [user])
-
 
     useEffect(() => {
         let arr = reactions.map(reaction => reaction.type)
@@ -112,25 +137,25 @@ export default function Post(props) {
         return () => {
             socket.off('user_status', handleUserChangeStatus)
         }
-    }, [socket, props.user_id])
+    }, [socket, post.user_id])
     return (
         <div className="post">
             <div className="post-header">
-                <div className={!(props.group && !url.groupId) ? "post-user" : "post-user group"}>
-                    {(props.group && !url.groupId) ?
+                <div className={!(post.group && !url.groupId) ? "post-user" : "post-user group"}>
+                    {(post.group && !url.groupId) ?
                         <>
                             <div className="group-post">
-                                <img src={props.group.cover} alt="" />
+                                <img src={post.group.cover} alt="" />
                             </div>
                             <div className="group-post-user">
-                                <img src={props.user_id.profile} alt="" className="img-profile"/>
+                                <img src={post.user_id.profile} alt="" className="img-profile" />
                                 {isOnline &&
                                     <div className="user-online"></div>
                                 }
                             </div>
                         </> :
                         <>
-                            {props.user_id.profile && <img src={props.user_id.profile} alt="" className="img-profile" />}
+                            {post.user_id.profile && <img src={post.user_id.profile} alt="" className="img-profile" />}
                             {isOnline &&
                                 <div className="user-online"></div>
                             }
@@ -138,68 +163,90 @@ export default function Post(props) {
                     }
 
                 </div>
-                {props.type === 'normal' ?
+                {post.type === 'normal' ?
                     <div className="post-subheader">
-                        {(props.group && !url.groupId) ?
+                        {(post.group && !url.groupId) ?
                             <>
                                 <div className="post-type-name">
-                                    <NavLink className="post-name" to={'/groups/' + props.group._id}>{props.group.name}</NavLink>
+                                    <NavLink to={'/groups/' + post.group._id} className={'post-name'} style={{ display: 'inline' }}>
+                                        {post.group.name}
+                                    </NavLink>
                                     <div className="post-data extra">
-                                        {props.type == 'group-create' ? 'created the group' : props.type === 'group-cover' ? 'updated the group cover photo.' : props.type == 'profile' ? 'updated his profile picture.' : props.type === 'cover' ? 'updated his profile cover' : ''}
+                                        {post.type === 'group-create' ? ' created the group' : post.type === 'group-cover' ? ' updated the group cover photo.' : post.type == 'profile' ? ' updated his profile picture.' : post.type === 'cover' ? ' updated his profile cover' : ''}
                                     </div>
                                 </div>
                                 <div className="post-data group">
-                                    <NavLink to={'/' + props.user_id._id + '/'}>{props.user_id.first_name} {props.user_id.last_name}</NavLink>  · {getPostFormatted(props.create_date)}
+                                    <NavLink to={'/' + post.user_id._id + '/'}>{post.user_id.first_name} {post.user_id.last_name}</NavLink>  · {getPostFormatted(post.create_date)}
                                 </div>
                             </> :
                             <>
                                 <div className="post-type-name">
-                                    <NavLink className="post-name" to={'/' + props.user_id._id}>{props.user_id.first_name} {props.user_id.last_name}</NavLink>
+                                    <NavLink style={{ display: 'inline' }} className="post-name" to={'/' + post.user_id._id + '/'}>{post.user_id.first_name} {post.user_id.last_name}</NavLink>
                                     <div className="post-data extra">
-                                        {props.type == 'group-create' ? 'created the group' : props.type === 'group-cover' ? 'updated the group cover photo.' : props.type == 'profile' ? 'updated his profile picture.' : props.type === 'cover' ? 'updated his profile cover' : ''}
+                                        {post.type == 'group-create' ? ' created the group' : post.type === 'group-cover' ? ' updated the group cover photo.' : post.type == 'profile' ? ' updated his profile picture.' : post.type === 'cover' ? ' updated his profile cover' : ''}
                                     </div>
-                                    {props.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + props.group._id}>{props.group.name}</NavLink>}
+                                    {post.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + post.group._id}>{post.group.name}</NavLink>}
                                 </div>
-                                <div className="post-data">{getPostFormatted(props.create_date)}</div>
+                                <div className="post-data">{getPostFormatted(post.create_date)}</div>
                             </>
                         }
                     </div> :
                     <div className="post-subheader">
                         <>
                             <div className="post-type-name">
-                                <NavLink className="post-name" to={'/' + props.user_id._id}>{props.user_id.first_name} {props.user_id.last_name}</NavLink>
+                                <NavLink style={{ display: 'inline' }} className="post-name" to={'/' + post.user_id._id + '/'}>{post.user_id.first_name} {post.user_id.last_name}</NavLink>
                                 <div className="post-data extra">
-                                    {props.type == 'group-create' ? 'created the group' : props.type === 'group-cover' ? 'updated the group cover photo.' : props.type == 'profile' ? 'updated his profile picture.' : props.type === 'cover' ? 'updated his profile cover' : ''}
+                                    {post.type == 'group-create' ? ' created the group' : post.type === 'group-cover' ? ' updated the group cover photo.' : post.type == 'profile' ? ' updated his profile picture.' : post.type === 'cover' ? ' updated his profile cover' : ''}
                                 </div>
-                                {props.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + props.group._id}>{props.group.name}</NavLink>}
+                                {post.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + post.group._id}>{post.group.name}</NavLink>}
                             </div>
-                            <div className="post-data">{getPostFormatted(props.create_date)}</div>
+                            <div className="post-data">{getPostFormatted(post.create_date)}</div>
                         </>
                     </div>
                 }
                 <HiddenMenu className={'post-hidden-menu'} onVisible={fetchRelation}>
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>bookmark post</title><path d="M17,18L12,15.82L7,18V5H17M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" /></svg>
-                        Save post
-                    </span>
-                    {(props.user_id._id !== user._id || relation._id) &&
+                    {post.saved && post.saved.includes(user._id) &&
+                        <span onClick={handleUnsavePost}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>bookmark-off-outline</title><path d="M3.28,4L2,5.27L5,8.27V21L12,18L16.78,20.05L18.73,22L20,20.72L3.28,4M7,18V10.27L13,16.25L12,15.82L7,18M7,5.16L5.5,3.67C5.88,3.26 6.41,3 7,3H17A2,2 0 0,1 19,5V17.16L17,15.16V5H7V5.16Z" /></svg>
+                            Unsave post
+                        </span>}
+                    {((post.saved && !post.saved.includes(user._id)) || !post.saved) &&
+                        <span onClick={handleSavePost}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>bookmark post</title><path d="M17,18L12,15.82L7,18V5H17M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z" /></svg>
+                            Save post
+                        </span>}
+                    {(post.user_id._id !== user._id || relation._id) &&
                         <>
                             <div className="border-line"></div>
                             {relation.request_state === 'Accepted' &&
-                                <span style={{ textTransform: 'capitalize' }}>
+                                <span style={{ textTransform: 'capitalize' }} onClick={handleRemoveRequest}>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>account-remove</title><path d="M15,14C17.67,14 23,15.33 23,18V20H7V18C7,15.33 12.33,14 15,14M15,12A4,4 0 0,1 11,8A4,4 0 0,1 15,4A4,4 0 0,1 19,8A4,4 0 0,1 15,12M5,9.59L7.12,7.46L8.54,8.88L6.41,11L8.54,13.12L7.12,14.54L5,12.41L2.88,14.54L1.46,13.12L3.59,11L1.46,8.88L2.88,7.46L5,9.59Z" /></svg>
                                     Unfriend {relation.first_name}
                                 </span>
                             }
+                            {
+                                relation.request_state === 'Pending' && relation.sender_id !== user._id &&
+                                <span style={{ textTransform: 'capitalize' }} onClick={handleAcceptRequest}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>account-check</title><path d="M21.1,12.5L22.5,13.91L15.97,20.5L12.5,17L13.9,15.59L15.97,17.67L21.1,12.5M10,17L13,20H3V18C3,15.79 6.58,14 11,14L12.89,14.11L10,17M11,4A4,4 0 0,1 15,8A4,4 0 0,1 11,12A4,4 0 0,1 7,8A4,4 0 0,1 11,4Z" /></svg>
+                                    Accept Friend Request
+                                </span>
+                            }
+                            {
+                                relation.request_state === 'Pending' && relation.sender_id === user._id &&
+                                <span style={{ textTransform: 'capitalize' }} onClick={handleRemoveRequest}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>account-remove</title><path d="M15,14C17.67,14 23,15.33 23,18V20H7V18C7,15.33 12.33,14 15,14M15,12A4,4 0 0,1 11,8A4,4 0 0,1 15,4A4,4 0 0,1 19,8A4,4 0 0,1 15,12M5,9.59L7.12,7.46L8.54,8.88L6.41,11L8.54,13.12L7.12,14.54L5,12.41L2.88,14.54L1.46,13.12L3.59,11L1.46,8.88L2.88,7.46L5,9.59Z" /></svg>
+                                    Cancel Friend Request
+                                </span>
+                            }
                             {!relation._id &&
-                                <span style={{ textTransform: 'capitalize' }}>
+                                <span style={{ textTransform: 'capitalize' }} onClick={handleSendFriendRequest}>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>account-arrow-right</title><path d="M18 16H14V18H18V20L21 17L18 14V16M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 14C6.6 14 3 15.8 3 18V20H12.5C12.2 19.2 12 18.4 12 17.5C12 16.3 12.3 15.2 12.9 14.1C12.3 14.1 11.7 14 11 14" /></svg>
                                     Send Friend Request
                                 </span>
                             }
                         </>
                     }
-                    {props.user_id._id === user._id &&
+                    {post.user_id._id === user._id &&
                         <>
                             <div className="border-line"></div>
                             <span onClick={handleRemovePost}>
@@ -210,28 +257,28 @@ export default function Post(props) {
                     }
                 </HiddenMenu>
             </div>
-            {props.content && <div className="post-content">
-                {parse(parse(props.content))}
+            {post.content && <div className="post-content">
+                {parse(parse(post.content))}
             </div>}
-            {props.media && props.type !== 'profile' &&
-                <NavLink to={'/photo/' + props._id} className="post-media" style={{ marginTop: props.content ? '' : '8px' }}>
-                    <img src={props.media} alt="Post media" />
+            {post.media && post.type !== 'profile' &&
+                <NavLink to={'/photo/' + post._id} className="post-media" style={{ marginTop: post.content ? '' : '8px' }}>
+                    <img src={post.media} alt="Post media" />
                 </NavLink>}
-            {props.multiple_media && props.multiple_media.length > 0 &&
-                <div className={"post-create-images main-post length" + props.multiple_media.length} style={{ marginTop: props.content ? '' : '8px' }}>
-                    {props.multiple_media.map((media, index) =>
-                        <NavLink to={`/photo/${props._id}/${index}`} >
+            {post.multiple_media && post.multiple_media.length > 0 &&
+                <div className={"post-create-images main-post length" + post.multiple_media.length} style={{ marginTop: post.content ? '' : '8px' }}>
+                    {post.multiple_media.map((media, index) =>
+                        <NavLink to={`/photo/${post._id}/${index}`} >
                             <img src={media} alt="" />
                         </NavLink>)
                     }
                 </div>
             }
-            {props.type === 'profile' &&
-                <NavLink to={'/photo/' + props._id} className="post-media-profile" style={{ marginTop: props.content ? '' : '8px' }}>
+            {post.type === 'profile' &&
+                <NavLink to={'/photo/' + post._id} className="post-media-profile" style={{ marginTop: post.content ? '' : '8px' }}>
                     <div className="post-banner">
-                        {props.user_id.cover && <img src={props.user_id.cover} alt="Post user banner" />}
+                        {post.user_id.cover && <img src={post.user_id.cover} alt="Post user banner" />}
                     </div>
-                    <img src={props.media} alt="" />
+                    <img src={post.media} alt="" />
                 </NavLink>
             }
             <div className="post-reactions">
@@ -270,8 +317,8 @@ export default function Post(props) {
                         )}
                     </div>
                     <Modal
-                        postId={props._id}
-                        title={props.user_id.first_name + ' ' + props.user_id.last_name}
+                        postId={post._id}
+                        title={post.user_id.first_name + ' ' + post.user_id.last_name}
                         modalClass={'post-modal-container'}
                         trigger={
                             <div className="post-button">
