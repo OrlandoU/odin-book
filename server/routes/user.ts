@@ -8,9 +8,7 @@ const storage: StorageEngine = multer.diskStorage({
         cb(null, 'dist/uploads/user-images/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, destination: string) => void) {
-        const currentDate = new Date().toISOString().replace(/:/g, '-');
-        const uniqueFileName = currentDate + '-' + file.originalname;
-        cb(null, uniqueFileName);
+        cb(null, file.originalname)
     }
 });
 

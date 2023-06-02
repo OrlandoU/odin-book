@@ -20,6 +20,7 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const response = await login(email, password)
+        console.log(response)
         tokenContext.setToken(response.token)
     }
 

@@ -181,7 +181,6 @@
     display: flex;
     padding: 0px;
     background-color: var(--svg-container-color);
-    overflow: hidden;
     gap: 1px;
 }
 
@@ -331,6 +330,7 @@ label.not .checkbox {
     justify-content: flex-end;
     border-top: 1px solid var(--border-color);
     padding-top: 16px;
+    margin-bottom: 12px;
 }
 
 .about-form-buttons>* {
@@ -692,7 +692,7 @@ label.not .checkbox {
 }
 
 .user-relationship-confirm {
-    background-color: #f3f3f3;
+    background-color: var(--hover-color);
     display: flex;
     justify-content: space-between;
     padding: 16px;
@@ -785,4 +785,9 @@ label.not .checkbox {
 
 .img-profile {
     border-radius: 50%;
+}
+.chats-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }

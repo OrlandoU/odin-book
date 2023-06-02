@@ -1,10 +1,14 @@
 import { useContext, useState } from "react";
 import { createUserJob, updateUserJob } from "../../../functions/user";
 import { TokenContext } from '../../../contexts/TokenContext'
+import { UpdateUserContext } from '../../../contexts/UpdateUserContext'
 import HiddenMenu from "../../HiddenMenu";
+import { deleteUserJob } from "../../../functions/user";
 
 export default function JobForm(props) {
-    const token = useContext(TokenContext).token
+    const updateUser = useContext(UpdateUserContext)
+    const { token } = useContext(TokenContext)
+
     const [expanded, setExpanded] = useState(false)
     const [company, setCompany] = useState(props.company || '')
     const [position, setPosition] = useState(props.position || '')
@@ -39,12 +43,25 @@ export default function JobForm(props) {
         setIsCurrent(e.target.checked)
     }
 
+    const handleRemove = () => {
+        deleteUserJob(token, props._id).then(()=>{
+            updateUser(token)
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         if (props.isPreview) {
-            updateUserJob(token, props._id, company, position, location, isCurrent)
+            updateUserJob(token, props._id, company || '', position, location || '', isCurrent).then(()=>{
+                updateUser(token)
+                handleClose()
+            })
         } else {
-            createUserJob(token, company, position, location, isCurrent)
+            createUserJob(token, company || '', position || '', location || '', isCurrent)
+                .then(() => {
+                    updateUser(token)
+                    handleClose()
+                })
         }
     }
     if (props.isPreview && !expanded) {
@@ -63,7 +80,7 @@ export default function JobForm(props) {
                 </div>
                 <HiddenMenu>
                     <span onClick={handleOpen}>Edit WorkPlace</span>
-                    <span>Remove WorkPlace</span>
+                    <span onClick={handleRemove}>Remove WorkPlace</span>
                 </HiddenMenu>
             </div>
         )
@@ -81,15 +98,15 @@ export default function JobForm(props) {
     return (
         <form className="about-form" onSubmit={handleSubmit}>
             <label>
-                <input type="text" value={company} onChange={handleCompany} placeholder=" " required />
+                <input type="text" value={company} onChange={handleCompany} placeholder=" " />
                 <div className="input-label">Company</div>
             </label>
             <label>
-                <input type="text" value={position} onChange={handlePosition} placeholder=" " required />
+                <input type="text" value={position} onChange={handlePosition} placeholder=" " />
                 <div className="input-label">Position</div>
             </label>
             <label >
-                <input type="text" value={location} onChange={handleLocation} placeholder=" " required />
+                <input type="text" value={location} onChange={handleLocation} placeholder=" " />
                 <div className="input-label">Location</div>
             </label>
             <label className="not">

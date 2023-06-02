@@ -8,7 +8,7 @@ var debug = require('debug')('server:server');
 var http = require('http');
 var socketIo = require("socket.io");
 var { handleSocketConnections } = require('../functions/socket')
-import socketioJwt from 'socketio-jwt';
+
 
 /**
  * Get port from environment and store in Express.
@@ -28,6 +28,7 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
+
 
 
 handleSocketConnections(io)

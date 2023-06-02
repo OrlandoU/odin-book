@@ -64,7 +64,6 @@ export const sign_up: Middleware[] = [
                 return true
             }
             throw new Error("Passwords don't match")
-            return false
         })
     , async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
         const errors: Result<ValidationError> = validationResult(req)

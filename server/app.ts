@@ -26,8 +26,8 @@ import postRouter from './routes/post';
 import chatRouter from './routes/chat';
 import relRouter from './routes/rel';
 import userRouter from './routes/user';
-import imageRouter from './routes/images';
 import notificationRouter from './routes/notification';
+import { populateFirebase} from './firebase';
 
 const app = express();
 
@@ -65,7 +65,7 @@ passport.use(new JwtStrategy({ jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearer
   }
 }))
 
-
+app.use(populateFirebase);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -81,7 +81,6 @@ app.use('/posts', passport.authenticate('jwt', { session: false }), postRouter)
 app.use('/chats', passport.authenticate('jwt', { session: false }), chatRouter)
 app.use('/groups', passport.authenticate('jwt', { session: false }), groupRouter)
 app.use('/notifications', passport.authenticate('jwt', { session: false }), notificationRouter)
-app.use('/images', imageRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {

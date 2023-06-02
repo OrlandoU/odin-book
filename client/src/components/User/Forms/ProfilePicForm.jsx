@@ -24,7 +24,7 @@ export default function ProfilePicForm() {
         e.stopPropagation()
         e.preventDefault()
         if (profile) {
-            updateProfile(token, profile, content).then(value => console.log(value))
+            updateProfile(token, profile, content).then(value => window.location.reload())
         }
 
     }

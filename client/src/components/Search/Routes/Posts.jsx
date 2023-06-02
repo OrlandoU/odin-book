@@ -14,7 +14,7 @@ export default function Posts() {
         if (fetching.current) return
 
         fetching.current = true
-        queryPosts(token, url.search, null, null,posts.length === 0 ? 5 : 2, posts.length === 0 ? 0 : posts.length + 1).then((value) => {
+        queryPosts(token, url.search, false, false, posts.length === 0 ? 5 : 2, posts.length === 0 ? 0 : posts.length + 1).then((value) => {
             setPosts(prev => [...prev, ...value])
             fetching.current = false
         })
@@ -28,7 +28,7 @@ export default function Posts() {
     return (
         <div className="search-users search-container">
             {posts.map(post =>
-                <Post {...post} key={post._id}/>
+                <Post {...post} key={post._id} />
             )}
         </div>
     )

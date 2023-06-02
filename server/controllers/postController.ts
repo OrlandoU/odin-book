@@ -4,9 +4,11 @@ import Reaction, { ReactionInterface } from '../models/reaction'
 import Relationship, { RelationshipInterface } from '../models/relationship'
 import { Result, ValidationError, body, validationResult } from 'express-validator'
 import fs from 'fs/promises'
+import fsSync from 'fs'
 import { handleNewNotification, handleUpsertNotification, handleRemoveNotification } from '../functions/notificationHandler'
 import { Middleware, NextFunction, Request, Response } from 'express'
 import { Types } from 'mongoose'
+import { StorageReference, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 export const posts_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -159,13 +161,7 @@ export const posts_post: Middleware[] = [
         }
 
         try {
-            let multiple_media: string[] | null = null
-            if (req.files && (Array.isArray(req.files))) {
-                multiple_media = req.files.map((file: Express.Multer.File) => {
-                    return `${req.protocol}://${req.hostname}/images/uploads/post-images/${file.filename}`
-                })
-
-            }
+            console.log(req.storage)
             let post: PostInterface
             if (req.body.group_id) {
                 post = new Post({
@@ -173,7 +169,6 @@ export const posts_post: Middleware[] = [
                     group: req.body.group_id ? req.body.group_id : null,
                     user_id: req.user!._id,
                     mentions: req.body.mentions,
-                    multiple_media,
                     scope: req.body.scope
                 })
                 post.mentions.forEach(async (mention: Types.ObjectId) => {
@@ -184,13 +179,29 @@ export const posts_post: Middleware[] = [
                     content: req.body.content,
                     user_id: req.user!._id,
                     mentions: req.body.mentions,
-                    multiple_media: multiple_media,
                     scope: req.body.scope
                 })
                 post.mentions.forEach(async (mention: Types.ObjectId) => {
                     await handleNewNotification(mention, req.user!._id, { type: 'post_mention', post: post._id })
                 })
             }
+            if (req.files && (Array.isArray(req.files))) {
+                const filePromises = req.files.map(async (file) => {
+                    const imageRef: StorageReference = ref(req.storage!, `post-media/${post._id}/${file?.filename}`)
+                    const metadata = {
+                        contentType: file.mimetype,
+                    };
+
+                    // Upload the file in the bucket storage
+                    const fileBuffer = fsSync.readFileSync(file.path);
+
+                    await uploadBytes(imageRef, fileBuffer, metadata)
+                    const mediaUrl = await getDownloadURL(imageRef)
+                    return mediaUrl
+                })
+                post.multiple_media = await Promise.all(filePromises);
+            }
+
             const result: PostInterface = await post.save()
             const populatedPost = await Post.findById(result._id).populate('user_id', '-password').populate('group')
             return res.json(populatedPost)
@@ -301,7 +312,7 @@ export const comments_post: Middleware[] = [
                 parent_comment: req.params.parentCommentId,
                 content: req.body.content,
                 mentions: req.body.mentions,
-                media: req.body.media
+                media: req.file ? `${req.protocol}://${req.hostname}/images/uploads/chat-images/${req.file.filename}` : null,
             })
 
             comment.mentions.forEach(async (mention: Types.ObjectId) => {
@@ -489,15 +500,16 @@ export const query_posts: Middleware = async (req: Request, res: Response, next:
                 }
             })
         }
-        const matchMedia: object[] = isMedia ? [
-            {
-                multiple_media: { $exists: true }
-            }, {
-                media: { $exists: true }
-            }
-        ] : [
-            { _id: { $exists: true } }
-        ]
+        const matchMedia: object = isMedia ? {
+            $or: [
+                {
+                    multiple_media: { $exists: true }
+                }, {
+                    media: { $exists: true }
+                }
+            ]
+        } : { _id: { $exists: true } }
+
 
         const matchObject = isFriends ?
             {
@@ -506,14 +518,14 @@ export const query_posts: Middleware = async (req: Request, res: Response, next:
                         $and: [
                             { user_id: { $in: friends } },
                             { scope: { $in: ['friends', 'public'] } },
-                            ...matchMedia
+                            matchMedia
                         ]
                     },
                     {
                         $and: [
                             { group: { $in: req.user!.groups } },
                             { scope: { $in: ['public', 'group'] } },
-                            ...matchMedia
+                            matchMedia
                         ]
                     },
 

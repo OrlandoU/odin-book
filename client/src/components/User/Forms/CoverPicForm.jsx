@@ -26,8 +26,8 @@ export default function CoverPicForm() {
         e.stopPropagation()
         e.preventDefault()
         if (cover) {
-            updateCover(token, cover, content).then(value =>{
-                updateUser(token)
+            updateCover(token, cover, content).then(value => {
+                window.location.reload()
             })
         }
     }
@@ -37,7 +37,7 @@ export default function CoverPicForm() {
         <>
             <form onSubmit={handleSubmit} className="about-form" id="edit-profile-pic">
                 <label>
-                    <input type="text" value={content} onChange={handleContent} placeholder=" "/>
+                    <input type="text" value={content} onChange={handleContent} placeholder=" " />
                     <div className="input-label">Description</div>
                 </label>
                 {cover && <div className="post-create-images-wrapper">

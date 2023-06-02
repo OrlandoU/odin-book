@@ -35,6 +35,10 @@
     padding-top: 8px;
     width: clamp(248px, 100%, 368px);
     text-align: left;
+    height: min-content;
+    position: sticky;
+    top: 0px;
+
 }
 
 .input-wrapper .hover-bar {
@@ -1568,21 +1572,23 @@ strong:hover+.post-reactions-options {
     justify-content: center;
     flex-direction: column;
 }
-.group-post img{
+
+.group-post img {
     border-radius: 8px;
 }
 
 .saved-posts {
     width: clamp(0px, 100%, 988px);
 }
-.post-saved{
+
+.post-saved {
     background-color: var(--alt-background-color);
     padding: 16px;
     border-radius: 8px;
     display: flex;
     box-shadow: var(--box-shadow-light);
     gap: 16px;
-}   
+}
 
 .saved-posts-container {
     display: flex;
@@ -1590,41 +1596,48 @@ strong:hover+.post-reactions-options {
     flex-direction: column;
 }
 
-.post-saved-media{
+.post-saved-media {
     width: clamp(0px, 80%, 144px);
     aspect-ratio: 1/1;
     background-color: var(--svg-container-color);
     border-radius: 8px;
     overflow: hidden;
 }
-.post-saved-content{
+
+.post-saved-content {
     font-size: 1.2rem;
     font-weight: 600;
 }
-.post-saved-info{
+
+.post-saved-info {
     display: flex;
     flex-direction: column;
     height: 100%;
     gap: 12px;
     flex: 1;
 }
-.post-saved-origin{
+
+.post-saved-origin {
     display: flex;
     gap: 6px;
     align-items: center;
     font-size: .9rem;
     color: var(--color-light);
 }
-.user-option.options{
+
+.user-option.options {
     width: fit-content;
 }
-.user-option svg{
+
+.user-option svg {
     width: 20px;
     height: 20px;
 }
-.group-invite-menu{
+
+.group-invite-menu {
     padding: 16px;
 }
+
 @media (max-width: 1150px) {
     .right-aside {
         display: none;

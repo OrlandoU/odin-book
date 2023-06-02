@@ -1,10 +1,12 @@
 import { useContext, useState } from "react";
 import HiddenMenu from "../../HiddenMenu";
-import { updateUser } from "../../../functions/user";
 import { TokenContext } from "../../../contexts/TokenContext";
+import { UpdateUserContext } from "../../../contexts/UpdateUserContext";
+import { updateUser } from "../../../functions/user";
 
 export default function BirthPlaceForm(props) {
-    const token = useContext(TokenContext).token
+    const userUpdate = useContext(UpdateUserContext)
+    const { token } = useContext(TokenContext)
     const [expanded, setExpanded] = useState(false)
     const [place, setPlace] = useState(props.place || '')
 
@@ -21,9 +23,19 @@ export default function BirthPlaceForm(props) {
         setPlace(e.target.value)
     }
 
+    const handleRemove = (e) => {
+        updateUser(token, '').then(() => {
+            userUpdate(token)
+            handleClose()
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        updateUser(token, place)
+        updateUser(token, place).then(() => {
+            userUpdate(token)
+            handleClose()
+        })
     }
 
     if (props.isPreview && !expanded) {
@@ -42,7 +54,7 @@ export default function BirthPlaceForm(props) {
                 </div>
                 <HiddenMenu>
                     <span onClick={handleOpen}>Edit Hometown</span>
-                    <span>Remove Hometown</span>
+                    <span onClick={handleRemove}>Remove Hometown</span>
                 </HiddenMenu>
             </div>
         )
@@ -61,7 +73,7 @@ export default function BirthPlaceForm(props) {
     return (
         <form className="about-form" onSubmit={handleSubmit}>
             <label>
-                <input type="text" value={place} onChange={handlePlace} placeholder=" " required/>
+                <input type="text" value={place} onChange={handlePlace} placeholder=" " required />
                 <div className="input-label">Hometown</div>
             </label>
             <div className="about-form-buttons">

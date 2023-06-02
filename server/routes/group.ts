@@ -10,9 +10,7 @@ const storage: StorageEngine = multer.diskStorage({
         return cb(null, 'dist/uploads/group-covers/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
-        const currentDate = new Date().toISOString().replace(/:/g, '-');
-        const uniqueFileName = currentDate + '-' + file.originalname;
-        cb(null, uniqueFileName);
+        cb(null, file.originalname)
     }
 });
 

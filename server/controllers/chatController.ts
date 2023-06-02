@@ -5,6 +5,8 @@ import { emitMessage, emitMessageUpdate } from '../functions/socket'
 import { Middleware, NextFunction, Response } from 'express'
 import { Types, UpdateWriteOpResult } from 'mongoose'
 import { Request } from 'express-serve-static-core';
+import { StorageReference, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import fs from 'fs'
 
 
 export const chats_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -215,15 +217,18 @@ export const messages_post: Middleware[] = [
 
             if (req.files && (Array.isArray(req.files))) {
                 for (const file of req.files) {
+                    console.log(file)
                     const message: MessageInterface = new Message({
                         chat_id: chat._id,
                         user_id: req.user!._id,
-                        media: `${req.protocol}://${req.hostname}/images/uploads/chat-images/${file.filename}`
                     })
                     const result = await message.save()
-                    const newMessage: MessageInterface | null = await Message.findById(result._id).populate('user_id')
+                    const imageRef: StorageReference = ref(req.storage!, `message-media/${result._id}/${file?.filename}`)
+                    const fileBuffer = fs.readFileSync(file.path);
 
-
+                    await uploadBytes(imageRef, fileBuffer)
+                    const mediaUrl = await getDownloadURL(imageRef)
+                    const newMessage: MessageInterface | null = await Message.findByIdAndUpdate(result._id, { media: mediaUrl }, { new: true }).populate('user_id')
                     if (newMessage) {
                         messages.push(newMessage)
                         emitMessage(chatUser, newMessage)

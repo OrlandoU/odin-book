@@ -1,8 +1,10 @@
+import { FirebaseStorage } from "firebase/storage";
 import { UserInterface } from "../models/user";
 
 declare module 'express-serve-static-core' {
     interface Request {
         user?: UserInterface,
+        storage?: FirebaseStorage
     }
 }
 

@@ -1,7 +1,8 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { ChatContext } from "../../contexts/ChatContext"
 import { UserContext } from "../../contexts/UserContext"
 import { SocketContext } from "../../contexts/SocketContext"
+import React from "react"
 
 export default function Contact(props) {
     const socket = useContext(SocketContext)

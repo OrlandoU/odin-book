@@ -4,6 +4,8 @@ import { Response, NextFunction, Request, Middleware } from 'express'
 import Group, { GroupInterface } from '../models/group'
 import User, { UserInterface } from '../models/user'
 import Post, { PostInterface } from '../models/post'
+import { StorageReference, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import fs from 'fs'
 
 
 export const group_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -147,21 +149,28 @@ export const group_put: Middleware[] = [
         }
 
         try {
-            const path: string = req.file ? `${req.protocol}://${req.hostname}/images/uploads/group-covers/${req.file.filename}` : ''
+            const post: PostInterface = new Post({
+                
+                content: req.body.content,
+                user_id: req.user!._id,
+                type: 'group-cover',
+                
+            })
+
+            const imageRef: StorageReference = ref(req.storage!, `group-covers/${req.user!._id}/${post._id}/${req.file?.filename}`)
+            const fileBuffer = fs.readFileSync(req.file!.path);
+            await uploadBytes(imageRef, fileBuffer)
+            const mediaUrl = await getDownloadURL(imageRef)
 
             const updatedGroup: GroupInterface | null = await Group.findByIdAndUpdate(req.params.groupId, {
-                cover: req.file ? path : null,
+                cover: req.file ? mediaUrl : null,
                 name: req.body.name,
             }, { new: true })
 
-            const post: PostInterface = new Post({
-                group: updatedGroup && updatedGroup._id,
-                content: req.body.content,
-                media: path,
-                user_id: req.user!._id,
-                type: 'group-cover',
-                scope: updatedGroup && updatedGroup.privacy == 'public' ? 'public' : 'group'
-            })
+            post.group = updatedGroup && updatedGroup._id,
+            post.scope = updatedGroup && updatedGroup.privacy == 'public' ? 'public' : 'group'
+
+            
             await post.save()
 
             return res.json(updatedGroup)

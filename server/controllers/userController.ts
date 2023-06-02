@@ -6,6 +6,8 @@ import Job, { JobInterface } from '../models/job'
 import Academic, { AcademicInterface } from '../models/academic'
 import mongoose from 'mongoose'
 import { Middleware, NextFunction, Request, Response } from 'express'
+import { StorageReference, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import fs from 'fs'
 
 export const current_get: Middleware = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     try {
@@ -72,7 +74,7 @@ export const query_user: Middleware = async (req: Request, res: Response, next: 
                     newRoot: "$documents"
                 }
             }
-        ])
+        ]).exec()
 
         return res.json(users)
     } catch (error) {
@@ -120,24 +122,27 @@ export const current_profile_put = [
         .isLength({ max: 300 })
         .withMessage('Content must be less than or equal to 300 chars')
     , async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}/images/uploads/user-images/${req.file.filename}`
         const errors: Result<ValidationError> = validationResult(req)
         if (!errors.isEmpty()) {
             return res.sendStatus(400)
-        } else if (!path) {
-            return res.sendStatus(400)
         }
-
         try {
-            await User.findByIdAndUpdate(req.user!._id, { profile: path })
+            
             const post: PostInterface = new Post({
                 content: req.body.content,
-                media: path,
                 user_id: req.user!._id,
                 type: 'profile',
             })
-            await post.save()
-            return res.json(post)
+            
+            const imageRef: StorageReference = ref(req.storage!, `user-profile/${req.user!._id}/${post._id}/${req.file?.filename}`)
+            const fileBuffer = fs.readFileSync(req.file!.path);
+            await uploadBytes(imageRef, fileBuffer)
+            const mediaUrl = await getDownloadURL(imageRef)
+            post.media = mediaUrl
+            await User.findByIdAndUpdate(req.user!._id, { profile: mediaUrl })
+            const result: PostInterface = await post.save()
+
+            return res.json(result)
         } catch (error) {
             next(error)
         }
@@ -152,25 +157,28 @@ export const current_cover_put = [
         .isLength({ max: 300 })
         .withMessage('Content must be less than or equal to 300 chars')
     , async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-        const path: string | undefined = req.file && `${req.protocol}://${req.hostname}/images/uploads/user-images/${req.file.filename}`
         const errors: Result<ValidationError> = validationResult(req)
 
         if (!errors.isEmpty()) {
             return res.sendStatus(400)
-        } else if (!path) {
-            return res.sendStatus(400)
         }
 
         try {
-            await User.findByIdAndUpdate(req.user!._id, { cover: path })
+            
             const post: PostInterface = new Post({
                 content: req.body.content,
-                media: path,
                 user_id: req.user!._id,
                 type: 'cover',
             })
-            await post.save()
-            return res.json(post)
+
+            const imageRef: StorageReference = ref(req.storage!, `user-covers/${req.user!._id}/${post._id}/${req.file?.filename}`)
+            const fileBuffer = fs.readFileSync(req.file!.path);
+            await uploadBytes(imageRef, fileBuffer)
+            const mediaUrl = await getDownloadURL(imageRef)
+            post.media = mediaUrl
+            await User.findByIdAndUpdate(req.user!._id, { cover: mediaUrl })
+            const result: PostInterface = await post.save()
+            return res.json(result)
         } catch (error) {
             next(error)
         }

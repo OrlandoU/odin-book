@@ -9,9 +9,7 @@ const storage: StorageEngine = multer.diskStorage({
         cb(null, 'dist/uploads/post-images/');
     },
     filename: function (req: Request, file: Express.Multer.File, cb: (error: null | Error, filename: string) => void) {
-        const currentDate = new Date().toISOString().replace(/:/g, '-');
-        const uniqueFileName = currentDate + '-' + file.originalname;
-        cb(null, uniqueFileName);
+        cb(null, file.originalname)
     }
 });
 
@@ -50,7 +48,7 @@ router.get('/:postId/comments/:parentCommentId?/count', postController.comments_
 router.get('/:postId/comments/:parentCommentId?', postController.comments_get)
 
 //Create comment
-router.post('/:postId/comments/:parentCommentId?', postController.comments_post)
+router.post('/:postId/comments/:parentCommentId?', upload.single('media'), postController.comments_post)
 
 //Remove comment
 router.delete('/:postId/comments/:commentId', postController.comments_delete)

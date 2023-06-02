@@ -61,8 +61,9 @@ export default function Header(props) {
         await deleteMultipleNotification(token, { group: props._id, user_id: user._id, type: 'invite' })
     }
 
-    const handleDeclineInvite = () => {
-
+    const handleDeclineInvite = async () => {
+        await deleteMultipleNotification(token, { group: props._id, user_id: user._id, type: 'invite' })
+        setInvitation([])
     }
 
     const isMember = useMemo(() => {

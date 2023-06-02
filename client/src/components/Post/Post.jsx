@@ -196,7 +196,7 @@ export default function Post(props) {
                             <div className="post-type-name">
                                 <NavLink style={{ display: 'inline' }} className="post-name" to={'/' + post.user_id._id + '/'}>{post.user_id.first_name} {post.user_id.last_name}</NavLink>
                                 <div className="post-data extra">
-                                    {post.type == 'group-create' ? ' created the group' : post.type === 'group-cover' ? ' updated the group cover photo.' : post.type == 'profile' ? ' updated his profile picture.' : post.type === 'cover' ? ' updated his profile cover' : ''}
+                                    {post.type == 'group-create' ? ' created the group ' : post.type === 'group-cover' ? ' updated the group cover photo.' : post.type == 'profile' ? ' updated his profile picture.' : post.type === 'cover' ? ' updated his profile cover.' : ''}
                                 </div>
                                 {post.type === 'group-create' && <NavLink className="post-name" to={'/groups/' + post.group._id}>{post.group.name}</NavLink>}
                             </div>

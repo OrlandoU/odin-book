@@ -12,10 +12,10 @@ export default function Users() {
 
     useEffect(() => {
         queryUser(token, url.search).then(value => {
-            console.log(value, url)
+            console.log(value)
             setUsers(value || [])
         })
-    }, [url.search])
+    }, [token,url.search])
 
     if(!users.length){
         return (

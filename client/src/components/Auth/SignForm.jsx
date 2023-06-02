@@ -3,6 +3,7 @@ import { TokenContext } from "../../contexts/TokenContext"
 import { signUp } from "../../functions/auth"
 
 export default function SignForm() {
+    const [errors, setErrors] = useState([])
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')
@@ -35,7 +36,11 @@ export default function SignForm() {
         e.stopPropagation()
         e.preventDefault()
         const response = await signUp(firstName, lastName, email, password, passwordConfirmation)
-        tokenContext.setToken(response.token)
+        if (Array.isArray(response)) {
+            setErrors(response)
+        } else {
+            tokenContext.setToken(response.token)
+        }
     }
 
     return (
@@ -45,6 +50,11 @@ export default function SignForm() {
             <input type="text" className="span2" placeholder="Email" onChange={handleEmail} value={email} />
             <input type="text" className="span2" placeholder="Password" onChange={handlePassword} value={password} />
             <input type="text" className="span2" placeholder="Password Confirmation" onChange={handlePasswordConfirmation} value={passwordConfirmation} />
+            {errors.length > 0 && <div className="error-container">
+                {errors.map(error =>
+                    <div className="error-message">{error.msg}</div>
+                )}
+            </div>}
             <div className="button-wrapper span2">
                 <button>Register</button>
             </div>

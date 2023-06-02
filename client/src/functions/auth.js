@@ -25,12 +25,7 @@ export const signUp = async (firstName, lastName, email, password, passwordConfi
             headers: { 'Content-Type': "application/json" }
         })
         const data = await response.json()
-        if (response.ok) {
-            return data
-        } else {
-            console.log(data)
-            throw new Error(data[0].msg)
-        }
+        return data
     } catch (error) {
         console.error('Error retrieving jwt', error)
     }

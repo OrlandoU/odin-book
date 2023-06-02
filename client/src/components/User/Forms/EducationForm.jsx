@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
 import HiddenMenu from "../../HiddenMenu";
-import { createUserAcademic, updateUserAcademic } from "../../../functions/user";
+import { createUserAcademic, deleteUserAcademic, updateUserAcademic } from "../../../functions/user";
 import { TokenContext } from "../../../contexts/TokenContext";
+import { UpdateUserContext } from "../../../contexts/UpdateUserContext";
 
 export default function EducationForm(props) {
+    const updateUser = useContext(UpdateUserContext)
     const token = useContext(TokenContext).token
     const [expanded, setExpanded] = useState(false)
     const [school, setSchool] = useState(props.school || '')
@@ -26,12 +28,26 @@ export default function EducationForm(props) {
     const handleIsCurrent = (e) => {
         setIsCurrent(e.target.checked)
     }
+
+    const handleRemove = () => {
+        deleteUserAcademic(token, props._id).then(() => {
+            updateUser(token)
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         if (props.isPreview) {
-            updateUserAcademic(token, props._id, school, isCurrent)
+            updateUserAcademic(token, props._id, school, isCurrent).then(() => {
+                updateUser(token)
+                handleClose()
+            })
         } else {
             createUserAcademic(token, school, isCurrent)
+                .then(() => {
+                    updateUser(token)
+                    handleClose()
+                })
         }
     }
 
@@ -51,7 +67,7 @@ export default function EducationForm(props) {
                 </div>
                 <HiddenMenu>
                     <span onClick={handleOpen}>Edit Academic Record</span>
-                    <span>Remove WorkPlace</span>
+                    <span onClick={handleRemove}>Remove WorkPlace</span>
                 </HiddenMenu>
             </div>
         )
@@ -69,11 +85,11 @@ export default function EducationForm(props) {
     return (
         <form className="about-form" onSubmit={handleSubmit}>
             <label>
-                <input type="text" value={school} onChange={handleSchool} placeholder=" " required/>
+                <input type="text" value={school} onChange={handleSchool} placeholder=" " required />
                 <div className="input-label">School</div>
             </label>
             <label className="not">
-                <input className="checkbox" type="checkbox" checked={isCurrent} onChange={handleIsCurrent} placeholder=" "/>
+                <input className="checkbox" type="checkbox" checked={isCurrent} onChange={handleIsCurrent} placeholder=" " />
                 <div className="checkbox">I am currently studying here</div>
             </label>
             <div className="about-form-buttons">

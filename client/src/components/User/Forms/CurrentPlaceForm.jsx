@@ -2,9 +2,11 @@ import { useContext, useState } from "react";
 import { TokenContext } from "../../../contexts/TokenContext";
 import HiddenMenu from "../../HiddenMenu";
 import { updateUser } from "../../../functions/user";
+import { UpdateUserContext } from "../../../contexts/UpdateUserContext";
 
 export default function CurrentPlaceForm(props) {
-    const token = useContext(TokenContext).token
+    const userUpdate = useContext(UpdateUserContext)
+    const { token } = useContext(TokenContext)
     const [expanded, setExpanded] = useState(false)
     const [place, setPlace] = useState(props.place || '')
 
@@ -21,9 +23,19 @@ export default function CurrentPlaceForm(props) {
         setPlace(e.target.value)
     }
 
+    const handleRemove = () => {
+        updateUser(token, undefined, '').then(() => {
+            userUpdate(token)
+            handleClose()
+        })
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault(e)
-        updateUser(token, undefined, place)
+        updateUser(token, undefined, place).then(() => {
+            userUpdate(token)
+            handleClose()
+        })
     }
 
     if (props.isPreview && !expanded) {
@@ -42,7 +54,7 @@ export default function CurrentPlaceForm(props) {
                 </div>
                 <HiddenMenu>
                     <span onClick={handleOpen}>Edit Hometown</span>
-                    <span>Remove Hometown</span>
+                    <span onClick={handleRemove}>Remove Hometown</span>
                 </HiddenMenu>
             </div>
         )

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import './assets/styles/App.css';
 import { TokenContext } from './contexts/TokenContext';
-import { BrowserRouter, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
 import Auth from './components/Auth/Auth';
 import Home from './components/Home/Home';
 import { UserContext } from './contexts/UserContext';
@@ -130,7 +130,7 @@ function App() {
     };
   }, [token])
 
-  if (!token || !user) {
+  if (!token && !user._id) {
     return (
       <TokenContext.Provider value={{ token, setToken }}>
         <div className="App">
