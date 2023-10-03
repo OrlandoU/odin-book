@@ -1,4 +1,6 @@
+import Academic from "./Academic"
 import Group from "./Group"
+import Job from "./Job"
 
 export default interface User {
     _id: string,
@@ -6,9 +8,9 @@ export default interface User {
     last_name: string,
     email: string,
     password: string,
-    groups: string[] | Group[],
-    jobs: string[],
-    academics: string[],
+    groups: (string | Group)[],
+    jobs: string[] | Job[],
+    academics: string[] | Academic[],
     bio: string,
     birth_day: Date,
     birth_place: string,
