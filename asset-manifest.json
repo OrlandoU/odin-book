@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/odin-book/static/css/main.51a93284.css",
-    "main.js": "/odin-book/static/js/main.ade8de58.js",
+    "main.css": "/odin-book/static/css/main.0e81b91d.css",
+    "main.js": "/odin-book/static/js/main.b9bc7531.js",
     "static/js/845.c93b964e.chunk.js": "/odin-book/static/js/845.c93b964e.chunk.js",
     "static/media/new_message.mp3": "/odin-book/static/media/new_message.8370245f180e5ca01f6b.mp3",
     "static/media/new_notification.mp3": "/odin-book/static/media/new_notification.eb5844d61bf88a04d3de.mp3",
@@ -15,12 +15,12 @@
     "static/media/love.svg": "/odin-book/static/media/love.09fee837a394d29fd899a12e02e0af85.svg",
     "index.html": "/odin-book/index.html",
     "static/media/mention.svg": "/odin-book/static/media/mention.bc661435f4299caa30de562a99741e31.svg",
-    "main.51a93284.css.map": "/odin-book/static/css/main.51a93284.css.map",
-    "main.ade8de58.js.map": "/odin-book/static/js/main.ade8de58.js.map",
+    "main.0e81b91d.css.map": "/odin-book/static/css/main.0e81b91d.css.map",
+    "main.b9bc7531.js.map": "/odin-book/static/js/main.b9bc7531.js.map",
     "845.c93b964e.chunk.js.map": "/odin-book/static/js/845.c93b964e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.51a93284.css",
-    "static/js/main.ade8de58.js"
+    "static/css/main.0e81b91d.css",
+    "static/js/main.b9bc7531.js"
   ]
 }
