@@ -9,13 +9,29 @@ export default interface Notification {
     _id: string,
     user_id?: string | User,
     type: string,
-    sender_id?: string | User,
-    post: string | Post,
-    comment: string | Comment,
-    reaction: string | Reaction,
-    create_date: Date,
-    request: string | Relationship,
-    isViewed: boolean,
-    isVisited: boolean,
-    group: string | Group
+    sender_id: string | User,
+    post?: string | Post,
+    comment?: string | Comment,
+    reaction?: string | Reaction,
+    create_date?: Date,
+    request?: string | Relationship,
+    isViewed?: boolean,
+    isVisited?: boolean,
+    group?: string | Group
 }
+
+export interface NotificationAlt {
+    _id?: string,
+    user_id?: string | User,
+    type?: string,
+    sender_id?: string | User,
+    post?: string | Post,
+    comment?: string | Comment,
+    reaction?: string | Reaction,
+    create_date?: Date,
+    request?: string | Relationship,
+    isViewed?: boolean,
+    isVisited?: boolean,
+    group?: string | Group
+}
+

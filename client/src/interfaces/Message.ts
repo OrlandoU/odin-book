@@ -10,6 +10,6 @@ export default interface Message {
     isViewed: boolean,
     create_date: Date,
     media: string,
-    removed: string[] | User[],
+    removed: string[],
     isUnsent: boolean
 }
