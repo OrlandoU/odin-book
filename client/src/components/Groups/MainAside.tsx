@@ -6,7 +6,7 @@ import Preview from "./Preview";
 import User from "../../interfaces/User";
 
 export default function MainAside(): JSX.Element {
-    const user: User | null = useContext(UserContext)
+    const user = useContext(UserContext) as User
 
     return (
         <Aside>

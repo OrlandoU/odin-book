@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const UpdateUserContext = createContext<((token: JsonWebKey) => void) | null>(null)
+export const UpdateUserContext = createContext<((token: string) => void) | null>(null)

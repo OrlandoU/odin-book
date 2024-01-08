@@ -19,7 +19,7 @@ interface PreviewProps{
 
 export default function Preview(props: PreviewProps): JSX.Element {
     const { token } = useContext(TokenContext) as Token
-    const user: User | null = useContext(UserContext)
+    const user = useContext(UserContext) as User
 
     const [friend, setFriend] = useState<User | null>()
     const [friendsInCommon, setFriendsInCommon] = useState<Relationship[]>([])

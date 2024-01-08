@@ -38,7 +38,7 @@ export default function User(): JSX.Element {
                             return rel.user2_id
                         } else {
                             return rel.user1_id
-                        } 
+                        }
                     })
                     setFriends(arr)
                 })
@@ -48,7 +48,7 @@ export default function User(): JSX.Element {
         if (fetching.current) return
         fetching.current = true
         getPosts(token, { limit: posts.length === 0 ? 5 : 2, skip: posts.length === 0 ? 0 : posts.length + 1, user_id: url.userId, isInTrash: false }).then((value) => {
-            if(value){
+            if (value) {
                 setPosts(prev => [...prev, ...value])
                 fetching.current = false
             }
@@ -65,7 +65,7 @@ export default function User(): JSX.Element {
     useEffect(() => {
         fetchData()
         fetchPosts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url.userId])
 
     if (!user) {
@@ -76,9 +76,9 @@ export default function User(): JSX.Element {
         <main onScroll={handleScroll}>
             <Header user={user} friends={friends} />
             <Routes>
-                <Route path="/" element={<Main {...user} friends={friends} posts={posts} setPosts={setPosts} />} />
+                <Route path="/" element={<Main {...user} friends={friends} posts={posts} setPosts={setPosts}/>} />
                 <Route path="/friends" element={<Friend friends={friends} />} />
-                <Route path="/about/*" element={<About {...user} fetchData={fetchData} />} />
+                <Route path="/about/*" element={<About />} />
                 <Route path="/photos" element={<Media />} />
             </Routes>
         </main>

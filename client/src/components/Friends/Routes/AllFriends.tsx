@@ -11,7 +11,7 @@ import UserI from "../../../interfaces/User";
 
 export default function AllFriends(): JSX.Element {
     const { token } = useContext(TokenContext) as Token
-    const user: UserI | null = useContext(UserContext)
+    const user = useContext(UserContext) as UserI
     const [friends, setFriends] = useState<Relationship[]>([])
 
     useEffect(() => {

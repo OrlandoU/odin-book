@@ -1,7 +1,7 @@
 import { ErrorResponse } from "../interfaces/Error"
-import Notification from "../interfaces/Notification"
+import Notification, { NotificationAlt } from "../interfaces/Notification"
 
-export const getNotifications = async (token: JsonWebKey, queryObj:any) : Promise<Notification[] | void> => {
+export const getNotifications = async (token: string, queryObj: any): Promise<Notification[] | void> => {
     const queryString: string = '?' + new URLSearchParams(queryObj).toString()
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications' + queryString, {
@@ -26,7 +26,7 @@ export const getNotifications = async (token: JsonWebKey, queryObj:any) : Promis
     }
 }
 
-export const upsertNotification = async (token: JsonWebKey, user_id: string, notificationDocument: Notification): Promise<Notification | void> => {
+export const upsertNotification = async (token: string, user_id: string, notificationDocument: NotificationAlt): Promise<Notification | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications/', {
             method: 'POST',
@@ -52,7 +52,7 @@ export const upsertNotification = async (token: JsonWebKey, user_id: string, not
     }
 }
 
-export const updateToViewedNotifications = async (token:JsonWebKey): Promise<Notification | void> => {
+export const updateToViewedNotifications = async (token: string): Promise<Notification | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications/viewed', {
             method: 'PUT',
@@ -76,7 +76,7 @@ export const updateToViewedNotifications = async (token:JsonWebKey): Promise<Not
     }
 }
 
-export const updateNotification = async (token: JsonWebKey, id: string, isVisited: boolean): Promise<Notification | void> => {
+export const updateNotification = async (token: string, id: string, isVisited: boolean): Promise<Notification | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications/' + id, {
             method: 'PUT',
@@ -102,7 +102,7 @@ export const updateNotification = async (token: JsonWebKey, id: string, isVisite
     }
 }
 
-export const deleteNotification = async (token: JsonWebKey, id: string): Promise<Notification | void> => {
+export const deleteNotification = async (token: string, id: string): Promise<Notification | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications/' + id, {
             method: 'DELETE',
@@ -126,7 +126,7 @@ export const deleteNotification = async (token: JsonWebKey, id: string): Promise
     }
 }
 
-export const deleteMultipleNotification = async (token: JsonWebKey, queryObj: any): Promise<Notification[] | void> => {
+export const deleteMultipleNotification = async (token: string, queryObj: any): Promise<Notification[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/notifications/many', {
             method: 'DELETE',

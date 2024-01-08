@@ -12,7 +12,7 @@ import PostI from "../../../interfaces/Post";
 
 interface Props {
     friends: User[],
-    posts: Post[],
+    posts: PostI[],
     setPosts: Dispatch<SetStateAction<PostI[]>>
 }
 
@@ -32,17 +32,17 @@ export default function Main(props: Props): JSX.Element {
                 .then(value => {
                     if (value) {
                         const arr: MediaPosts[] = value.flatMap(post => {
-                            if (post.multiple_media.length > 0) {
-                                return post.multiple_media.map(media => { return { media: media, id: post._id, user_id: post.user_id } })
+                            if (post.multiple_media && post.multiple_media.length > 0) {
+                                return post.multiple_media.map(media => { return { media: media, _id: post._id, user_id: post.user_id } })
                             } else {
-                                return { media: post.media, id: post._id, user_id: post.user_id }
+                                return { media: post.media, _id: post._id, user_id: post.user_id }
                             }
                         })
                         setPhotos(arr.slice(0, 9) || [])
                     }
                 })
         }
-    }, [url.userId])
+    }, [url])
 
 
     if (!user) {
@@ -113,8 +113,11 @@ export default function Main(props: Props): JSX.Element {
                 </Section>
             </LeftBar>
             <div className="posts-container">
-                {props.posts.map(post =>
-                    <Post {...post} key={post._id} setPosts={props.setPosts} />
+                {props.posts.map(post => {
+                    return (<Post {...post} key={post._id}
+                    // setPosts={props.setPosts} 
+                    />)
+                }
                 )}
             </div>
         </div>

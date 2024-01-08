@@ -7,10 +7,9 @@ import { UpdateUserContext } from '../../../contexts/UpdateUserContext'
 import { getFriends } from '../../../functions/relationship'
 import Modal from '../../Modal'
 import { queryUser } from "../../../functions/user"
-import { deleteMultipleNotification, deleteNotification, getNotifications, upsertNotification } from "../../../functions/notification"
+import { deleteMultipleNotification, getNotifications, upsertNotification } from "../../../functions/notification"
 import User from "../../../interfaces/User"
 import Notification from "../../../interfaces/Notification"
-import { RelationshipExtended } from "../../../interfaces/Relationship"
 import Group from "../../../interfaces/Group"
 
 interface Props extends Group {
@@ -25,14 +24,14 @@ export default function Header(props: Props): JSX.Element {
     const [friends, setFriends] = useState<User[]>([])
 
     const { token } = useContext(TokenContext) as Token
-    const user: User | null = useContext(UserContext)
+    const user = useContext(UserContext) as User
     const [image, setImage] = useState<File>()
 
     const handleInvite = (id: string) => {
         upsertNotification(token, id, {
             type: 'invite',
             group: props._id,
-            user_id: id
+            user_id: id,
         }).then(res => {
             console.log(res)
         })

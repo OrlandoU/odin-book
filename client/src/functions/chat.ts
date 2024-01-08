@@ -1,14 +1,14 @@
 import Chat from "../interfaces/Chat"
 import Message from "../interfaces/Message"
 
-export const getChat = async (token:JsonWebKey, chatId: string): Promise<Chat | void> => {
+export const getChat = async (token: string, chatId: string): Promise<Chat | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/chats/' + chatId, {
             headers: {
                 'authorization': 'bearer ' + token,
             }
         })
-        
+
         if (!response.ok) {
             let err: string = await response.json()
             throw new Error(err)
@@ -21,7 +21,7 @@ export const getChat = async (token:JsonWebKey, chatId: string): Promise<Chat | 
     }
 }
 
-export const getChatWithUser = async (token:JsonWebKey, userId: string): Promise<Chat | void> => {
+export const getChatWithUser = async (token: string, userId: string): Promise<Chat | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/chats/user/' + userId, {
             headers: {
@@ -40,7 +40,7 @@ export const getChatWithUser = async (token:JsonWebKey, userId: string): Promise
     }
 }
 
-export const getChats = async (token:JsonWebKey): Promise<Chat[] | void> => {
+export const getChats = async (token: string): Promise<Chat[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/chats', {
             headers: {
@@ -59,7 +59,7 @@ export const getChats = async (token:JsonWebKey): Promise<Chat[] | void> => {
     }
 }
 
-export const getUnviewedChats = async (token:JsonWebKey): Promise<Chat[] | void> => {
+export const getUnviewedChats = async (token: string): Promise<Chat[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/chats/unviewed', {
             headers: {
@@ -78,7 +78,7 @@ export const getUnviewedChats = async (token:JsonWebKey): Promise<Chat[] | void>
     }
 }
 
-export const createChat = async (token:JsonWebKey, participants: string | string[]): Promise<Chat | void> => {
+export const createChat = async (token: string, participants: string | string[]): Promise<Chat | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/chats', {
             method: 'POST',
@@ -102,7 +102,7 @@ export const createChat = async (token:JsonWebKey, participants: string | string
 
 
 
-export const getChatLastMessage = async (token:JsonWebKey, chatId: string): Promise<Message | void> => {
+export const getChatLastMessage = async (token: string, chatId: string): Promise<Message | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/chats/${chatId}/last-message`, {
             headers: {
@@ -121,7 +121,7 @@ export const getChatLastMessage = async (token:JsonWebKey, chatId: string): Prom
     }
 }
 
-export const getMessages = async (token:JsonWebKey, chatId: string, queryObj: {limit: any, skip: any}): Promise<Message[] | void> => {
+export const getMessages = async (token: string, chatId: string, queryObj: { limit: any, skip: any }): Promise<Message[] | void> => {
     const queryString: string = '?' + new URLSearchParams(queryObj).toString()
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/chats/${chatId}/messages` + queryString, {
@@ -141,7 +141,7 @@ export const getMessages = async (token:JsonWebKey, chatId: string, queryObj: {l
     }
 }
 
-export const createMessage = async (token:JsonWebKey , chatId:string , content:string , media: File[]): Promise<Message | void> => {
+export const createMessage = async (token: string, chatId: string, content: string, media: File[]): Promise<Message | void> => {
     const formData = new FormData()
     for (let i = 0; i < media.length; i++) {
         formData.append('media', media[i])
@@ -167,7 +167,7 @@ export const createMessage = async (token:JsonWebKey , chatId:string , content:s
     }
 }
 
-export const updateMessage = async (token:JsonWebKey, messageId:string, chatId:string , isUnsent: boolean, removeForMe: boolean, isRead: boolean, isViewed: boolean): Promise<Message | void> => {
+export const updateMessage = async (token: string, messageId: string, chatId: string, isUnsent?: boolean | null, removeForMe?: boolean | null, isRead?: boolean | null, isViewed?: boolean | null): Promise<Message | void> => {
     try {
         const response = await fetch(`https://oodinbook.fly.dev/chats/${chatId}/messages/${messageId}`, {
             method: 'PUT',
@@ -189,7 +189,7 @@ export const updateMessage = async (token:JsonWebKey, messageId:string, chatId:s
     }
 }
 
-export const deleteMessage = async (token:JsonWebKey , chatId: string, messageId: string): Promise<Message | void> => {
+export const deleteMessage = async (token: string, chatId: string, messageId: string): Promise<Message | void> => {
     try {
         const response = await fetch(`https://oodinbook.fly.dev/chats/${chatId}/messages/${messageId}`, {
             method: 'DELETE',
@@ -210,7 +210,7 @@ export const deleteMessage = async (token:JsonWebKey , chatId: string, messageId
     }
 }
 
-export const removeMessagesForCurrentUser = async (token: JsonWebKey, chatId: string): Promise<Message[] | void> => {
+export const removeMessagesForCurrentUser = async (token: string, chatId: string): Promise<Message[] | void> => {
     try {
         const response = await fetch(`https://oodinbook.fly.dev/chats/${chatId}/remove`, {
             method: 'PUT',

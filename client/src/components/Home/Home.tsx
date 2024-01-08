@@ -9,15 +9,15 @@ import Post from "../../interfaces/Post"
 
 export default function Home(): JSX.Element {
     const fetching = useRef<boolean>()
-    const { token, setToken } = useContext(TokenContext) as Token 
+    const { token} = useContext(TokenContext) as Token 
     const [posts, setPosts] = useState<Post[]>([])
 
     const fetchPosts = useCallback(() => {
         if (fetching.current) return
 
         fetching.current = true
-        getFeedPosts(token, posts.length === 0 ? 5 : 2, posts.length === 0 ? 0 : posts.length + 1).then((value) => {
-            setPosts(prev => [...prev, ...value])
+        getFeedPosts(token, posts.length === 0 ? '5' : '2', posts.length === 0 ? '0' : String(posts.length + 1)).then((value) => {
+            value && setPosts(prev => [...prev, ...value])
             fetching.current = false
         })
     }, [posts.length, token])

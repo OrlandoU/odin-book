@@ -1,13 +1,15 @@
 import { useContext, useEffect, useMemo, useState } from "react"
-import { ChatContext } from "../../contexts/ChatContext"
+import { ChatContI, ChatContext } from "../../contexts/ChatContext"
 import { UserContext } from "../../contexts/UserContext"
 import { SocketContext } from "../../contexts/SocketContext"
-import React from "react"
+import Chat from "../../interfaces/Chat"
+import User from "../../interfaces/User"
+import { Socket } from "socket.io-client"
 
-export default function Contact(props) {
-    const socket = useContext(SocketContext)
-    const user = useContext(UserContext)
-    const { addChat } = useContext(ChatContext)
+export default function Contact(props: Chat) {
+    const socket = useContext(SocketContext) as Socket
+    const user = useContext(UserContext) as User
+    const { addChat } = useContext(ChatContext) as ChatContI
     const [isOnline, setIsOnline] = useState(false)
 
     const filteredChat = useMemo(() => {
@@ -26,7 +28,7 @@ export default function Contact(props) {
     }
 
     useEffect(() => {
-        const handleUserChangeStatus = (user) => {
+        const handleUserChangeStatus = (user: User) => {
             if (user._id === filteredChat.chatUser._id) {
                 setIsOnline(user.isOnline)
             }

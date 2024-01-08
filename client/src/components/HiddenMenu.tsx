@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, MouseEventHandler} from "react"
+import { useEffect, useRef, useState, MouseEventHandler, ReactNode} from "react"
 
 interface HiddenMenuProps {
-    children?: JSX.Element,
+    children?: ReactNode,
     className?: string,
     onVisible?: () => void,
-    fixed?: boolean
+    fixed?: boolean,
+    inView?: boolean
 }
 
 export default function HiddenMenu({ children, className, onVisible, fixed }: HiddenMenuProps): JSX.Element {

@@ -1,8 +1,8 @@
-import { useState, JSX, ComponentProps} from "react"
+import { useState, JSX, ComponentProps, ReactNode} from "react"
 
 interface ModalProps extends ComponentProps<'div'> {
-    children?: JSX.Element,
-    trigger?: JSX.Element,
+    children?: ReactNode,
+    trigger?: ReactNode,
     title?: string,
     modalClass?: string,
     classname?: string,

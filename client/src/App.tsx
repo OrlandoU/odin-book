@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import './assets/styles/App.css';
 import { TokenContext } from './contexts/TokenContext';
-import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
+import { HashRouter, NavLink, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import Auth from './components/Auth/Auth';
 import Home from './components/Home/Home';
 import { UserContext } from './contexts/UserContext';
@@ -24,23 +24,24 @@ import PostSaved from './components/Post/PostSaved';
 import { UpdateUserContext } from './contexts/UpdateUserContext';
 import Chat from './interfaces/Chat';
 import UserI from './interfaces/User'
+import UserWrapper from './components/User/UserWrapper';
 
 type localVar = string | null
 
 function App(): React.JSX.Element {
   const [socket, setSocket] = useState<Socket | null>(null)
   const [openChats, setOpenChats] = useState<Chat[]>([])
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<string>('')
   const [user, setUser] = useState<UserI | null>(null)
 
-  const [isCompact, setIsCompact] = useState<boolean | null>(null)
-  const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null)
+  const [isCompact, setIsCompact] = useState<boolean>(false)
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
   const removeChat = (id: string) => {
     setOpenChats(prev => prev.filter(chat => chat._id !== id))
   }
 
-  const addChat = (chat: Chat): void =>  {
+  const addChat = (chat: Chat): void => {
     setOpenChats((prev: Chat[]) => {
       let filtered = prev.find(el => el._id === chat._id)
       if (filtered) {
@@ -76,8 +77,9 @@ function App(): React.JSX.Element {
     if (token === '') {
       setUser(null)
     } else {
-      getCurrentUser(token).then((data: UserI) => {
-        setUser(data)
+
+      getCurrentUser(token as string).then((data: UserI | void) => {
+        data && setUser(data)
       })
     }
   }
@@ -87,7 +89,7 @@ function App(): React.JSX.Element {
     const theme: localVar = localStorage.getItem('theme-odin')
     const isCompact: localVar = localStorage.getItem('isCompact-odin')
     if (storageToken) {
-      setToken(storageToken)
+      setToken(storageToken as string)
     }
     setIsDarkMode(!!theme)
     setIsCompact(!!isCompact)
@@ -117,7 +119,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     if (token !== null) {
-      localStorage.setItem('jwt-odin', token)
+      localStorage.setItem('jwt-odin', token as string)
       fetchUser(token)
     }
   }, [token])
@@ -134,22 +136,23 @@ function App(): React.JSX.Element {
     };
   }, [token])
 
-  if (!token && !user) {
+  if (!token || !user) {
     return (
       <TokenContext.Provider value={{ token, setToken }}>
         <div className="App">
-          <Auth /> 
+          <Auth />
         </div>
       </TokenContext.Provider>
     )
   }
 
+
   return (
     <UpdateUserContext.Provider value={fetchUser}>
       <SocketContext.Provider value={socket}>
         <ChatContext.Provider value={{ openChats, addChat, removeChat, hideChat, showChat }}>
-          <UserContext.Provider value={user}>
-            <TokenContext.Provider value={{ token, setToken }}>
+          <UserContext.Provider value={user!}>
+            <TokenContext.Provider value={{ token: token!, setToken }}>
               <HashRouter>
                 <div className={isDarkMode ? "App DarkMode" : "App"}>
                   <nav>
@@ -158,7 +161,7 @@ function App(): React.JSX.Element {
                     <NavOptions isCompact={isCompact} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setIsCompact={setIsCompact} />
                   </nav>
                   <div className="main-wrapper">
-                    <LeftBar className={'home'} />
+                    <LeftBar/>
                     <Routes>
                       <Route path='/' element={<Home />} />
                       <Route path='/auth' element={<Auth />} />
@@ -166,9 +169,9 @@ function App(): React.JSX.Element {
                       <Route path='/groups/*' element={<Groups />} />
                       <Route path='/posts/saved' element={<PostSaved />} />
                       <Route path='/post/:postId' element={<PostDisplay />} />
-                      <Route path='/photo/:postId/:index?' element={<PhotoDisplay />} />
+                      <Route path='/photo/:postId/:index?' element={<PhotoDisplay isCompact={isCompact} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} setIsCompact={setIsCompact} />} />
                       <Route path='/search/:search/*' element={<Search />} />
-                      <Route path='/:userId/*' element={<User />} />
+                      <Route path='/:userId/*' element={<UserWrapper />} />
                     </Routes>
                   </div>
                   <Bubbles />

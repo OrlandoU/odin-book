@@ -11,8 +11,8 @@ export default function RightBar(): JSX.Element {
     const [chats, setChats] = useState<Chat[]>([])
 
     useEffect(() => {
-        getChats(token).then((value: Chat[]) => {
-            setChats(value)
+        getChats(token).then((value) => {
+            value && setChats(value)
         })
     }, [])
 

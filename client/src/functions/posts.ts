@@ -1,9 +1,9 @@
+import Comment from "../interfaces/Comment"
 import { ErrorResponse } from "../interfaces/Error"
 import Post from "../interfaces/Post"
 import Reaction from "../interfaces/Reaction"
-import User from "../interfaces/User"
 
-export const getFeedPosts = async (token: JsonWebKey, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
+export const getFeedPosts = async (token: string, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
     const queryString = '?' + new URLSearchParams({ limit, skip }).toString()
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/posts/feed' + queryString, {
@@ -12,7 +12,7 @@ export const getFeedPosts = async (token: JsonWebKey, limit: string = '', skip: 
                 'authorization': 'bearer ' + token
             }
         })
-        
+
         if (response.ok) {
             const data: Post[] = await response.json()
             return data
@@ -29,7 +29,7 @@ export const getFeedPosts = async (token: JsonWebKey, limit: string = '', skip: 
     }
 }
 
-export const queryPosts = async (token: JsonWebKey, string: string, isMedia: boolean, isFriends: boolean, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
+export const queryPosts = async (token: string, string: string, isMedia: boolean, isFriends: boolean, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
     try {
         let isFriendsString = isFriends ? 'true' : ''
         let isMediaString = isFriends ? 'true' : ''
@@ -48,7 +48,7 @@ export const queryPosts = async (token: JsonWebKey, string: string, isMedia: boo
     }
 }
 
-export const getGroupsFeedPosts = async (token: JsonWebKey, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
+export const getGroupsFeedPosts = async (token: string, limit: string = '', skip: string = ''): Promise<Post[] | void> => {
     try {
         const queryString: string = '?' + new URLSearchParams({ limit, skip }).toString()
         const response: Response = await fetch('https://oodinbook.fly.dev/posts/group_feed' + queryString, {
@@ -73,7 +73,7 @@ export const getGroupsFeedPosts = async (token: JsonWebKey, limit: string = '', 
     }
 }
 
-export const getPosts = async (token: JsonWebKey, queryObj: any): Promise<Post[] | void> => {
+export const getPosts = async (token: string, queryObj: any): Promise<Post[] | void> => {
     try {
         const queryString: string = '?' + new URLSearchParams(queryObj).toString()
         const response: Response = await fetch('https://oodinbook.fly.dev/posts' + queryString, {
@@ -98,7 +98,7 @@ export const getPosts = async (token: JsonWebKey, queryObj: any): Promise<Post[]
     }
 }
 
-export const getPostsWithPhotos = async (token: JsonWebKey, userId: string, queryObj?: any): Promise<Post[] | void> => {
+export const getPostsWithPhotos = async (token: string, userId: string, queryObj?: any): Promise<Post[] | void> => {
     const queryString: string = '?' + new URLSearchParams(queryObj).toString()
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/posts/photos/' + userId + queryString, {
@@ -123,7 +123,7 @@ export const getPostsWithPhotos = async (token: JsonWebKey, userId: string, quer
     }
 }
 
-export const getPostFormatted = (time: string): string => {
+export const getPostFormatted = (time: string | Date): string => {
     let Ntime: Date = new Date(time)
     let hours: number = Math.abs(new Date().getTime() - Ntime.getTime()) / 36e5;
     if (hours < 1) {
@@ -141,7 +141,8 @@ export const getPostFormatted = (time: string): string => {
     }
     return Math.trunc(hours) + 'h'
 }
-export const getPostFormattedAlt = (time: string): string => {
+
+export const getPostFormattedAlt = (time: string | Date): string => {
     let Ntime: Date = new Date(time)
     let hours: number = Math.abs(new Date().getTime() - Ntime.getTime()) / 36e5;
     if (hours < 1) {
@@ -160,22 +161,22 @@ export const getPostFormattedAlt = (time: string): string => {
     return Math.trunc(hours) + ' hours ago'
 }
 
-export const createPost = async (token: JsonWebKey, content: string, mentions: string, multiple_media: File[], groupId: string, privacy: string): Promise<Post | void> => {
+export const createPost = async (token: string, content: string, mentions: string[], multiple_media: File[], groupId: string, privacy: string): Promise<Post | void> => {
     try {
-        const formData: FormData = new FormData()
-        formData.append('content', content)
-        if (mentions && Array.isArray(mentions) && mentions.length > 0) {
-            formData.append('mentions', mentions)
-        }
-        for (let i = 0; i < multiple_media.length; i++) {
-            formData.append('multiple_media', multiple_media[i])
-        }
-        formData.append('group_id', groupId)
-        formData.append('scope', privacy)
-
-
         let response: Response
-        if (multiple_media || multiple_media.length) {
+        if (multiple_media && multiple_media.length) {
+            const formData: FormData = new FormData()
+            formData.append('content', content)
+            if (mentions && Array.isArray(mentions) && mentions.length > 0) {
+                for (let i = 0; i < mentions.length; i++) {
+                    formData.append('mentions', multiple_media[i])
+                }
+            }
+            for (let i = 0; i < multiple_media.length; i++) {
+                formData.append('multiple_media', multiple_media[i])
+            }
+            formData.append('group_id', groupId)
+            formData.append('scope', privacy)
             response = await fetch('https://oodinbook.fly.dev/posts', {
                 method: 'POST',
                 body: formData,
@@ -198,7 +199,7 @@ export const createPost = async (token: JsonWebKey, content: string, mentions: s
             const data: Post = await response.json()
             return data
         } else {
-            const errors:ErrorResponse = await response.json()
+            const errors: ErrorResponse = await response.json()
             if (Array.isArray(errors)) {
                 throw new Error(errors[0].msg)
             } else {
@@ -211,7 +212,13 @@ export const createPost = async (token: JsonWebKey, content: string, mentions: s
     }
 }
 
-export const updatePost = async (token: JsonWebKey, postId: string, updateObject: Post): Promise<Post | void> => {
+interface BodyPost extends Post {
+    unsave?: boolean,
+    save?: boolean,
+    isInTrash?: boolean
+}
+
+export const updatePost = async (token: string, postId: string, updateObject: BodyPost): Promise<Post | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/posts/' + postId, {
             method: 'PUT',
@@ -237,7 +244,7 @@ export const updatePost = async (token: JsonWebKey, postId: string, updateObject
     }
 }
 
-export const deletePost = async (token: JsonWebKey, postId: string) : Promise<Post | void> => {
+export const deletePost = async (token: string, postId: string): Promise<Post | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/posts/' + postId, {
             method: 'DELETE',
@@ -261,7 +268,7 @@ export const deletePost = async (token: JsonWebKey, postId: string) : Promise<Po
     }
 }
 
-export const getCommentsUnderPost = async (token: JsonWebKey, postId: string, parentCommentId: string = ''): Promise<Comment[] | void> => {
+export const getCommentsUnderPost = async (token: string, postId: string, parentCommentId: string = ''): Promise<Comment[] | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId}`, {
             headers: {
@@ -284,7 +291,7 @@ export const getCommentsUnderPost = async (token: JsonWebKey, postId: string, pa
     }
 }
 
-export const getCommentsCount = async (token: JsonWebKey, postId: string, parentCommentId: string): Promise<Comment[] | void> => {
+export const getCommentsCount = async (token: string, postId: string, parentCommentId?: string): Promise<number | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId ? parentCommentId + '/' : ''}count`, {
             headers: {
@@ -292,7 +299,7 @@ export const getCommentsCount = async (token: JsonWebKey, postId: string, parent
             }
         })
         if (response.ok) {
-            const data: Comment[] = await response.json()
+            const data: number = await response.json()
             return data
         } else {
             const errors: ErrorResponse = await response.json()
@@ -307,7 +314,7 @@ export const getCommentsCount = async (token: JsonWebKey, postId: string, parent
     }
 }
 
-export const createComment = async (token: JsonWebKey, postId: string, parentCommentId: string, content: string, media: File, mentions: string[]): Promise<Comment | void> => {
+export const createComment = async (token: string, postId: string, parentCommentId: string, content?: string, media?: File, mentions?: string[]): Promise<Comment | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${parentCommentId}`, {
             method: 'POST',
@@ -333,7 +340,7 @@ export const createComment = async (token: JsonWebKey, postId: string, parentCom
     }
 }
 
-export const deleteComment = async (token: JsonWebKey, postId: string, commentId: string): Promise<Comment | void> => {
+export const deleteComment = async (token: string, postId: string, commentId: string): Promise<Comment | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${postId}/comments/${commentId}`, {
             method: 'DELETE',
@@ -357,7 +364,7 @@ export const deleteComment = async (token: JsonWebKey, postId: string, commentId
     }
 }
 
-export const createReaction = async (token: JsonWebKey, parentId: string, type: string, parentCollection: string, parentAuthor: string): Promise<Reaction | void> => {
+export const createReaction = async (token: string, parentId: string, type: string, parentCollection: string, parentAuthor: string): Promise<Reaction | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'POST',
@@ -383,7 +390,7 @@ export const createReaction = async (token: JsonWebKey, parentId: string, type: 
     }
 }
 
-export const getReactions = async (token: JsonWebKey, parentId: string): Promise<Reaction[] | void> => {
+export const getReactions = async (token: string, parentId: string): Promise<Reaction[] | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'GET',
@@ -407,7 +414,7 @@ export const getReactions = async (token: JsonWebKey, parentId: string): Promise
     }
 }
 
-export const getReactionsCount = async (token: JsonWebKey, parentId: string): Promise<number | void> => {
+export const getReactionsCount = async (token: string, parentId: string): Promise<number | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction/count`, {
             method: 'GET',
@@ -431,7 +438,7 @@ export const getReactionsCount = async (token: JsonWebKey, parentId: string): Pr
     }
 }
 
-export const deleteReaction = async (token: JsonWebKey, parentId: string): Promise<Reaction | void> => {
+export const deleteReaction = async (token: string, parentId: string): Promise<Reaction | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/posts/${parentId}/reaction`, {
             method: 'DELETE',

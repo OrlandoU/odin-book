@@ -3,7 +3,7 @@ import Job from "../interfaces/Job"
 import Post from "../interfaces/Post"
 import User from "../interfaces/User"
 
-export const getCurrentUser = async (token: JsonWebKey): Promise<User | void> => {
+export const getCurrentUser = async (token: string): Promise<User | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user', {
             headers: { 'authorization': 'bearer ' + token }
@@ -15,7 +15,7 @@ export const getCurrentUser = async (token: JsonWebKey): Promise<User | void> =>
     }
 }
 
-export const getUserInfo = async (token: JsonWebKey, userId: string): Promise<User | void> => {
+export const getUserInfo = async (token: string, userId: string): Promise<User | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/' + userId, {
             headers: { 'authorization': 'bearer ' + token }
@@ -31,7 +31,7 @@ export const getUserInfo = async (token: JsonWebKey, userId: string): Promise<Us
     }
 }
 
-export const queryUser = async (token: JsonWebKey, string: string): Promise<User[] | void> => {
+export const queryUser = async (token: string, string: string): Promise<User[] | void> => {
     try {
         const queryString = '?' + new URLSearchParams({ query: string }).toString()
         const response: Response = await fetch('https://oodinbook.fly.dev/user/search' + queryString, {
@@ -48,7 +48,7 @@ export const queryUser = async (token: JsonWebKey, string: string): Promise<User
     }
 }
 
-export const updateProfile = async (token: JsonWebKey, profile: File, content: string): Promise<Post | void> => {
+export const updateProfile = async (token: string, profile: File, content: string): Promise<Post | void> => {
     try {
         const formData = new FormData()
         formData.append('profile', profile)
@@ -68,7 +68,7 @@ export const updateProfile = async (token: JsonWebKey, profile: File, content: s
     }
 }
 
-export const updateCover = async (token: JsonWebKey, cover: File, content: string): Promise<Post | void> => {
+export const updateCover = async (token: string, cover: File, content: string): Promise<Post | void> => {
     try {
         const formData = new FormData()
         formData.append('cover', cover)
@@ -88,7 +88,7 @@ export const updateCover = async (token: JsonWebKey, cover: File, content: strin
     }
 }
 
-export const updateUser = async (token: JsonWebKey, birth_place: string, current_place: string, bio: string): Promise<User | void> => {
+export const updateUser = async (token: string, birth_place: string, current_place?: string, bio?: string): Promise<User | void> => {
     try {
 
         const response: Response = await fetch('https://oodinbook.fly.dev/user/', {
@@ -108,7 +108,7 @@ export const updateUser = async (token: JsonWebKey, birth_place: string, current
     }
 }
 
-export const createUserJob = async (token: JsonWebKey, company: string, position: string, location: string, isCurrent: boolean): Promise<Job | void> => {
+export const createUserJob = async (token: string, company: string, position: string, location: string, isCurrent: boolean): Promise<Job | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/job', {
             method: 'POST',
@@ -125,7 +125,7 @@ export const createUserJob = async (token: JsonWebKey, company: string, position
     }
 }
 
-export const updateUserJob = async (token: JsonWebKey, jobId: string, company: string, position: string, location: string, isCurrent: boolean): Promise<Job | void> => {
+export const updateUserJob = async (token: string, jobId: string, company: string, position: string, location: string, isCurrent: boolean): Promise<Job | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/job/' + jobId, {
             method: 'PUT',
@@ -143,7 +143,7 @@ export const updateUserJob = async (token: JsonWebKey, jobId: string, company: s
 }
 
 
-export const deleteUserJob = async (token: JsonWebKey, jobId: string): Promise<Job | void> => {
+export const deleteUserJob = async (token: string, jobId: string): Promise<Job | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/job/' + jobId, {
             method: 'DELETE',
@@ -158,7 +158,7 @@ export const deleteUserJob = async (token: JsonWebKey, jobId: string): Promise<J
     }
 }
 
-export const createUserAcademic = async (token: JsonWebKey, school: string, isCurrent: boolean): Promise<Academic | void> => {
+export const createUserAcademic = async (token: string, school: string, isCurrent: boolean): Promise<Academic | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/academic', {
             method: 'POST',
@@ -175,7 +175,7 @@ export const createUserAcademic = async (token: JsonWebKey, school: string, isCu
     }
 }
 
-export const updateUserAcademic = async (token: JsonWebKey, academicId: string, school: string, isCurrent: boolean): Promise<Academic | void> => {
+export const updateUserAcademic = async (token: string, academicId: string, school: string, isCurrent: boolean): Promise<Academic | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/academic/' + academicId, {
             method: 'PUT',
@@ -192,7 +192,7 @@ export const updateUserAcademic = async (token: JsonWebKey, academicId: string, 
     }
 }
 
-export const deleteUserAcademic = async (token: JsonWebKey, academicId: string): Promise<Academic | void> => {
+export const deleteUserAcademic = async (token: string, academicId: string): Promise<Academic | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/user/academic/' + academicId, {
             method: 'DELETE',

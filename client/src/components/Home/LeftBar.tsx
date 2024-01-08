@@ -6,11 +6,11 @@ import Group from "../../interfaces/Group"
 
 export default function LeftBar(): JSX.Element {
     const location: Location = useLocation()
-    const user: User | null = useContext(UserContext)
+    const user = useContext(UserContext) as User
     const groups = user ? user.groups as Group[] : []
 
     return (
-        <aside className={location.pathname !== '/' ? "left-aside not-home" : "left-aside"}>
+        <aside className={location.pathname !== '/' ? "left-aside not-home" : "left-aside home"}>
             <section className="capitalize">
                 <NavLink to={'/'} className="section-item">
                     <div className="section-svg">

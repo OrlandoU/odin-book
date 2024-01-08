@@ -8,7 +8,7 @@ import Preview from "../../../Friends/Preview";
 import User from "../../../../interfaces/User";
 
 interface Props {
-    creator : User
+    creator : User | string
 }
 
 export default function People(props: Props): JSX.Element {
@@ -28,7 +28,7 @@ export default function People(props: Props): JSX.Element {
                 <div className="post-data">New people who join this group will appear here.</div>
                 <div className="border-line"></div>
                 <div className="group-preview-name">Admins · 1</div>
-                <Preview {...props.creator} unwrapped residence />
+                {typeof props.creator !== 'string' && <Preview {...props.creator} unwrapped residence />}
                 <div className="border-line"></div>
                 <div className="group-preview-name">Members · {members.length}</div>
                 {members.map(member =>

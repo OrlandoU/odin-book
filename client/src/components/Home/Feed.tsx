@@ -15,7 +15,9 @@ export default function Feed({posts, setPosts} : FeedProps): JSX.Element {
             <PostForm setPosts={setPosts}/>
             <div className="posts-container">
                 {posts.map(post =>
-                    <Post {...post} key={post._id} setPosts={setPosts}/>
+                    <Post {...post} key={post._id} 
+                    // setPosts={setPosts}
+                    />
                 )}
             </div>
         </section>

@@ -22,10 +22,10 @@ export default function Media(): JSX.Element {
                 .then(value => {
                     if(value){
                         const arr = value.flatMap(post => {
-                            if (post.multiple_media.length > 0) {
+                            if (post.multiple_media && post.multiple_media.length > 0) {
                                 return post.multiple_media.map(media => { return { _id: post._id, media: media } })
                             } else {
-                                return post
+                                return { _id: post._id, media: post.media }
                             }
                         })
                         setPosts(arr)

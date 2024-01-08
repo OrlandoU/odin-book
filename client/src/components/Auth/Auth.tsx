@@ -1,6 +1,5 @@
 import LoginForm from "./LoginForm";
 import '../../assets/styles/Auth.css'
-import React from "react";
 
 export default function Auth(): JSX.Element{
     return (

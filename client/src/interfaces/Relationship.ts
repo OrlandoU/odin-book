@@ -21,3 +21,7 @@ export interface RelationshipExtended {
     value: number,
     request_state: 'Pending' | 'Accepted' | 'Rejected'
 }
+
+export interface RelationshipUser extends Relationship, User{
+    
+}

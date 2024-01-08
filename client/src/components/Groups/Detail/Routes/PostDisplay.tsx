@@ -26,7 +26,7 @@ export default function PostDisplay(props: Props): JSX.Element {
             .then(value => {
                 if (value) {
                     const arr = value.flatMap(post => {
-                        if (post.multiple_media.length > 0) {
+                        if (post.multiple_media && post.multiple_media.length > 0) {
                             return post.multiple_media.map(media => ({ media, id: post._id, user_id: post.user_id }));
                         } else {
                             return [{ media: post.media, id: post._id, user_id: post.user_id }];

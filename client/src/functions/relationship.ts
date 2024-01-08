@@ -1,14 +1,14 @@
 import Relationship, { RelationshipExtended } from "../interfaces/Relationship"
 import User from "../interfaces/User"
 
-export const getFriends = async (token: JsonWebKey, userId: string, queryObj?: any): Promise<RelationshipExtended[] | void> => {
+export const getFriends = async (token: string, userId: string, queryObj?: any): Promise<RelationshipExtended[] | void> => {
     const queryString = '?' + new URLSearchParams(queryObj).toString()
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/' + userId + queryString, {
             headers: { 'authorization': 'bearer ' + token }
         })
         if (!response.ok) {
-            const error: string = await response.json() 
+            const error: string = await response.json()
             throw new Error(error)
         } else {
             const data: RelationshipExtended[] = await response.json()
@@ -19,7 +19,7 @@ export const getFriends = async (token: JsonWebKey, userId: string, queryObj?: a
     }
 }
 
-export const getRelationship = async (token: JsonWebKey, userId: string): Promise<Relationship | void> => {
+export const getRelationship = async (token: string, userId: string): Promise<Relationship | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/' + userId + '/relationship', {
             headers: { 'authorization': 'bearer ' + token }
@@ -36,7 +36,7 @@ export const getRelationship = async (token: JsonWebKey, userId: string): Promis
     }
 }
 
-export const getFriendSuggestions = async (token: JsonWebKey): Promise<User[] | void> => {
+export const getFriendSuggestions = async (token: string): Promise<User[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/suggestions', {
             headers: { 'authorization': 'bearer ' + token }
@@ -53,7 +53,7 @@ export const getFriendSuggestions = async (token: JsonWebKey): Promise<User[] | 
     }
 }
 
-export const getFriendInCommon = async (token: JsonWebKey, userId: string): Promise<Relationship[] | void> => {
+export const getFriendInCommon = async (token: string, userId: string): Promise<Relationship[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/in-common/' + userId, {
             headers: { 'authorization': 'bearer ' + token }
@@ -70,7 +70,7 @@ export const getFriendInCommon = async (token: JsonWebKey, userId: string): Prom
     }
 }
 
-export const getFriendRequests = async (token: JsonWebKey): Promise<Relationship[] | void> => {
+export const getFriendRequests = async (token: string): Promise<Relationship[] | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/requests', {
             headers: { 'authorization': 'bearer ' + token }
@@ -87,7 +87,7 @@ export const getFriendRequests = async (token: JsonWebKey): Promise<Relationship
     }
 }
 
-export const removeFriend = async (token: JsonWebKey, userId: string): Promise<Relationship | void> => {
+export const removeFriend = async (token: string, userId: string): Promise<Relationship | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/' + userId, {
             method: 'DELETE',
@@ -105,7 +105,7 @@ export const removeFriend = async (token: JsonWebKey, userId: string): Promise<R
     }
 }
 
-export const sendFriendRequest = async (token: JsonWebKey, userId: string): Promise<Relationship | void> => {
+export const sendFriendRequest = async (token: string, userId: string): Promise<Relationship | void> => {
     try {
         const response: Response = await fetch('https://oodinbook.fly.dev/rel/' + userId, {
             method: 'POST',
@@ -123,7 +123,7 @@ export const sendFriendRequest = async (token: JsonWebKey, userId: string): Prom
     }
 }
 
-export const acceptFriendRequest = async (token: JsonWebKey, userId: string): Promise<Relationship | void> => {
+export const acceptFriendRequest = async (token: string, userId: string): Promise<Relationship | void> => {
     try {
         const response: Response = await fetch(`https://oodinbook.fly.dev/rel/${userId}/accept`, {
             method: 'PUT',

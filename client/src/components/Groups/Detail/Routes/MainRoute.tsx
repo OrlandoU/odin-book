@@ -7,13 +7,14 @@ import PostForm from "../../../Post/PostForm"
 import LeftBar from "../LeftBar"
 import Section from "../../../Section"
 import Post from "../../../Post/Post"
+import PostI from "../../../../interfaces/Post"
+import Group from "../../../../interfaces/Group"
 
-export default function MainRoute(props: {privacy: string}): JSX.Element {
+export default function MainRoute(props: Group): JSX.Element {
     const url: Readonly<Params<string>> = useParams()
     const fetching = useRef<boolean>(false)
     const { token } = useContext(TokenContext) as Token
-    const [posts, setPosts] = useState<Post[]>([])
-
+    const [posts, setPosts] = useState<PostI[]>([])
     const [media, setMedia] = useState<any[]>([])
 
     const fetchPosts = (length: number, id: string) => {
@@ -47,7 +48,7 @@ export default function MainRoute(props: {privacy: string}): JSX.Element {
                 if(!value) return
 
                 const arr = value.flatMap(post => {
-                    if (post.multiple_media.length > 0) {
+                    if (post.multiple_media && post.multiple_media.length > 0) {
                         return post.multiple_media.map(media => ({ media, id: post._id, user_id: post.user_id }));
                     } else {
                         return [{ media: post.media, id: post._id, user_id: post.user_id }];
